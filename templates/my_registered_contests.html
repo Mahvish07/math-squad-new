@@ -1,0 +1,28 @@
+{% block title %}
+<title>My Registered Contests</title>
+{% endblock title %}
+
+{% block content %}
+<section class="relative py-20 overflow-hidden">
+    <div class="container mx-auto px-4">
+        <h1 class="text-4xl font-bold mb-8 text-center">My Registered Contests</h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for contest in contests %}PYTHON 
+            <div class="contest-card dark-glass p-6 rounded-lg shadow-lg">
+                {% if contest.image %}
+                <img src="{{ contest.image.url }}" alt="{{ contest.name }}" class="w-full h-48 object-cover rounded-lg mb-4">
+                {% endif %}
+                <h2 class="text-2xl font-bold text-white mb-2">{{ contest.name }}</h2>
+                <p class="text-gray-400 mb-4">{{ contest.description|truncatewords:20 }}</p>
+                <p class="text-gray-300"><strong>Category:</strong> {{ contest.category }}</p>
+                <p class="text-gray-300"><strong>Start:</strong> {{ contest.start_date }}</p>
+                <p class="text-gray-300"><strong>End:</strong> {{ contest.end_date }}</p>
+                <a href="{% url 'attempt_contest' contest.id %}" class="bg-neon-blue text-white px-4 py-2 rounded-lg">Attempt Contest</a>
+            </div>
+            {% empty %}
+            <p class="text-gray-400 text-center col-span-full">You have not registered for any contests yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock content %}

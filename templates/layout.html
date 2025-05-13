@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                
+                    colors: {
+                        neon: {
+                            pink: '#FF2D95',
+                            blue: '#4D61FC',
+                            green: '#00F5A0',
+                            yellow: '#FFC700',
+                            purple: '#9C27B0',
+                        },
+                        dark: {
+                            900: '#0F172A',
+                            800: '#1E293B',
+                            700: '#334155',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        mono: ['Space Mono', 'monospace'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-slow': 'float 8s ease-in-out infinite',
+                        'float-fast': 'float 4s ease-in-out infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+
+    
+
+<style type="text/tailwindcss">
+    @layer utilities {
+        .text-shadow {
+            text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.2);
+        }
+        .text-shadow-glow {
+            text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+        }
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .clip-path-slant {
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        }
+        .clip-path-wave {
+            clip-path: polygon(0 0, 100% 0, 100% 95%, 50% 100%, 0 95%);
+        }
+        .math-bg {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M50 0v20h20V0H50zm0 20v20h20V20H50zm0-20H30v20h20V0zm0 40v20h20V40H50zm0 20v20h20V60H50zm0-20H30v20h20V40zm0 40H30v20h20V80zm-20 0H10v20h20V80zm0-20H10v20h20V60zm0-20H10v20h20V40zm0-20H10v20h20V20zm0-20H10v20h20V0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .math-symbol::before {
+            content: "∑";
+            position: absolute;
+            font-size: 20rem;
+            opacity: 0.03;
+            top: -5rem;
+            left: -5rem;
+            transform: rotate(-15deg);
+            font-family: serif;
+        }
+        .math-symbol-pi::before {
+            content: "π";
+        }
+        .math-symbol-infinity::before {
+            content: "∞";
+        }
+        .math-symbol-sqrt::before {
+            content: "√";
+        }
+        .math-symbol-delta::before {
+            content: "Δ";
+        }
+        .math-symbol-integral::before {
+            content: "∫";
+        }
+        .glow {
+            box-shadow: 0 0 15px rgba(0, 245, 160, 0.5), 0 0 30px rgba(0, 245, 160, 0.3);
+        }
+        .glow-pink {
+            box-shadow: 0 0 15px rgba(255, 45, 149, 0.5), 0 0 30px rgba(255, 45, 149, 0.3);
+        }
+        .glow-blue {
+            box-shadow: 0 0 15px rgba(77, 97, 252, 0.5), 0 0 30px rgba(77, 97, 252, 0.3);
+        }
+        .glow-yellow {
+            box-shadow: 0 0 15px rgba(255, 199, 0, 0.5), 0 0 30px rgba(255, 199, 0, 0.3);
+        }
+        .glow-purple {
+            box-shadow: 0 0 15px rgba(156, 39, 176, 0.5), 0 0 30px rgba(156, 39, 176, 0.3);
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .dark-glass {
+            background: rgba(15, 23, 42, 0.966);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .timeline-line {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: theme('colors.neon.green');
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+            border-radius: 999px;
+        }
+        .grid-pattern {
+            background-size: 30px 30px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        }
+        .form-input {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            border-color: theme('colors.neon.green');
+            box-shadow: 0 0 0 2px rgba(0, 245, 160, 0.2);
+            outline: none;
+        }
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        
+        /* Background styles for features, modules, contact, login, and signup sections */
+        .features-bg {
+            background-image: url('https://images.unsplash.com/photo-1518133910546-b6c2fb7d79e3?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        .features-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom right, rgba(15, 23, 42, 0.9), rgba(77, 97, 252, 0.2));
+            z-index: 0;
+        }
+        
+        .modules-bg {
+            background-image: url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        .modules-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom right, rgba(15, 23, 42, 0.9), rgba(255, 199, 0, 0.2));
+            z-index: 0;
+        }
+        
+        /* Updated Contact Background Style */
+        .contact-bg {
+            background-image: url('https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        .contact-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom right, 
+                rgba(15, 23, 42, 0.85), 
+                rgba(0, 245, 160, 0.3));
+            z-index: 0;
+        }
+        
+        .login-bg {
+            background-image: url('https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        .login-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom right, rgba(15, 23, 42, 0.9), rgba(255, 45, 149, 0.2));
+            z-index: 0;
+        }
+        
+        .signup-bg {
+            background-image: url('https://images.unsplash.com/photo-1580894732444-8ecded7900cd?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        .signup-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom right, rgba(15, 23, 42, 0.9), rgba(77, 97, 252, 0.2));
+            z-index: 0;
+        }
+        
+        /* New Home Background Style */
+        .home-bg {
+            position: relative;
+            background-color: #0F172A;
+            overflow: hidden;
+        }
+        .home-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(15, 23, 42, 0.95) 0%, 
+                rgba(77, 97, 252, 0.4) 50%, 
+                rgba(0, 245, 160, 0.4) 100%);
+            z-index: 0;
+        }
+        
+        /* New About Background Style */
+        .about-bg {
+            background-image: url('https://images.unsplash.com/photo-1560785496-3c9d27877182?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        .about-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(15, 23, 42, 0.9) 0%, 
+                rgba(222, 228, 225, 0) 100%);
+            z-index: 0;
+        }
+        
+        /* Updated Modules Background Style */
+        .modules-bg {
+            background-image: url('https://images.unsplash.com/photo-1596495577886-d920f1fb7238?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        .modules-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom right, 
+                rgba(15, 23, 42, 0.85), 
+                rgba(255, 199, 0, 0.3));
+            z-index: 0;
+        }
+        
+        /* Updated Login Background Style */
+        .login-bg {
+            background-image: url('https://images.unsplash.com/photo-1614850715649-1d0106293bd1?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        .login-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom right, 
+                rgba(15, 23, 42, 0.85), 
+                rgba(255, 45, 149, 0.3));
+            z-index: 0;
+        }
+    }
+</style>
+
+{% block script %}
+    
+    {% endblock script %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+    {% block title %}
+        
+    {% endblock title %}
+
+</head>
+<body>
+    
+    {% block content %}
+        
+    {% endblock content %}
+        
+</body>
+</html>

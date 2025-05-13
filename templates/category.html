@@ -1,0 +1,874 @@
+{% extends 'layout.html' %}
+
+
+{% block title %}
+<title>Math Challenges Squad</title>
+{% endblock title %}
+
+    
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories - Math Challenges Squad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neon: {
+                            pink: '#FF2D95',
+                            blue: '#4D61FC',
+                            green: '#00F5A0',
+                            yellow: '#FFC700',
+                            purple: '#9C27B0',
+                        },
+                        dark: {
+                            900: '#0F172A',
+                            800: '#1E293B',
+                            700: '#334155',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        mono: ['Space Mono', 'monospace'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-slow': 'float 8s ease-in-out infinite',
+                        'float-fast': 'float 4s ease-in-out infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 3s infinite',
+                        'tilt': 'tilt 10s infinite linear',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        tilt: {
+                            '0%, 100%': { transform: 'rotate(0deg)' },
+                            '25%': { transform: 'rotate(2deg)' },
+                            '75%': { transform: 'rotate(-2deg)' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.2);
+            }
+            .text-shadow-glow {
+                text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .clip-path-slant {
+                clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            }
+            .clip-path-wave {
+                clip-path: polygon(0 0, 100% 0, 100% 95%, 50% 100%, 0 95%);
+            }
+            .math-bg {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M50 0v20h20V0H50zm0 20v20h20V20H50zm0-20H30v20h20V0zm0 40v20h20V40H50zm0 20v20h20V60H50zm0-20H30v20h20V40zm0 40H30v20h20V80zm-20 0H10v20h20V80zm0-20H10v20h20V60zm0-20H10v20h20V40zm0-20H10v20h20V20zm0-20H10v20h20V0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            }
+            .math-symbol::before {
+                content: "∑";
+                position: absolute;
+                font-size: 20rem;
+                opacity: 0.03;
+                top: -5rem;
+                left: -5rem;
+                transform: rotate(-15deg);
+                font-family: serif;
+            }
+            .math-symbol-pi::before {
+                content: "π";
+            }
+            .math-symbol-infinity::before {
+                content: "∞";
+            }
+            .math-symbol-sqrt::before {
+                content: "√";
+            }
+            .math-symbol-delta::before {
+                content: "Δ";
+            }
+            .math-symbol-integral::before {
+                content: "∫";
+            }
+            .glow {
+                box-shadow: 0 0 15px rgba(0, 245, 160, 0.5), 0 0 30px rgba(0, 245, 160, 0.3);
+            }
+            .glow-pink {
+                box-shadow: 0 0 15px rgba(255, 45, 149, 0.5), 0 0 30px rgba(255, 45, 149, 0.3);
+            }
+            .glow-blue {
+                box-shadow: 0 0 15px rgba(77, 97, 252, 0.5), 0 0 30px rgba(77, 97, 252, 0.3);
+            }
+            .glow-yellow {
+                box-shadow: 0 0 15px rgba(255, 199, 0, 0.5), 0 0 30px rgba(255, 199, 0, 0.3);
+            }
+            .glow-purple {
+                box-shadow: 0 0 15px rgba(156, 39, 176, 0.5), 0 0 30px rgba(156, 39, 176, 0.3);
+            }
+            .glass {
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            .dark-glass {
+                background: rgba(15, 23, 42, 0.966);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .grid-pattern {
+                background-size: 30px 30px;
+                background-image: 
+                    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            }
+            
+            /* Category Page Background */
+            .category-bg {
+                background-image: url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2070&auto=format&fit=crop');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                position: relative;
+            }
+            .category-bg::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(to bottom right, rgba(15, 23, 42, 0.9), rgba(77, 97, 252, 0.3));
+                z-index: 0;
+            }
+            
+            /* Category Card Hover Effects */
+            .category-card {
+                transition: all 0.4s ease;
+                transform-style: preserve-3d;
+                perspective: 1000px;
+            }
+            
+            .category-card:hover {
+                transform: translateY(-10px);
+            }
+            
+            .category-card::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.05) 100%);
+                z-index: -1;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            
+            .category-card:hover::after {
+                opacity: 1;
+            }
+            
+            .category-icon {
+                transition: all 0.3s ease;
+            }
+            
+            .category-card:hover .category-icon {
+                transform: scale(1.1) rotate(5deg);
+            }
+            
+            /* Hexagon Shape */
+            .hexagon {
+                clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            }
+            
+            /* Difficulty Badge */
+            .difficulty-badge {
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+                padding: 0.25rem 0.75rem;
+                border-radius: 9999px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                z-index: 10;
+            }
+            
+            .difficulty-beginner {
+                background-color: rgba(0, 245, 160, 0.2);
+                color: #00F5A0;
+                border: 1px solid rgba(0, 245, 160, 0.3);
+            }
+            
+            .difficulty-intermediate {
+                background-color: rgba(255, 199, 0, 0.2);
+                color: #FFC700;
+                border: 1px solid rgba(255, 199, 0, 0.3);
+            }
+            
+            .difficulty-advanced {
+                background-color: rgba(255, 45, 149, 0.2);
+                color: #FF2D95;
+                border: 1px solid rgba(255, 45, 149, 0.3);
+            }
+            
+            .difficulty-expert {
+                background-color: rgba(156, 39, 176, 0.2);
+                color: #9C27B0;
+                border: 1px solid rgba(156, 39, 176, 0.3);
+            }
+            
+            /* Progress Bar */
+            .progress-bar {
+                height: 6px;
+                border-radius: 3px;
+                overflow: hidden;
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+            
+            .progress-fill {
+                height: 100%;
+                border-radius: 3px;
+            }
+            
+            /* Filter Button */
+            .filter-btn {
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .filter-btn::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 0;
+                height: 2px;
+                transition: width 0.3s ease;
+            }
+            
+            .filter-btn:hover::after {
+                width: 100%;
+            }
+            
+            .filter-btn.active {
+                color: white;
+                font-weight: 600;
+            }
+            
+            .filter-btn.active::after {
+                width: 100%;
+            }
+            
+            /* Category Specific Colors */
+            .algebra-color { color: #00F5A0; }
+            .algebra-bg { background-color: rgba(0, 245, 160, 0.1); }
+            .algebra-border { border-color: rgba(0, 245, 160, 0.3); }
+            .algebra-fill { background-color: #00F5A0; }
+            .algebra-glow { box-shadow: 0 0 15px rgba(0, 245, 160, 0.3); }
+            
+            .geometry-color { color: #4D61FC; }
+            .geometry-bg { background-color: rgba(77, 97, 252, 0.1); }
+            .geometry-border { border-color: rgba(77, 97, 252, 0.3); }
+            .geometry-fill { background-color: #4D61FC; }
+            .geometry-glow { box-shadow: 0 0 15px rgba(77, 97, 252, 0.3); }
+            
+            .calculus-color { color: #FF2D95; }
+            .calculus-bg { background-color: rgba(255, 45, 149, 0.1); }
+            .calculus-border { border-color: rgba(255, 45, 149, 0.3); }
+            .calculus-fill { background-color: #FF2D95; }
+            .calculus-glow { box-shadow: 0 0 15px rgba(255, 45, 149, 0.3); }
+            
+            .statistics-color { color: #FFC700; }
+            .statistics-bg { background-color: rgba(255, 199, 0, 0.1); }
+            .statistics-border { border-color: rgba(255, 199, 0, 0.3); }
+            .statistics-fill { background-color: #FFC700; }
+            .statistics-glow { box-shadow: 0 0 15px rgba(255, 199, 0, 0.3); }
+            
+            .number-theory-color { color: #9C27B0; }
+            .number-theory-bg { background-color: rgba(156, 39, 176, 0.1); }
+            .number-theory-border { border-color: rgba(156, 39, 176, 0.3); }
+            .number-theory-fill { background-color: #9C27B0; }
+            .number-theory-glow { box-shadow: 0 0 15px rgba(156, 39, 176, 0.3); }
+            
+            .trigonometry-color { color: #00BCD4; }
+            .trigonometry-bg { background-color: rgba(0, 188, 212, 0.1); }
+            .trigonometry-border { border-color: rgba(0, 188, 212, 0.3); }
+            .trigonometry-fill { background-color: #00BCD4; }
+            .trigonometry-glow { box-shadow: 0 0 15px rgba(0, 188, 212, 0.3); }
+            
+            /* Search Input */
+            .search-input {
+                background: rgba(15, 23, 42, 0.5);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: white;
+                transition: all 0.3s ease;
+            }
+            
+            .search-input:focus {
+                border-color: #00F5A0;
+                box-shadow: 0 0 0 2px rgba(0, 245, 160, 0.2);
+                outline: none;
+            }
+            
+            .search-input::placeholder {
+                color: rgba(255, 255, 255, 0.4);
+            }
+        }
+    </style>
+</head>
+<body class="font-sans bg-dark-900 text-white overflow-x-hidden">
+    <!-- Floating Math Symbols (Decorative) -->
+    <div class="fixed w-full h-full pointer-events-none z-0 opacity-30 overflow-hidden">
+        <div class="absolute text-6xl text-neon-pink animate-float-slow" style="top: 15%; left: 10%;">∑</div>
+        <div class="absolute text-6xl text-neon-blue animate-float" style="top: 30%; left: 85%;">π</div>
+        <div class="absolute text-6xl text-neon-green animate-float-fast" style="top: 70%; left: 20%;">∞</div>
+        <div class="absolute text-6xl text-neon-yellow animate-float-slow" style="top: 60%; left: 80%;">√</div>
+        <div class="absolute text-6xl text-neon-purple animate-float" style="top: 85%; left: 40%;">∫</div>
+        <div class="absolute text-6xl text-neon-pink animate-float-fast" style="top: 10%; left: 60%;">Δ</div>
+        <div class="absolute text-6xl text-neon-blue animate-float-slow" style="top: 45%; left: 5%;">±</div>
+        <div class="absolute text-6xl text-neon-green animate-float" style="top: 25%; left: 30%;">÷</div>
+        <div class="absolute text-6xl text-neon-yellow animate-float-fast" style="top: 75%; left: 70%;">×</div>
+    </div>
+
+    <!-- Grid Background -->
+    <div class="fixed inset-0 grid-pattern opacity-30 z-0"></div>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 glass">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="relative w-12 h-12 flex items-center justify-center bg-neon-green rounded-lg glow transform rotate-12">
+                        <span class="text-dark-900 text-2xl font-bold font-mono transform -rotate-12">M</span>
+                    </div>
+                    <div class="text-2xl font-bold">
+                        <span class="text-neon-green">Math</span>
+                        <span class="text-white">Challenges</span>
+                        <span class="text-neon-pink">Squad</span>
+                    </div>
+                </div>
+                <nav class="hidden md:block">
+                    <ul class="flex space-x-8">
+                        <li><a href="#home" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Home
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#about" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            About
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#features" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Features
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#modules" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Modules
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#contact" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Contact
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#login" class="hover:text-neon-pink transition-colors duration-300 relative group">
+                            Login
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-pink transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#signup" class="hover:text-neon-blue transition-colors duration-300 relative group">
+                            Sign Up
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-blue transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                    </ul>
+                </nav>
+                <div class="md:hidden">
+                    <button class="text-white focus:outline-none" id="mobile-menu-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div class="md:hidden hidden mt-4 p-4 dark-glass rounded-xl" id="mobile-menu">
+                <ul class="space-y-4">
+                    <li><a href="#home" class="block py-2 hover:text-neon-green transition-colors duration-300">Home</a></li>
+                    <li><a href="#about" class="block py-2 hover:text-neon-green transition-colors duration-300">About</a></li>
+                    <li><a href="#features" class="block py-2 hover:text-neon-green transition-colors duration-300">Features</a></li>
+                    <li><a href="#modules" class="block py-2 hover:text-neon-green transition-colors duration-300">Modules</a></li>
+                    <li><a href="#contact" class="block py-2 hover:text-neon-green transition-colors duration-300">Contact</a></li>
+                    <li><a href="#login" class="block py-2 hover:text-neon-pink transition-colors duration-300">Login</a></li>
+                    <li><a href="#signup" class="block py-2 hover:text-neon-blue transition-colors duration-300">Sign Up</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Category Hero Section -->
+    <section class="relative py-20 overflow-hidden category-bg">
+        <div class="absolute inset-0 z-0 math-symbol math-symbol-infinity"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                    <span class="text-gradient bg-gradient-to-r from-neon-green via-neon-blue to-neon-pink">Math Categories</span>
+                </h1>
+                <p class="text-xl mb-10 text-gray-300">Explore our diverse range of mathematical challenges across different categories. From algebra to calculus, find the perfect challenges to boost your skills.</p>
+                
+                <!-- Search and Filter Bar -->
+                <div class="dark-glass p-4 rounded-xl mb-12">
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                        <!-- Search Input -->
+                        <div class="relative w-full md:w-1/3">
+                            <input type="text" placeholder="Search categories..." class="w-full px-4 py-3 pl-10 rounded-lg search-input" id="search-input">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        
+                        <!-- Filter Buttons -->
+                        <div class="flex flex-wrap justify-center gap-3">
+                            <button class="filter-btn active px-3 py-2 text-neon-green" data-filter="all">
+                                All
+                                <span class="absolute bottom-0 left-0 w-full h-0.5 bg-neon-green"></span>
+                            </button>
+                            <button class="filter-btn px-3 py-2 text-gray-400 hover:text-neon-green" data-filter="beginner">
+                                Beginner
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-neon-green"></span>
+                            </button>
+                            <button class="filter-btn px-3 py-2 text-gray-400 hover:text-neon-yellow" data-filter="intermediate">
+                                Intermediate
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-neon-yellow"></span>
+                            </button>
+                            <button class="filter-btn px-3 py-2 text-gray-400 hover:text-neon-pink" data-filter="advanced">
+                                Advanced
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-neon-pink"></span>
+                            </button>
+                            <button class="filter-btn px-3 py-2 text-gray-400 hover:text-neon-purple" data-filter="expert">
+                                Expert
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-neon-purple"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Category Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="category-grid">
+                <!-- Algebra Category -->
+                <div class="category-card dark-glass rounded-2xl overflow-hidden border border-neon-green/30 hover:border-neon-green transition-all duration-300" data-category="algebra" data-difficulty="beginner">
+                    <div class="difficulty-badge difficulty-beginner">Beginner</div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-16 h-16 hexagon algebra-bg flex items-center justify-center category-icon">
+                                <span class="text-3xl font-bold algebra-color">x²</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-gray-400">Challenges</span>
+                                <div class="text-2xl font-bold text-white">42</div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-2xl font-semibold mb-2 algebra-color">Algebra</h3>
+                        <p class="text-gray-400 mb-4">Master equations, expressions, and functions through engaging challenges.</p>
+                        
+                        <!-- Progress Bar -->
+                        <div class="mb-2 flex justify-between text-sm">
+                            <span class="text-gray-400">Your Progress</span>
+                            <span class="algebra-color">65%</span>
+                        </div>
+                        <div class="progress-bar mb-6">
+                            <div class="progress-fill algebra-fill" style="width: 65%"></div>
+                        </div>
+                        
+                        <a href="#" class="block w-full py-3 text-center bg-transparent border border-neon-green text-neon-green rounded-lg hover:bg-neon-green hover:text-dark-900 transition-all duration-300">
+                            Explore Challenges
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Geometry Category -->
+                <div class="category-card dark-glass rounded-2xl overflow-hidden border border-neon-blue/30 hover:border-neon-blue transition-all duration-300" data-category="geometry" data-difficulty="intermediate">
+                    <div class="difficulty-badge difficulty-intermediate">Intermediate</div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-16 h-16 hexagon geometry-bg flex items-center justify-center category-icon">
+                                <span class="text-3xl font-bold geometry-color">△</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-gray-400">Challenges</span>
+                                <div class="text-2xl font-bold text-white">38</div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-2xl font-semibold mb-2 geometry-color">Geometry</h3>
+                        <p class="text-gray-400 mb-4">Explore shapes, angles, and spatial relationships in 2D and 3D.</p>
+                        
+                        <!-- Progress Bar -->
+                        <div class="mb-2 flex justify-between text-sm">
+                            <span class="text-gray-400">Your Progress</span>
+                            <span class="geometry-color">45%</span>
+                        </div>
+                        <div class="progress-bar mb-6">
+                            <div class="progress-fill geometry-fill" style="width: 45%"></div>
+                        </div>
+                        
+                        <a href="#" class="block w-full py-3 text-center bg-transparent border border-neon-blue text-neon-blue rounded-lg hover:bg-neon-blue hover:text-dark-900 transition-all duration-300">
+                            Explore Challenges
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Calculus Category -->
+                <div class="category-card dark-glass rounded-2xl overflow-hidden border border-neon-pink/30 hover:border-neon-pink transition-all duration-300" data-category="calculus" data-difficulty="advanced">
+                    <div class="difficulty-badge difficulty-advanced">Advanced</div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-16 h-16 hexagon calculus-bg flex items-center justify-center category-icon">
+                                <span class="text-3xl font-bold calculus-color">∫</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-gray-400">Challenges</span>
+                                <div class="text-2xl font-bold text-white">31</div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-2xl font-semibold mb-2 calculus-color">Calculus</h3>
+                        <p class="text-gray-400 mb-4">Tackle derivatives, integrals, and limits with our challenging problems.</p>
+                        
+                        <!-- Progress Bar -->
+                        <div class="mb-2 flex justify-between text-sm">
+                            <span class="text-gray-400">Your Progress</span>
+                            <span class="calculus-color">25%</span>
+                        </div>
+                        <div class="progress-bar mb-6">
+                            <div class="progress-fill calculus-fill" style="width: 25%"></div>
+                        </div>
+                        
+                        <a href="#" class="block w-full py-3 text-center bg-transparent border border-neon-pink text-neon-pink rounded-lg hover:bg-neon-pink hover:text-dark-900 transition-all duration-300">
+                            Explore Challenges
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Statistics Category -->
+                <div class="category-card dark-glass rounded-2xl overflow-hidden border border-neon-yellow/30 hover:border-neon-yellow transition-all duration-300" data-category="statistics" data-difficulty="intermediate">
+                    <div class="difficulty-badge difficulty-intermediate">Intermediate</div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-16 h-16 hexagon statistics-bg flex items-center justify-center category-icon">
+                                <span class="text-3xl font-bold statistics-color">σ</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-gray-400">Challenges</span>
+                                <div class="text-2xl font-bold text-white">27</div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-2xl font-semibold mb-2 statistics-color">Statistics</h3>
+                        <p class="text-gray-400 mb-4">Analyze data, probability, and statistical methods with real-world applications.</p>
+                        
+                        <!-- Progress Bar -->
+                        <div class="mb-2 flex justify-between text-sm">
+                            <span class="text-gray-400">Your Progress</span>
+                            <span class="statistics-color">70%</span>
+                        </div>
+                        <div class="progress-bar mb-6">
+                            <div class="progress-fill statistics-fill" style="width: 70%"></div>
+                        </div>
+                        
+                        <a href="#" class="block w-full py-3 text-center bg-transparent border border-neon-yellow text-neon-yellow rounded-lg hover:bg-neon-yellow hover:text-dark-900 transition-all duration-300">
+                            Explore Challenges
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Number Theory Category -->
+                <div class="category-card dark-glass rounded-2xl overflow-hidden border border-neon-purple/30 hover:border-neon-purple transition-all duration-300" data-category="number-theory" data-difficulty="expert">
+                    <div class="difficulty-badge difficulty-expert">Expert</div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-16 h-16 hexagon number-theory-bg flex items-center justify-center category-icon">
+                                <span class="text-3xl font-bold number-theory-color">ℕ</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-gray-400">Challenges</span>
+                                <div class="text-2xl font-bold text-white">23</div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-2xl font-semibold mb-2 number-theory-color">Number Theory</h3>
+                        <p class="text-gray-400 mb-4">Dive into prime numbers, divisibility, and number properties.</p>
+                        
+                        <!-- Progress Bar -->
+                        <div class="mb-2 flex justify-between text-sm">
+                            <span class="text-gray-400">Your Progress</span>
+                            <span class="number-theory-color">15%</span>
+                        </div>
+                        <div class="progress-bar mb-6">
+                            <div class="progress-fill number-theory-fill" style="width: 15%"></div>
+                        </div>
+                        
+                        <a href="#" class="block w-full py-3 text-center bg-transparent border border-neon-purple text-neon-purple rounded-lg hover:bg-neon-purple hover:text-dark-900 transition-all duration-300">
+                            Explore Challenges
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Trigonometry Category -->
+                <div class="category-card dark-glass rounded-2xl overflow-hidden border border-neon-blue/30 hover:border-neon-blue transition-all duration-300" data-category="trigonometry" data-difficulty="beginner">
+                    <div class="difficulty-badge difficulty-beginner">Beginner</div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-16 h-16 hexagon trigonometry-bg flex items-center justify-center category-icon">
+                                <span class="text-3xl font-bold trigonometry-color">θ</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-gray-400">Challenges</span>
+                                <div class="text-2xl font-bold text-white">35</div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-2xl font-semibold mb-2 trigonometry-color">Trigonometry</h3>
+                        <p class="text-gray-400 mb-4">Explore angles, triangles, and trigonometric functions and identities.</p>
+                        
+                        <!-- Progress Bar -->
+                        <div class="mb-2 flex justify-between text-sm">
+                            <span class="text-gray-400">Your Progress</span>
+                            <span class="trigonometry-color">50%</span>
+                        </div>
+                        <div class="progress-bar mb-6">
+                            <div class="progress-fill trigonometry-fill" style="width: 50%"></div>
+                        </div>
+                        
+                        <a href="#" class="block w-full py-3 text-center bg-transparent border border-neon-blue text-neon-blue rounded-lg hover:bg-neon-blue hover:text-dark-900 transition-all duration-300">
+                            Explore Challenges
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Featured Category Section -->
+            <div class="mt-20">
+                <h2 class="text-3xl font-bold mb-10 text-center">
+                    <span class="relative inline-block">
+                        <span class="text-gradient bg-gradient-to-r from-neon-yellow to-neon-green">Featured Category</span>
+                        <span class="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-neon-yellow to-neon-green rounded-full"></span>
+                    </span>
+                </h2>
+                
+                <div class="dark-glass rounded-2xl overflow-hidden border border-neon-green/30 p-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <div class="flex items-center mb-4">
+                                <div class="w-16 h-16 hexagon algebra-bg flex items-center justify-center mr-4">
+                                    <span class="text-3xl font-bold algebra-color">x²</span>
+                                </div>
+                                <h3 class="text-3xl font-bold algebra-color">Algebra Challenge of the Month</h3>
+                            </div>
+                            
+                            <p class="text-gray-300 mb-6">This month's featured category is Algebra! Dive into our special collection of algebraic challenges designed to test your equation-solving skills and algebraic thinking.</p>
+                            
+                            <div class="mb-6">
+                                <div class="flex items-center mb-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neon-green mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span class="text-white">15 new challenges added this month</span>
+                                </div>
+                                <div class="flex items-center mb-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neon-green mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span class="text-white">Special badges for top performers</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neon-green mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span class="text-white">Challenges for all skill levels</span>
+                                </div>
+                            </div>
+                            
+                            <a href="#" class="inline-block px-8 py-4 bg-neon-green text-dark-900 font-bold rounded-lg glow hover:bg-white hover:text-dark-900 transition-all duration-300">
+                                Join the Challenge
+                            </a>
+                        </div>
+                        
+                        <div class="relative">
+                            <div class="relative w-full h-80 rounded-xl overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-br from-neon-green/20 via-neon-blue/10 to-neon-pink/20 opacity-70"></div>
+                                <div class="absolute inset-0 grid-pattern"></div>
+                                
+                                <!-- Decorative Math Elements -->
+                                <div class="absolute top-1/4 left-1/4 text-5xl text-neon-green/40 animate-float-slow">x²</div>
+                                <div class="absolute bottom-1/4 right-1/4 text-5xl text-neon-pink/40 animate-float">y²</div>
+                                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-7xl text-neon-blue/40 animate-pulse-slow">=</div>
+                                <div class="absolute bottom-1/3 left-1/3 text-5xl text-neon-yellow/40 animate-float-fast">z²</div>
+                                
+                                <!-- Center Element -->
+                                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-dark-800/80 rounded-2xl p-6 backdrop-blur-sm animate-tilt">
+                                    <div class="text-center">
+                                        <div class="text-4xl font-bold text-neon-green mb-2">Algebra</div>
+                                        <div class="text-xl text-white">Master the fundamentals</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Category Stats -->
+            <div class="mt-20 grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="dark-glass rounded-xl p-6 border border-neon-green/30">
+                    <div class="text-4xl font-bold text-neon-green mb-2">196</div>
+                    <div class="text-gray-400">Total Challenges</div>
+                </div>
+                
+                <div class="dark-glass rounded-xl p-6 border border-neon-blue/30">
+                    <div class="text-4xl font-bold text-neon-blue mb-2">6</div>
+                    <div class="text-gray-400">Categories</div>
+                </div>
+                
+                <div class="dark-glass rounded-xl p-6 border border-neon-pink/30">
+                    <div class="text-4xl font-bold text-neon-pink mb-2">45%</div>
+                    <div class="text-gray-400">Your Completion</div>
+                </div>
+                
+                <div class="dark-glass rounded-xl p-6 border border-neon-yellow/30">
+                    <div class="text-4xl font-bold text-neon-yellow mb-2">15</div>
+                    <div class="text-gray-400">New This Week</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative py-16 overflow-hidden">
+        <div class="absolute inset-0 bg-dark-900 z-0"></div>
+        <div class="absolute bottom-0 w-full h-1 bg-gradient-to-r from-neon-green via-neon-blue to-neon-pink"></div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-8 md:mb-0">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="relative w-12 h-12 flex items-center justify-center bg-neon-green rounded-lg glow transform rotate-12">
+                            <span class="text-dark-900 text-2xl font-bold font-mono transform -rotate-12">M</span>
+                        </div>
+                        <div class="text-2xl font-bold">
+                            <span class="text-neon-green">Math</span>
+                            <span class="text-white">Challenges</span>
+                            <span class="text-neon-pink">Squad</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-400">Making math fun and rewarding for everyone.</p>
+                </div>
+                
+                <div class="text-center md:text-right">
+                    <p class="text-gray-400">© 2024 Math Challenges Squad. All rights reserved.</p>
+                    <p class="text-gray-400 mt-2">Babu Banarasi Das University, Lucknow</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Mobile Menu Toggle and Category Filtering -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Menu Toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Close mobile menu when clicking on a link
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+            
+            // Category Filtering
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const categoryCards = document.querySelectorAll('.category-card');
+            const searchInput = document.getElementById('search-input');
+            
+            // Filter by difficulty
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        btn.querySelector('span').classList.add('w-0');
+                        btn.querySelector('span').classList.remove('w-full');
+                    });
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    this.querySelector('span').classList.remove('w-0');
+                    this.querySelector('span').classList.add('w-full');
+                    
+                    const filter = this.getAttribute('data-filter');
+                    
+                    // Show/hide cards based on filter
+                    categoryCards.forEach(card => {
+                        if (filter === 'all') {
+                            card.style.display = 'block';
+                        } else {
+                            if (card.getAttribute('data-difficulty') === filter) {
+                                card.style.display = 'block';
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        }
+                    });
+                });
+            });
+            
+            // Search functionality
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                categoryCards.forEach(card => {
+                    const categoryName = card.querySelector('h3').textContent.toLowerCase();
+                    const categoryDesc = card.querySelector('p').textContent.toLowerCase();
+                    
+                    if (categoryName.includes(searchTerm) || categoryDesc.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+<<<<<<< HEAD
+{% endblock conrtent %}
+=======
+{% endblock title %}
+>>>>>>> 8500dd2621c954bafdd6805e555f94156f6392de

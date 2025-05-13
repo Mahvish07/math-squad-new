@@ -1,1 +1,1060 @@
-++++++++++
+{% extends 'layout.html' %}
+
+
+{% block title %}
+<title>Math Challenges Squad</title>
+{% endblock title %}
+    
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - Math Challenges Squad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neon: {
+                            pink: '#FF2D95',
+                            blue: '#4D61FC',
+                            green: '#00F5A0',
+                            yellow: '#FFC700',
+                            purple: '#9C27B0',
+                        },
+                        dark: {
+                            900: '#0F172A',
+                            800: '#1E293B',
+                            700: '#334155',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        mono: ['Space Mono', 'monospace'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-slow': 'float 8s ease-in-out infinite',
+                        'float-fast': 'float 4s ease-in-out infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'shimmer': 'shimmer 2s linear infinite',
+                        'wave': 'wave 15s linear infinite',
+                        'particle-move': 'particle-move 20s infinite',
+                        'particle-pulse': 'particle-pulse 3s infinite',
+                        'gradient-shift': 'gradient-shift 10s ease infinite',
+                        'grid-move': 'grid-move 20s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-1000px 0' },
+                            '100%': { backgroundPosition: '1000px 0' },
+                        },
+                        wave: {
+                            '0%': { transform: 'translateX(0) translateZ(0) scaleY(1)' },
+                            '50%': { transform: 'translateX(-25%) translateZ(0) scaleY(0.8)' },
+                            '100%': { transform: 'translateX(-50%) translateZ(0) scaleY(1)' },
+                        },
+                        'particle-move': {
+                            '0%': { transform: 'translate(0, 0) rotate(0deg)' },
+                            '25%': { transform: 'translate(100px, -50px) rotate(90deg)' },
+                            '50%': { transform: 'translate(50px, 100px) rotate(180deg)' },
+                            '75%': { transform: 'translate(-50px, 50px) rotate(270deg)' },
+                            '100%': { transform: 'translate(0, 0) rotate(360deg)' },
+                        },
+                        'particle-pulse': {
+                            '0%, 100%': { opacity: 0.2, transform: 'scale(0.8)' },
+                            '50%': { opacity: 0.8, transform: 'scale(1.2)' },
+                        },
+                        'gradient-shift': {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' },
+                        },
+                        'grid-move': {
+                            '0%': { backgroundPosition: '0 0' },
+                            '100%': { backgroundPosition: '50px 50px' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.2);
+            }
+            .text-shadow-glow {
+                text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .clip-path-slant {
+                clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            }
+            .clip-path-wave {
+                clip-path: polygon(0 0, 100% 0, 100% 95%, 50% 100%, 0 95%);
+            }
+            .math-bg {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M50 0v20h20V0H50zm0 20v20h20V20H50zm0-20H30v20h20V0zm0 40v20h20V40H50zm0 20v20h20V60H50zm0-20H30v20h20V40zm0 40H30v20h20V80zm-20 0H10v20h20V80zm0-20H10v20h20V60zm0-20H10v20h20V40zm0-20H10v20h20V20zm0-20H10v20h20V0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            }
+            .math-symbol::before {
+                content: "∑";
+                position: absolute;
+                font-size: 20rem;
+                opacity: 0.03;
+                top: -5rem;
+                left: -5rem;
+                transform: rotate(-15deg);
+                font-family: serif;
+            }
+            .math-symbol-pi::before {
+                content: "π";
+            }
+            .math-symbol-infinity::before {
+                content: "∞";
+            }
+            .math-symbol-sqrt::before {
+                content: "√";
+            }
+            .math-symbol-delta::before {
+                content: "Δ";
+            }
+            .math-symbol-integral::before {
+                content: "∫";
+            }
+            .glow {
+                box-shadow: 0 0 15px rgba(0, 245, 160, 0.5), 0 0 30px rgba(0, 245, 160, 0.3);
+            }
+            .glow-pink {
+                box-shadow: 0 0 15px rgba(255, 45, 149, 0.5), 0 0 30px rgba(255, 45, 149, 0.3);
+            }
+            .glow-blue {
+                box-shadow: 0 0 15px rgba(77, 97, 252, 0.5), 0 0 30px rgba(77, 97, 252, 0.3);
+            }
+            .glow-yellow {
+                box-shadow: 0 0 15px rgba(255, 199, 0, 0.5), 0 0 30px rgba(255, 199, 0, 0.3);
+            }
+            .glow-purple {
+                box-shadow: 0 0 15px rgba(156, 39, 176, 0.5), 0 0 30px rgba(156, 39, 176, 0.3);
+            }
+            .glass {
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            .dark-glass {
+                background: rgba(15, 23, 42, 0.966);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .grid-pattern {
+                background-size: 30px 30px;
+                background-image: 
+                    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            }
+            
+            /* Trophy Styles */
+            .trophy-gold {
+                background: linear-gradient(135deg, #FFD700 0%, #FFC700 50%, #F8B500 100%);
+                box-shadow: 0 0 15px rgba(255, 199, 0, 0.7), 0 0 30px rgba(255, 199, 0, 0.4);
+            }
+            .trophy-silver {
+                background: linear-gradient(135deg, #E0E0E0 0%, #C0C0C0 50%, #A9A9A9 100%);
+                box-shadow: 0 0 15px rgba(192, 192, 192, 0.7), 0 0 30px rgba(192, 192, 192, 0.4);
+            }
+            .trophy-bronze {
+                background: linear-gradient(135deg, #CD7F32 0%, #B87333 50%, #A67B5B 100%);
+                box-shadow: 0 0 15px rgba(205, 127, 50, 0.7), 0 0 30px rgba(205, 127, 50, 0.4);
+            }
+            
+            /* Shimmer Effect */
+            .shimmer {
+                background: linear-gradient(90deg, 
+                    rgba(255, 255, 255, 0) 0%, 
+                    rgba(255, 255, 255, 0.05) 50%, 
+                    rgba(255, 255, 255, 0) 100%);
+                background-size: 200% 100%;
+                animation: shimmer 2s infinite linear;
+            }
+            
+            /* Progress Bar */
+            .progress-bar-bg {
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 9999px;
+                overflow: hidden;
+            }
+            .progress-bar {
+                height: 100%;
+                border-radius: 9999px;
+                transition: width 1s ease-in-out;
+            }
+            
+            /* Badge Styles */
+            .badge-glow {
+                animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            }
+            
+            /* Tab Styles */
+            .tab-active {
+                background: rgba(255, 255, 255, 0.1);
+                border-bottom: 2px solid;
+            }
+            
+            /* Filter Dropdown */
+            .filter-dropdown {
+                background: rgba(15, 23, 42, 0.9);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 0.5rem;
+            }
+            
+            /* NEW BACKGROUND STYLES */
+            .cosmic-bg {
+                background: linear-gradient(125deg, #0F172A, #1E1B4B, #4C1D95);
+                background-size: 400% 400%;
+                animation: gradient-shift 10s ease infinite;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .cosmic-grid {
+                background-image: 
+                    radial-gradient(circle, rgba(77, 97, 252, 0.1) 1px, transparent 1px),
+                    radial-gradient(circle, rgba(0, 245, 160, 0.1) 1px, transparent 1px);
+                background-size: 50px 50px, 100px 100px;
+                background-position: 0 0, 25px 25px;
+                animation: grid-move 20s linear infinite;
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                opacity: 0.5;
+            }
+            
+            .wave-effect {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 200%;
+                height: 100px;
+                background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z' opacity='.25' fill='%234D61FC'%3E%3C/path%3E%3Cpath d='M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z' opacity='.5' fill='%2300F5A0'%3E%3C/path%3E%3Cpath d='M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z' fill='%23FF2D95' opacity='.25'%3E%3C/path%3E%3C/svg%3E");
+                background-size: 1200px 100px;
+                animation: wave 15s linear infinite;
+            }
+            
+            .particle {
+                position: absolute;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                opacity: 0.3;
+                animation: particle-pulse 3s infinite;
+            }
+            
+            .particle-1 {
+                top: 10%;
+                left: 10%;
+                background-color: #FF2D95;
+                animation-delay: 0s;
+                animation-duration: 20s;
+            }
+            
+            .particle-2 {
+                top: 20%;
+                left: 80%;
+                background-color: #4D61FC;
+                animation-delay: 2s;
+                animation-duration: 25s;
+            }
+            
+            .particle-3 {
+                top: 70%;
+                left: 30%;
+                background-color: #00F5A0;
+                animation-delay: 1s;
+                animation-duration: 15s;
+            }
+            
+            .particle-4 {
+                top: 40%;
+                left: 60%;
+                background-color: #FFC700;
+                animation-delay: 3s;
+                animation-duration: 18s;
+            }
+            
+            .particle-5 {
+                top: 80%;
+                left: 70%;
+                background-color: #9C27B0;
+                animation-delay: 0.5s;
+                animation-duration: 22s;
+            }
+            
+            .particle-6 {
+                top: 30%;
+                left: 20%;
+                background-color: #00F5A0;
+                animation-delay: 1.5s;
+                animation-duration: 19s;
+            }
+            
+            .glow-circle {
+                position: absolute;
+                border-radius: 50%;
+                filter: blur(60px);
+                opacity: 0.15;
+                z-index: 0;
+            }
+            
+            .glow-circle-1 {
+                top: -100px;
+                left: -100px;
+                width: 500px;
+                height: 500px;
+                background-color: #4D61FC;
+                animation: float-slow 8s ease-in-out infinite;
+            }
+            
+            .glow-circle-2 {
+                bottom: -100px;
+                right: -100px;
+                width: 600px;
+                height: 600px;
+                background-color: #FF2D95;
+                animation: float 6s ease-in-out infinite;
+            }
+            
+            .glow-circle-3 {
+                top: 40%;
+                left: 30%;
+                width: 300px;
+                height: 300px;
+                background-color: #00F5A0;
+                animation: float-fast 4s ease-in-out infinite;
+            }
+            
+            .constellation {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                background-image: 
+                    radial-gradient(circle, white 1px, transparent 1px);
+                background-size: 100px 100px;
+                opacity: 0.2;
+            }
+            
+            .constellation::before {
+                content: '';
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                background-image: 
+                    linear-gradient(to right, transparent 49px, rgba(255, 255, 255, 0.03) 50px, transparent 51px),
+                    linear-gradient(to bottom, transparent 49px, rgba(255, 255, 255, 0.03) 50px, transparent 51px);
+                background-size: 100px 100px;
+            }
+            
+            /* Animated Math Symbols */
+            .math-symbol-animated {
+                position: absolute;
+                font-size: 4rem;
+                opacity: 0.15;
+                color: white;
+                animation: float 6s ease-in-out infinite;
+                z-index: 1;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans bg-dark-900 text-white overflow-x-hidden">
+    <!-- NEW BACKGROUND ELEMENTS -->
+    <div class="fixed inset-0 cosmic-bg z-0">
+        <!-- Glowing Circles -->
+        <div class="glow-circle glow-circle-1"></div>
+        <div class="glow-circle glow-circle-2"></div>
+        <div class="glow-circle glow-circle-3"></div>
+        
+        <!-- Cosmic Grid -->
+        <div class="cosmic-grid"></div>
+        
+        <!-- Constellation Pattern -->
+        <div class="constellation"></div>
+        
+        <!-- Wave Effect -->
+        <div class="wave-effect"></div>
+        
+        <!-- Animated Particles -->
+        <div class="particle particle-1 animate-particle-move"></div>
+        <div class="particle particle-2 animate-particle-move"></div>
+        <div class="particle particle-3 animate-particle-move"></div>
+        <div class="particle particle-4 animate-particle-move"></div>
+        <div class="particle particle-5 animate-particle-move"></div>
+        <div class="particle particle-6 animate-particle-move"></div>
+        
+        <!-- Animated Math Symbols -->
+        <div class="math-symbol-animated text-neon-pink" style="top: 15%; left: 10%; animation-delay: 0s;">∑</div>
+        <div class="math-symbol-animated text-neon-blue" style="top: 30%; left: 85%; animation-delay: 1s;">π</div>
+        <div class="math-symbol-animated text-neon-green" style="top: 70%; left: 20%; animation-delay: 2s;">∞</div>
+        <div class="math-symbol-animated text-neon-yellow" style="top: 60%; left: 80%; animation-delay: 1.5s;">√</div>
+        <div class="math-symbol-animated text-neon-purple" style="top: 85%; left: 40%; animation-delay: 0.5s;">∫</div>
+        <div class="math-symbol-animated text-neon-pink" style="top: 10%; left: 60%; animation-delay: 2.5s;">Δ</div>
+        <div class="math-symbol-animated text-neon-blue" style="top: 45%; left: 5%; animation-delay: 1.2s;">±</div>
+        <div class="math-symbol-animated text-neon-green" style="top: 25%; left: 30%; animation-delay: 0.8s;">÷</div>
+        <div class="math-symbol-animated text-neon-yellow" style="top: 75%; left: 70%; animation-delay: 1.8s;">×</div>
+    </div>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 glass">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="relative w-12 h-12 flex items-center justify-center bg-neon-green rounded-lg glow transform rotate-12">
+                        <span class="text-dark-900 text-2xl font-bold font-mono transform -rotate-12">M</span>
+                    </div>
+                    <div class="text-2xl font-bold">
+                        <span class="text-neon-green">Math</span>
+                        <span class="text-white">Challenges</span>
+                        <span class="text-neon-pink">Squad</span>
+                    </div>
+                </div>
+                <nav class="hidden md:block">
+                    <ul class="flex space-x-8">
+                        <li><a href="#home" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Home
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#about" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            About
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#features" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Features
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#modules" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Modules
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#leaderboard" class="text-neon-yellow transition-colors duration-300 relative group">
+                            Leaderboard
+                            <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-neon-yellow"></span>
+                        </a></li>
+                        <li><a href="#contact" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Contact
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#login" class="hover:text-neon-pink transition-colors duration-300 relative group">
+                            Login
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-pink transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                    </ul>
+                </nav>
+                <div class="md:hidden">
+                    <button class="text-white focus:outline-none" id="mobile-menu-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div class="md:hidden hidden mt-4 p-4 dark-glass rounded-xl" id="mobile-menu">
+                <ul class="space-y-4">
+                    <li><a href="#home" class="block py-2 hover:text-neon-green transition-colors duration-300">Home</a></li>
+                    <li><a href="#about" class="block py-2 hover:text-neon-green transition-colors duration-300">About</a></li>
+                    <li><a href="#features" class="block py-2 hover:text-neon-green transition-colors duration-300">Features</a></li>
+                    <li><a href="#modules" class="block py-2 hover:text-neon-green transition-colors duration-300">Modules</a></li>
+                    <li><a href="#leaderboard" class="block py-2 text-neon-yellow transition-colors duration-300">Leaderboard</a></li>
+                    <li><a href="#contact" class="block py-2 hover:text-neon-green transition-colors duration-300">Contact</a></li>
+                    <li><a href="#login" class="block py-2 hover:text-neon-pink transition-colors duration-300">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Leaderboard Section -->
+    <section id="leaderboard" class="relative min-h-screen py-20 overflow-hidden">
+        <div class="container mx-auto px-4 relative z-10">
+            <h2 class="text-4xl md:text-5xl font-bold mb-8 text-center">
+                <span class="relative inline-block">
+                    <span class="text-gradient bg-gradient-to-r from-neon-yellow to-neon-green">Leaderboard</span>
+                    <span class="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-neon-yellow to-neon-green rounded-full"></span>
+                </span>
+            </h2>
+            
+            <p class="text-xl text-center text-gray-300 mb-12 max-w-3xl mx-auto">
+                See how you stack up against the best math minds! Earn points by solving challenges, 
+                participating in contests, and maintaining your streak.
+            </p>
+            
+            <!-- Top 3 Winners Podium -->
+            <div class="flex flex-col md:flex-row justify-center items-end mb-16 space-y-8 md:space-y-0 md:space-x-8">
+                <!-- 2nd Place -->
+                <div class="flex flex-col items-center">
+                    <div class="relative mb-4">
+                        <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-white">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="2nd Place" class="w-full h-full object-cover">
+                        </div>
+                        <div class="absolute -bottom-3 -right-3 w-10 h-10 rounded-full trophy-silver flex items-center justify-center text-dark-900 font-bold">
+                            2
+                        </div>
+                    </div>
+                    <div class="dark-glass p-4 rounded-xl text-center w-full">
+                        <h3 class="font-bold text-xl text-white">Emma Wilson</h3>
+                        <p class="text-neon-blue font-mono">9,845 pts</p>
+                        <div class="flex items-center justify-center mt-2 space-x-1">
+                            <span class="text-neon-yellow">★</span>
+                            <span class="text-neon-yellow">★</span>
+                            <span class="text-neon-yellow">★</span>
+                            <span class="text-neon-yellow">★</span>
+                            <span class="text-neon-yellow">★</span>
+                            <span class="text-gray-400">★</span>
+                        </div>
+                    </div>
+                    <div class="h-32 w-4 bg-gradient-to-t from-gray-300 to-white rounded-t-lg mt-4"></div>
+                </div>
+                
+                <!-- 1st Place -->
+                <div class="flex flex-col items-center">
+                    <div class="relative mb-4">
+                        <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-white glow-yellow">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="1st Place" class="w-full h-full object-cover">
+                        </div>
+                        <div class="absolute -bottom-3 -right-3 w-12 h-12 rounded-full trophy-gold flex items-center justify-center text-dark-900 font-bold text-xl">
+                            1
+                        </div>
+                    </div>
+                    <div class="dark-glass p-6 rounded-xl text-center w-full relative overflow-hidden">
+                        <div class="absolute inset-0 shimmer"></div>
+                        <div class="relative z-10">
+                            <h3 class="font-bold text-2xl text-white">Alex Johnson</h3>
+                            <p class="text-neon-yellow font-mono text-xl">12,350 pts</p>
+                            <div class="flex items-center justify-center mt-2 space-x-1">
+                                <span class="text-neon-yellow">★</span>
+                                <span class="text-neon-yellow">★</span>
+                                <span class="text-neon-yellow">★</span>
+                                <span class="text-neon-yellow">★</span>
+                                <span class="text-neon-yellow">★</span>
+                            </div>
+                            <div class="mt-2 flex justify-center space-x-2">
+                                <span class="px-2 py-1 bg-neon-yellow/20 text-neon-yellow text-xs rounded-full">
+                                    Algebra Master
+                                </span>
+                                <span class="px-2 py-1 bg-neon-green/20 text-neon-green text-xs rounded-full">
+                                    30 Day Streak
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="h-48 w-6 bg-gradient-to-t from-yellow-500 to-yellow-300 rounded-t-lg mt-4 glow-yellow"></div>
+                </div>
+                
+                <!-- 3rd Place -->
+                <div class="flex flex-col items-center">
+                    <div class="relative mb-4">
+                        <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-white">
+                            <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="3rd Place" class="w-full h-full object-cover">
+                        </div>
+                        <div class="absolute -bottom-3 -right-3 w-10 h-10 rounded-full trophy-bronze flex items-center justify-center text-dark-900 font-bold">
+                            3
+                        </div>
+                    </div>
+                    <div class="dark-glass p-4 rounded-xl text-center w-full">
+                        <h3 class="font-bold text-xl text-white">Michael Chen</h3>
+                        <p class="text-neon-pink font-mono">8,720 pts</p>
+                        <div class="flex items-center justify-center mt-2 space-x-1">
+                            <span class="text-neon-yellow">★</span>
+                            <span class="text-neon-yellow">★</span>
+                            <span class="text-neon-yellow">★</span>
+                            <span class="text-neon-yellow">★</span>
+                            <span class="text-gray-400">★</span>
+                        </div>
+                    </div>
+                    <div class="h-24 w-4 bg-gradient-to-t from-amber-700 to-amber-500 rounded-t-lg mt-4"></div>
+                </div>
+            </div>
+            
+            <!-- Leaderboard Tabs and Filters -->
+            <div class="dark-glass rounded-t-xl p-4 mb-1 flex flex-col md:flex-row justify-between items-center">
+                <div class="flex space-x-4 mb-4 md:mb-0 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+                    <button class="px-4 py-2 rounded-lg tab-active border-neon-yellow text-neon-yellow">
+                        Global
+                    </button>
+                    <button class="px-4 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors">
+                        Friends
+                    </button>
+                    <button class="px-4 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors">
+                        Weekly
+                    </button>
+                    <button class="px-4 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors">
+                        Monthly
+                    </button>
+                </div>
+                
+                <div class="flex space-x-4 w-full md:w-auto">
+                    <div class="relative w-full md:w-auto">
+                        <select class="bg-dark-800 border border-gray-700 rounded-lg px-4 py-2 appearance-none pr-10 focus:outline-none focus:border-neon-green w-full">
+                            <option>All Categories</option>
+                            <option>Algebra</option>
+                            <option>Geometry</option>
+                            <option>Calculus</option>
+                            <option>Statistics</option>
+                            <option>Number Theory</option>
+                        </select>
+                        <div class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <div class="relative w-full md:w-auto">
+                        <input type="text" placeholder="Search players..." class="bg-dark-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-green w-full">
+                        <div class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Leaderboard Table -->
+            <div class="dark-glass rounded-b-xl overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-gray-700">
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-300">Rank</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-300">User</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-300">Level</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-300">Challenges</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-300">Accuracy</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-300">Streak</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-300">Points</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Row 4 -->
+                            <tr class="border-b border-gray-700/50 hover:bg-white/5 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <span class="w-8 h-8 rounded-full bg-dark-700 flex items-center justify-center text-sm font-semibold">4</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 rounded-full overflow-hidden">
+                                            <img src="https://randomuser.me/api/portraits/women/33.jpg" alt="User" class="w-full h-full object-cover">
+                                        </div>
+                                        <div>
+                                            <div class="font-medium">Sophia Rodriguez</div>
+                                            <div class="text-xs text-gray-400">Joined 8 months ago</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="w-8 h-8 rounded-full bg-neon-blue/20 text-neon-blue flex items-center justify-center font-bold">42</span>
+                                        <div class="w-24 h-2 progress-bar-bg">
+                                            <div class="progress-bar bg-neon-blue" style="width: 80%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="font-mono">247</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-neon-green">94%</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 bg-neon-pink/20 text-neon-pink text-xs rounded-full">
+                                        15 days
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 font-mono font-bold text-neon-green">
+                                    7,845
+                                </td>
+                            </tr>
+                            
+                            <!-- Row 5 -->
+                            <tr class="border-b border-gray-700/50 hover:bg-white/5 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <span class="w-8 h-8 rounded-full bg-dark-700 flex items-center justify-center text-sm font-semibold">5</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 rounded-full overflow-hidden">
+                                            <img src="https://randomuser.me/api/portraits/men/52.jpg" alt="User" class="w-full h-full object-cover">
+                                        </div>
+                                        <div>
+                                            <div class="font-medium">David Kim</div>
+                                            <div class="text-xs text-gray-400">Joined 1 year ago</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="w-8 h-8 rounded-full bg-neon-purple/20 text-neon-purple flex items-center justify-center font-bold">38</span>
+                                        <div class="w-24 h-2 progress-bar-bg">
+                                            <div class="progress-bar bg-neon-purple" style="width: 65%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="font-mono">215</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-neon-yellow">89%</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 bg-neon-green/20 text-neon-green text-xs rounded-full">
+                                        22 days
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 font-mono font-bold text-neon-blue">
+                                    7,210
+                                </td>
+                            </tr>
+                            
+                            <!-- Row 6 -->
+                            <tr class="border-b border-gray-700/50 hover:bg-white/5 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <span class="w-8 h-8 rounded-full bg-dark-700 flex items-center justify-center text-sm font-semibold">6</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 rounded-full overflow-hidden">
+                                            <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="User" class="w-full h-full object-cover">
+                                        </div>
+                                        <div>
+                                            <div class="font-medium">Olivia Taylor</div>
+                                            <div class="text-xs text-gray-400">Joined 5 months ago</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="w-8 h-8 rounded-full bg-neon-pink/20 text-neon-pink flex items-center justify-center font-bold">35</span>
+                                        <div class="w-24 h-2 progress-bar-bg">
+                                            <div class="progress-bar bg-neon-pink" style="width: 60%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="font-mono">198</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-neon-green">92%</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 bg-neon-blue/20 text-neon-blue text-xs rounded-full">
+                                        8 days
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 font-mono font-bold text-neon-yellow">
+                                    6,890
+                                </td>
+                            </tr>
+                            
+                            <!-- Row 7 -->
+                            <tr class="border-b border-gray-700/50 hover:bg-white/5 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <span class="w-8 h-8 rounded-full bg-dark-700 flex items-center justify-center text-sm font-semibold">7</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 rounded-full overflow-hidden">
+                                            <img src="https://randomuser.me/api/portraits/men/42.jpg" alt="User" class="w-full h-full object-cover">
+                                        </div>
+                                        <div>
+                                            <div class="font-medium">James Wilson</div>
+                                            <div class="text-xs text-gray-400">Joined 9 months ago</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="w-8 h-8 rounded-full bg-neon-green/20 text-neon-green flex items-center justify-center font-bold">31</span>
+                                        <div class="w-24 h-2 progress-bar-bg">
+                                            <div class="progress-bar bg-neon-green" style="width: 45%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="font-mono">176</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-neon-blue">87%</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 bg-neon-yellow/20 text-neon-yellow text-xs rounded-full">
+                                        12 days
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 font-mono font-bold text-neon-pink">
+                                    6,450
+                                </td>
+                            </tr>
+                            
+                            <!-- Row 8 -->
+                            <tr class="border-b border-gray-700/50 hover:bg-white/5 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <span class="w-8 h-8 rounded-full bg-dark-700 flex items-center justify-center text-sm font-semibold">8</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 rounded-full overflow-hidden">
+                                            <img src="https://randomuser.me/api/portraits/women/62.jpg" alt="User" class="w-full h-full object-cover">
+                                        </div>
+                                        <div>
+                                            <div class="font-medium">Ava Martinez</div>
+                                            <div class="text-xs text-gray-400">Joined 3 months ago</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="w-8 h-8 rounded-full bg-neon-yellow/20 text-neon-yellow flex items-center justify-center font-bold">29</span>
+                                        <div class="w-24 h-2 progress-bar-bg">
+                                            <div class="progress-bar bg-neon-yellow" style="width: 35%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="font-mono">154</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-neon-pink">90%</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 bg-neon-purple/20 text-neon-purple text-xs rounded-full">
+                                        5 days
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 font-mono font-bold text-neon-purple">
+                                    5,980
+                                </td>
+                            </tr>
+                            
+                            <!-- Your Position (Highlighted) -->
+                            <tr class="bg-neon-green/10 border-b border-neon-green/30 hover:bg-neon-green/15 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <span class="w-8 h-8 rounded-full bg-neon-green/30 flex items-center justify-center text-sm font-semibold text-neon-green">24</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-neon-green">
+                                            <img src="https://randomuser.me/api/portraits/men/85.jpg" alt="User" class="w-full h-full object-cover">
+                                        </div>
+                                        <div>
+                                            <div class="font-medium text-neon-green">You</div>
+                                            <div class="text-xs text-gray-400">Joined 2 months ago</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="w-8 h-8 rounded-full bg-neon-green/20 text-neon-green flex items-center justify-center font-bold">18</span>
+                                        <div class="w-24 h-2 progress-bar-bg">
+                                            <div class="progress-bar bg-neon-green" style="width: 75%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="font-mono">87</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-neon-green">85%</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 bg-neon-green/20 text-neon-green text-xs rounded-full">
+                                        3 days
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 font-mono font-bold text-neon-green">
+                                    2,450
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="p-4 flex justify-between items-center border-t border-gray-700/50">
+                    <div class="text-sm text-gray-400">
+                        Showing <span class="text-white">1-10</span> of <span class="text-white">156</span> players
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="w-10 h-10 rounded-lg bg-dark-700 flex items-center justify-center text-gray-400 hover:bg-dark-600 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <button class="w-10 h-10 rounded-lg bg-neon-green text-dark-900 font-medium flex items-center justify-center">1</button>
+                        <button class="w-10 h-10 rounded-lg bg-dark-700 hover:bg-dark-600 text-white font-medium flex items-center justify-center transition-colors">2</button>
+                        <button class="w-10 h-10 rounded-lg bg-dark-700 hover:bg-dark-600 text-white font-medium flex items-center justify-center transition-colors">3</button>
+                        <button class="w-10 h-10 rounded-lg bg-dark-700 hover:bg-dark-600 text-white font-medium flex items-center justify-center transition-colors">4</button>
+                        <button class="w-10 h-10 rounded-lg bg-dark-700 flex items-center justify-center text-gray-400 hover:bg-dark-600 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Achievement Badges Section -->
+            <div class="mt-16">
+                <h3 class="text-2xl font-bold mb-8 text-center">
+                    <span class="relative inline-block">
+                        <span class="text-gradient bg-gradient-to-r from-neon-pink to-neon-blue">Achievement Badges</span>
+                        <span class="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-neon-pink to-neon-blue rounded-full"></span>
+                    </span>
+                </h3>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    <!-- Badge 1 -->
+                    <div class="dark-glass p-4 rounded-xl text-center group hover:border-neon-green hover:border transition-all duration-300">
+                        <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-neon-green/20 flex items-center justify-center group-hover:glow">
+                            <span class="text-3xl text-neon-green">∑</span>
+                        </div>
+                        <h4 class="font-medium text-white mb-1">Algebra Master</h4>
+                        <p class="text-xs text-gray-400">Solve 50 algebra problems</p>
+                    </div>
+                    
+                    <!-- Badge 2 -->
+                    <div class="dark-glass p-4 rounded-xl text-center group hover:border-neon-blue hover:border transition-all duration-300">
+                        <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-neon-blue/20 flex items-center justify-center group-hover:glow-blue">
+                            <span class="text-3xl text-neon-blue">π</span>
+                        </div>
+                        <h4 class="font-medium text-white mb-1">Geometry Guru</h4>
+                        <p class="text-xs text-gray-400">Solve 50 geometry problems</p>
+                    </div>
+                    
+                    <!-- Badge 3 -->
+                    <div class="dark-glass p-4 rounded-xl text-center group hover:border-neon-pink hover:border transition-all duration-300">
+                        <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-neon-pink/20 flex items-center justify-center group-hover:glow-pink">
+                            <span class="text-3xl text-neon-pink">∫</span>
+                        </div>
+                        <h4 class="font-medium text-white mb-1">Calculus Wizard</h4>
+                        <p class="text-xs text-gray-400">Solve 50 calculus problems</p>
+                    </div>
+                    
+                    <!-- Badge 4 -->
+                    <div class="dark-glass p-4 rounded-xl text-center group hover:border-neon-yellow hover:border transition-all duration-300">
+                        <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-neon-yellow/20 flex items-center justify-center group-hover:glow-yellow">
+                            <span class="text-3xl text-neon-yellow">√</span>
+                        </div>
+                        <h4 class="font-medium text-white mb-1">Number Theorist</h4>
+                        <p class="text-xs text-gray-400">Solve 50 number theory problems</p>
+                    </div>
+                    
+                    <!-- Badge 5 -->
+                    <div class="dark-glass p-4 rounded-xl text-center group hover:border-neon-purple hover:border transition-all duration-300">
+                        <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-neon-purple/20 flex items-center justify-center group-hover:glow-purple">
+                            <span class="text-3xl text-neon-purple">Δ</span>
+                        </div>
+                        <h4 class="font-medium text-white mb-1">Statistics Star</h4>
+                        <p class="text-xs text-gray-400">Solve 50 statistics problems</p>
+                    </div>
+                    
+                    <!-- Badge 6 -->
+                    <div class="dark-glass p-4 rounded-xl text-center group hover:border-neon-green hover:border transition-all duration-300">
+                        <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-neon-green/20 flex items-center justify-center group-hover:glow">
+                            <span class="text-3xl text-neon-green">∞</span>
+                        </div>
+                        <h4 class="font-medium text-white mb-1">Math Legend</h4>
+                        <p class="text-xs text-gray-400">Earn all other badges</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative py-16 overflow-hidden">
+        <div class="absolute inset-0 bg-dark-900 z-0"></div>
+        <div class="absolute bottom-0 w-full h-1 bg-gradient-to-r from-neon-green via-neon-blue to-neon-pink"></div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-8 md:mb-0">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="relative w-12 h-12 flex items-center justify-center bg-neon-green rounded-lg glow transform rotate-12">
+                            <span class="text-dark-900 text-2xl font-bold font-mono transform -rotate-12">M</span>
+                        </div>
+                        <div class="text-2xl font-bold">
+                            <span class="text-neon-green">Math</span>
+                            <span class="text-white">Challenges</span>
+                            <span class="text-neon-pink">Squad</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-400">Making math fun and rewarding for everyone.</p>
+                </div>
+                
+                <div class="text-center md:text-right">
+                    <p class="text-gray-400">© 2024 Math Challenges Squad. All rights reserved.</p>
+                    <p class="text-gray-400 mt-2">Babu Banarasi Das University, Lucknow</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Mobile Menu Toggle -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Close mobile menu when clicking on a link
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+<<<<<<< HEAD:templates/update_leaderboard.html
+{% endblock content %}
+>>>>>>> 8500dd2621c954bafdd6805e555f94156f6392de:templates/update leaderboard.html

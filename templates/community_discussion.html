@@ -1,0 +1,1649 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+<title>Math Challenges Squad</title>
+{% endblock title %}
+
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community & Discussion | Math Challenges Squad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neon: {
+                            pink: '#FF2D95',
+                            blue: '#4D61FC',
+                            green: '#00F5A0',
+                            yellow: '#FFC700',
+                            purple: '#9C27B0',
+                        },
+                        dark: {
+                            900: '#0F172A',
+                            800: '#1E293B',
+                            700: '#334155',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        mono: ['Space Mono', 'monospace'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-slow': 'float 8s ease-in-out infinite',
+                        'float-fast': 'float 4s ease-in-out infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.2);
+            }
+            .text-shadow-glow {
+                text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .clip-path-slant {
+                clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            }
+            .clip-path-wave {
+                clip-path: polygon(0 0, 100% 0, 100% 95%, 50% 100%, 0 95%);
+            }
+            .math-bg {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M50 0v20h20V0H50zm0 20v20h20V20H50zm0-20H30v20h20V0zm0 40v20h20V40H50zm0 20v20h20V60H50zm0-20H30v20h20V40zm0 40H30v20h20V80zm-20 0H10v20h20V80zm0-20H10v20h20V60zm0-20H10v20h20V40zm0-20H10v20h20V20zm0-20H10v20h20V0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            }
+            .math-symbol::before {
+                content: "∑";
+                position: absolute;
+                font-size: 20rem;
+                opacity: 0.03;
+                top: -5rem;
+                left: -5rem;
+                transform: rotate(-15deg);
+                font-family: serif;
+            }
+            .math-symbol-pi::before {
+                content: "π";
+            }
+            .math-symbol-infinity::before {
+                content: "∞";
+            }
+            .math-symbol-sqrt::before {
+                content: "√";
+            }
+            .math-symbol-delta::before {
+                content: "Δ";
+            }
+            .math-symbol-integral::before {
+                content: "∫";
+            }
+            .glow {
+                box-shadow: 0 0 15px rgba(0, 245, 160, 0.5), 0 0 30px rgba(0, 245, 160, 0.3);
+            }
+            .glow-pink {
+                box-shadow: 0 0 15px rgba(255, 45, 149, 0.5), 0 0 30px rgba(255, 45, 149, 0.3);
+            }
+            .glow-blue {
+                box-shadow: 0 0 15px rgba(77, 97, 252, 0.5), 0 0 30px rgba(77, 97, 252, 0.3);
+            }
+            .glow-yellow {
+                box-shadow: 0 0 15px rgba(255, 199, 0, 0.5), 0 0 30px rgba(255, 199, 0, 0.3);
+            }
+            .glow-purple {
+                box-shadow: 0 0 15px rgba(156, 39, 176, 0.5), 0 0 30px rgba(156, 39, 176, 0.3);
+            }
+            .glass {
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            .dark-glass {
+                background: rgba(15, 23, 42, 0.966);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .timeline-line {
+                content: '';
+                position: absolute;
+                width: 6px;
+                background-color: theme('colors.neon.green');
+                top: 0;
+                bottom: 0;
+                left: 50%;
+                margin-left: -3px;
+                border-radius: 999px;
+            }
+            .grid-pattern {
+                background-size: 30px 30px;
+                background-image: 
+                    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            }
+            .form-input {
+                background: rgba(15, 23, 42, 0.5);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: white;
+                transition: all 0.3s ease;
+            }
+            .form-input:focus {
+                border-color: theme('colors.neon.green');
+                box-shadow: 0 0 0 2px rgba(0, 245, 160, 0.2);
+                outline: none;
+            }
+            .form-input::placeholder {
+                color: rgba(255, 255, 255, 0.4);
+            }
+            
+            /* Community & Discussion Background */
+            .community-bg {
+                background-image: url('https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2070&auto=format&fit=crop');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                position: relative;
+            }
+            .community-bg::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(to bottom right, 
+                    rgba(15, 23, 42, 0.95), 
+                    rgba(156, 39, 176, 0.3));
+                z-index: 0;
+            }
+            
+            /* Custom styles for community page */
+            .discussion-card {
+                transition: all 0.3s ease;
+                transform: translateY(0);
+            }
+            .discussion-card:hover {
+                transform: translateY(-5px);
+            }
+            
+            .category-algebra {
+                border-color: theme('colors.neon.green');
+            }
+            .category-geometry {
+                border-color: theme('colors.neon.blue');
+            }
+            .category-calculus {
+                border-color: theme('colors.neon.pink');
+            }
+            .category-statistics {
+                border-color: theme('colors.neon.yellow');
+            }
+            .category-number-theory {
+                border-color: theme('colors.neon.purple');
+            }
+            
+            .badge-algebra {
+                background-color: rgba(0, 245, 160, 0.2);
+                color: theme('colors.neon.green');
+            }
+            .badge-geometry {
+                background-color: rgba(77, 97, 252, 0.2);
+                color: theme('colors.neon.blue');
+            }
+            .badge-calculus {
+                background-color: rgba(255, 45, 149, 0.2);
+                color: theme('colors.neon.pink');
+            }
+            .badge-statistics {
+                background-color: rgba(255, 199, 0, 0.2);
+                color: theme('colors.neon.yellow');
+            }
+            .badge-number-theory {
+                background-color: rgba(156, 39, 176, 0.2);
+                color: theme('colors.neon.purple');
+            }
+            
+            .tab {
+                position: relative;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .tab::after {
+                content: '';
+                position: absolute;
+                bottom: -2px;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: currentColor;
+                transition: width 0.3s ease;
+            }
+            .tab:hover::after, .tab.active::after {
+                width: 100%;
+            }
+            
+            .reaction-button {
+                transition: all 0.3s ease;
+            }
+            .reaction-button:hover {
+                transform: scale(1.1);
+            }
+            
+            /* Animated math symbols */
+            .math-symbol-animated {
+                position: absolute;
+                font-size: 2rem;
+                opacity: 0;
+                animation: fadeInOut 4s ease-in-out infinite;
+            }
+            @keyframes fadeInOut {
+                0% { opacity: 0; transform: translateY(20px); }
+                50% { opacity: 0.7; transform: translateY(0); }
+                100% { opacity: 0; transform: translateY(-20px); }
+            }
+            
+            /* Custom scrollbar for thread content */
+            .thread-content::-webkit-scrollbar {
+                width: 6px;
+            }
+            .thread-content::-webkit-scrollbar-track {
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 10px;
+            }
+            .thread-content::-webkit-scrollbar-thumb {
+                background: rgba(0, 245, 160, 0.3);
+                border-radius: 10px;
+            }
+            .thread-content::-webkit-scrollbar-thumb:hover {
+                background: rgba(0, 245, 160, 0.5);
+            }
+            
+            /* Markdown editor styles */
+            .markdown-toolbar button {
+                transition: all 0.2s ease;
+            }
+            .markdown-toolbar button:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+            
+            /* Notification dot */
+            .notification-dot {
+                position: absolute;
+                top: -2px;
+                right: -2px;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background-color: theme('colors.neon.pink');
+                animation: pulse 2s infinite;
+            }
+            
+            /* User status indicators */
+            .status-online {
+                background-color: theme('colors.neon.green');
+            }
+            .status-away {
+                background-color: theme('colors.neon.yellow');
+            }
+            .status-offline {
+                background-color: rgba(255, 255, 255, 0.3);
+            }
+            
+            /* Tooltip styles */
+            .tooltip {
+                position: relative;
+            }
+            .tooltip .tooltip-text {
+                visibility: hidden;
+                width: auto;
+                min-width: 120px;
+                background-color: rgba(15, 23, 42, 0.9);
+                color: #fff;
+                text-align: center;
+                border-radius: 6px;
+                padding: 5px 10px;
+                position: absolute;
+                z-index: 1;
+                bottom: 125%;
+                left: 50%;
+                transform: translateX(-50%);
+                opacity: 0;
+                transition: opacity 0.3s;
+                white-space: nowrap;
+            }
+            .tooltip:hover .tooltip-text {
+                visibility: visible;
+                opacity: 1;
+            }
+            
+            /* Highlight for code blocks */
+            .code-block {
+                background-color: rgba(15, 23, 42, 0.5);
+                border-radius: 6px;
+                padding: 1rem;
+                margin: 1rem 0;
+                font-family: 'Space Mono', monospace;
+                overflow-x: auto;
+                border-left: 3px solid theme('colors.neon.blue');
+            }
+            
+            /* Math formula styling */
+            .math-formula {
+                background-color: rgba(15, 23, 42, 0.5);
+                border-radius: 6px;
+                padding: 1rem;
+                margin: 1rem 0;
+                font-family: serif;
+                text-align: center;
+                border-left: 3px solid theme('colors.neon.green');
+            }
+        }
+    </style>
+</head>
+<body class="font-sans bg-dark-900 text-white overflow-x-hidden">
+    <!-- Floating Math Symbols (Decorative) -->
+    <div class="fixed w-full h-full pointer-events-none z-0 opacity-30 overflow-hidden">
+        <div class="absolute text-6xl text-neon-pink animate-float-slow" style="top: 15%; left: 10%;">∑</div>
+        <div class="absolute text-6xl text-neon-blue animate-float" style="top: 30%; left: 85%;">π</div>
+        <div class="absolute text-6xl text-neon-green animate-float-fast" style="top: 70%; left: 20%;">∞</div>
+        <div class="absolute text-6xl text-neon-yellow animate-float-slow" style="top: 60%; left: 80%;">√</div>
+        <div class="absolute text-6xl text-neon-purple animate-float" style="top: 85%; left: 40%;">∫</div>
+        <div class="absolute text-6xl text-neon-pink animate-float-fast" style="top: 10%; left: 60%;">Δ</div>
+        <div class="absolute text-6xl text-neon-blue animate-float-slow" style="top: 45%; left: 5%;">±</div>
+        <div class="absolute text-6xl text-neon-green animate-float" style="top: 25%; left: 30%;">÷</div>
+        <div class="absolute text-6xl text-neon-yellow animate-float-fast" style="top: 75%; left: 70%;">×</div>
+    </div>
+
+    <!-- Grid Background -->
+    <div class="fixed inset-0 grid-pattern opacity-30 z-0"></div>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 glass">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="relative w-12 h-12 flex items-center justify-center bg-neon-green rounded-lg glow transform rotate-12">
+                        <span class="text-dark-900 text-2xl font-bold font-mono transform -rotate-12">M</span>
+                    </div>
+                    <div class="text-2xl font-bold">
+                        <span class="text-neon-green">Math</span>
+                        <span class="text-white">Challenges</span>
+                        <span class="text-neon-pink">Squad</span>
+                    </div>
+                </div>
+                <nav class="hidden md:block">
+                    <ul class="flex space-x-8">
+                        <li><a href="#" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Home
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            About
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Features
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Modules
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#" class="text-neon-purple transition-colors duration-300 relative group">
+                            Community
+                            <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-neon-purple"></span>
+                        </a></li>
+                        <li><a href="#" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Contact
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#" class="hover:text-neon-pink transition-colors duration-300 relative group">
+                            Login
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-pink transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                    </ul>
+                </nav>
+                <div class="md:hidden">
+                    <button class="text-white focus:outline-none" id="mobile-menu-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div class="md:hidden hidden mt-4 p-4 dark-glass rounded-xl" id="mobile-menu">
+                <ul class="space-y-4">
+                    <li><a href="#" class="block py-2 hover:text-neon-green transition-colors duration-300">Home</a></li>
+                    <li><a href="#" class="block py-2 hover:text-neon-green transition-colors duration-300">About</a></li>
+                    <li><a href="#" class="block py-2 hover:text-neon-green transition-colors duration-300">Features</a></li>
+                    <li><a href="#" class="block py-2 hover:text-neon-green transition-colors duration-300">Modules</a></li>
+                    <li><a href="#" class="block py-2 text-neon-purple transition-colors duration-300">Community</a></li>
+                    <li><a href="#" class="block py-2 hover:text-neon-green transition-colors duration-300">Contact</a></li>
+                    <li><a href="#" class="block py-2 hover:text-neon-pink transition-colors duration-300">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Community Hero Section -->
+    <section class="relative py-20 community-bg">
+        <div class="absolute inset-0 z-0 math-symbol math-symbol-infinity"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-5xl md:text-6xl font-bold mb-6">
+                    <span class="text-gradient bg-gradient-to-r from-neon-purple to-neon-pink">Community</span>
+                    <span class="text-white"> & </span>
+                    <span class="text-gradient bg-gradient-to-r from-neon-pink to-neon-blue">Discussion</span>
+                </h1>
+                <p class="text-xl text-gray-300 mb-10">Connect with fellow math enthusiasts, share your solutions, ask questions, and collaborate on challenging problems.</p>
+                
+                <!-- User Stats Card -->
+                <div class="dark-glass p-6 rounded-2xl border border-neon-purple/30 max-w-3xl mx-auto mb-10">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="text-center">
+                            <p class="text-gray-400 text-sm mb-1">Your Posts</p>
+                            <p class="text-3xl font-bold text-neon-purple">12</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-gray-400 text-sm mb-1">Replies</p>
+                            <p class="text-3xl font-bold text-neon-pink">36</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-gray-400 text-sm mb-1">Reputation</p>
+                            <p class="text-3xl font-bold text-neon-blue">248</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-gray-400 text-sm mb-1">Badges</p>
+                            <p class="text-3xl font-bold text-neon-green">5</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Search and Filter Controls -->
+                <div class="flex flex-col md:flex-row justify-center gap-4 mb-12">
+                    <div class="dark-glass p-2 rounded-full flex-grow max-w-xl">
+                        <div class="flex items-center">
+                            <input type="text" placeholder="Search discussions..." class="bg-transparent border-none outline-none text-white px-4 py-2 w-full" />
+                            <button class="bg-neon-purple text-white px-6 py-2 rounded-full hover:bg-neon-purple/80 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <button class="px-4 py-2 dark-glass rounded-full flex items-center space-x-1 hover:border-neon-purple/50 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neon-purple" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                            </svg>
+                            <span>Filter</span>
+                        </button>
+                        <button class="px-4 py-2 dark-glass rounded-full flex items-center space-x-1 hover:border-neon-blue/50 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neon-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                            </svg>
+                            <span>Sort</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Create New Discussion Button -->
+                <button class="px-8 py-3 bg-neon-purple text-white font-bold rounded-lg glow-purple hover:bg-white hover:text-neon-purple transition-all duration-300 mb-8">
+                    <div class="flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        <span>Start New Discussion</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Navigation Tabs -->
+    <section class="bg-dark-900 py-6 border-b border-dark-700">
+        <div class="container mx-auto px-4">
+            <div class="flex overflow-x-auto hide-scrollbar space-x-8 justify-center">
+                <button class="tab active px-4 py-2 text-neon-purple font-medium">All Discussions</button>
+                <button class="tab px-4 py-2 text-white font-medium hover:text-neon-purple transition-colors">Popular</button>
+                <button class="tab px-4 py-2 text-white font-medium hover:text-neon-purple transition-colors">Recent</button>
+                <button class="tab px-4 py-2 text-white font-medium hover:text-neon-purple transition-colors">Unanswered</button>
+                <button class="tab px-4 py-2 text-white font-medium hover:text-neon-purple transition-colors">My Discussions</button>
+                <button class="tab px-4 py-2 text-white font-medium hover:text-neon-purple transition-colors">Bookmarked</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <section class="py-12 bg-dark-900">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Left Sidebar - Categories -->
+                <div class="lg:w-1/4">
+                    <div class="dark-glass p-6 rounded-2xl border border-neon-purple/30 sticky top-24">
+                        <h3 class="text-xl font-semibold mb-6 text-neon-purple">Categories</h3>
+                        
+                        <ul class="space-y-3">
+                            <li>
+                                <a href="#" class="flex items-center justify-between p-3 rounded-lg hover:bg-dark-800 transition-colors group">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 rounded-full bg-neon-green mr-3"></div>
+                                        <span class="group-hover:text-neon-green transition-colors">Algebra</span>
+                                    </div>
+                                    <span class="bg-dark-700 text-xs rounded-full px-2 py-1">42</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center justify-between p-3 rounded-lg hover:bg-dark-800 transition-colors group">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 rounded-full bg-neon-blue mr-3"></div>
+                                        <span class="group-hover:text-neon-blue transition-colors">Geometry</span>
+                                    </div>
+                                    <span class="bg-dark-700 text-xs rounded-full px-2 py-1">38</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center justify-between p-3 rounded-lg hover:bg-dark-800 transition-colors group">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 rounded-full bg-neon-pink mr-3"></div>
+                                        <span class="group-hover:text-neon-pink transition-colors">Calculus</span>
+                                    </div>
+                                    <span class="bg-dark-700 text-xs rounded-full px-2 py-1">29</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center justify-between p-3 rounded-lg hover:bg-dark-800 transition-colors group">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 rounded-full bg-neon-yellow mr-3"></div>
+                                        <span class="group-hover:text-neon-yellow transition-colors">Statistics</span>
+                                    </div>
+                                    <span class="bg-dark-700 text-xs rounded-full px-2 py-1">24</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center justify-between p-3 rounded-lg hover:bg-dark-800 transition-colors group">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 rounded-full bg-neon-purple mr-3"></div>
+                                        <span class="group-hover:text-neon-purple transition-colors">Number Theory</span>
+                                    </div>
+                                    <span class="bg-dark-700 text-xs rounded-full px-2 py-1">18</span>
+                                </a>
+                            </li>
+                        </ul>
+                        
+                        <div class="mt-8">
+                            <h3 class="text-xl font-semibold mb-4 text-neon-purple">Popular Tags</h3>
+                            <div class="flex flex-wrap gap-2">
+                                <a href="#" class="px-3 py-1 bg-dark-700 rounded-full text-sm hover:bg-neon-green/20 hover:text-neon-green transition-colors">#quadratic</a>
+                                <a href="#" class="px-3 py-1 bg-dark-700 rounded-full text-sm hover:bg-neon-blue/20 hover:text-neon-blue transition-colors">#triangles</a>
+                                <a href="#" class="px-3 py-1 bg-dark-700 rounded-full text-sm hover:bg-neon-pink/20 hover:text-neon-pink transition-colors">#derivatives</a>
+                                <a href="#" class="px-3 py-1 bg-dark-700 rounded-full text-sm hover:bg-neon-yellow/20 hover:text-neon-yellow transition-colors">#probability</a>
+                                <a href="#" class="px-3 py-1 bg-dark-700 rounded-full text-sm hover:bg-neon-purple/20 hover:text-neon-purple transition-colors">#primes</a>
+                                <a href="#" class="px-3 py-1 bg-dark-700 rounded-full text-sm hover:bg-neon-green/20 hover:text-neon-green transition-colors">#functions</a>
+                                <a href="#" class="px-3 py-1 bg-dark-700 rounded-full text-sm hover:bg-neon-blue/20 hover:text-neon-blue transition-colors">#pythagoras</a>
+                                <a href="#" class="px-3 py-1 bg-dark-700 rounded-full text-sm hover:bg-neon-pink/20 hover:text-neon-pink transition-colors">#integrals</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Content - Discussion List -->
+                <div class="lg:w-2/4">
+                    <!-- Discussion Cards -->
+                    <div class="space-y-6">
+                        <!-- Discussion Card 1 - Pinned -->
+                        <div class="discussion-card dark-glass p-6 rounded-2xl border-l-4 border-neon-purple relative overflow-hidden">
+                            <!-- Pinned Indicator -->
+                            <div class="absolute top-0 right-0">
+                                <div class="bg-neon-purple text-dark-900 text-xs px-3 py-1 rounded-bl-lg">Pinned</div>
+                            </div>
+                            
+                            <div class="flex items-start gap-4">
+                                <!-- User Avatar -->
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-neon-purple to-neon-pink flex items-center justify-center text-white font-bold text-lg">
+                                        JD
+                                    </div>
+                                </div>
+                                
+                                <!-- Content -->
+                                <div class="flex-grow">
+                                    <div class="flex flex-wrap gap-2 mb-2">
+                                        <span class="inline-block px-2 py-1 badge-calculus text-xs font-medium rounded-full">Calculus</span>
+                                        <span class="inline-block px-2 py-1 bg-neon-purple/20 text-neon-purple text-xs font-medium rounded-full">Featured</span>
+                                    </div>
+                                    
+                                    <h3 class="text-xl font-semibold mb-2 text-white hover:text-neon-purple transition-colors">
+                                        <a href="#">Welcome to the Math Challenges Squad Community!</a>
+                                    </h3>
+                                    
+                                    <p class="text-gray-400 mb-4 line-clamp-2">
+                                        Hello everyone! This is a space for all math enthusiasts to connect, share ideas, and help each other solve challenging problems. Please read our community guidelines before posting.
+                                    </p>
+                                    
+                                    <div class="flex flex-wrap items-center justify-between">
+                                        <div class="flex items-center text-sm text-gray-400">
+                                            <span class="mr-4">By <a href="#" class="text-neon-purple hover:underline">Jane Doe</a></span>
+                                            <span>2 days ago</span>
+                                        </div>
+                                        
+                                        <div class="flex items-center space-x-4 text-sm">
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neon-green mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                                                </svg>
+                                                <span>24 replies</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neon-pink mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                                <span>1.2k views</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Discussion Card 2 -->
+                        <div class="discussion-card dark-glass p-6 rounded-2xl border-l-4 category-calculus">
+                            <div class="flex items-start gap-4">
+                                <!-- User Avatar -->
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-neon-blue to-neon-green flex items-center justify-center text-white font-bold text-lg relative">
+                                        AM
+                                        <div class="absolute bottom-0 right-0 w-3 h-3 rounded-full status-online border-2 border-dark-900"></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Content -->
+                                <div class="flex-grow">
+                                    <div class="flex flex-wrap gap-2 mb-2">
+                                        <span class="inline-block px-2 py-1 badge-calculus text-xs font-medium rounded-full">Calculus</span>
+                                        <span class="inline-block px-2 py-1 bg-dark-700 text-gray-300 text-xs font-medium rounded-full">Hot</span>
+                                    </div>
+                                    
+                                    <h3 class="text-xl font-semibold mb-2 text-white hover:text-neon-pink transition-colors">
+                                        <a href="#">Struggling with this complex integration problem</a>
+                                    </h3>
+                                    
+                                    <p class="text-gray-400 mb-4 line-clamp-2">
+                                        I've been trying to solve this integration by parts but keep getting stuck. Can someone help me understand where I'm going wrong? The problem is to integrate x²e^x with respect to x.
+                                    </p>
+                                    
+                                    <div class="flex flex-wrap items-center justify-between">
+                                        <div class="flex items-center text-sm text-gray-400">
+                                            <span class="mr-4">By <a href="#" class="text-neon-blue hover:underline">Alex Morgan</a></span>
+                                            <span>5 hours ago</span>
+                                        </div>
+                                        
+                                        <div class="flex items-center space-x-4 text-sm">
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neon-green mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                                                </svg>
+                                                <span>12 replies</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neon-pink mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                                <span>342 views</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Discussion Card 3 -->
+                        <div class="discussion-card dark-glass p-6 rounded-2xl border-l-4 category-geometry">
+                            <div class="flex items-start gap-4">
+                                <!-- User Avatar -->
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-neon-yellow to-neon-green flex items-center justify-center text-white font-bold text-lg relative">
+                                        RS
+                                        <div class="absolute bottom-0 right-0 w-3 h-3 rounded-full status-away border-2 border-dark-900"></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Content -->
+                                <div class="flex-grow">
+                                    <div class="flex flex-wrap gap-2 mb-2">
+                                        <span class="inline-block px-2 py-1 badge-geometry text-xs font-medium rounded-full">Geometry</span>
+                                    </div>
+                                    
+                                    <h3 class="text-xl font-semibold mb-2 text-white hover:text-neon-blue transition-colors">
+                                        <a href="#">Elegant solution to the triangle area problem</a>
+                                    </h3>
+                                    
+                                    <p class="text-gray-400 mb-4 line-clamp-2">
+                                        I found a really elegant way to solve the triangle area challenge from last week's contest. Instead of using the standard formula, I applied Heron's formula and it simplified everything!
+                                    </p>
+                                    
+                                    <div class="flex flex-wrap items-center justify-between">
+                                        <div class="flex items-center text-sm text-gray-400">
+                                            <span class="mr-4">By <a href="#" class="text-neon-yellow hover:underline">Ryan Smith</a></span>
+                                            <span>Yesterday</span>
+                                        </div>
+                                        
+                                        <div class="flex items-center space-x-4 text-sm">
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neon-green mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                                                </svg>
+                                                <span>8 replies</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neon-pink mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                                <span>215 views</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Discussion Card 4 -->
+                        <div class="discussion-card dark-glass p-6 rounded-2xl border-l-4 category-algebra">
+                            <div class="flex items-start gap-4">
+                                <!-- User Avatar -->
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-neon-green to-neon-blue flex items-center justify-center text-white font-bold text-lg">
+                                        LP
+                                    </div>
+                                </div>
+                                
+                                <!-- Content -->
+                                <div class="flex-grow">
+                                    <div class="flex flex-wrap gap-2 mb-2">
+                                        <span class="inline-block px-2 py-1 badge-algebra text-xs font-medium rounded-full">Algebra</span>
+                                        <span class="inline-block px-2 py-1 bg-dark-700 text-gray-300 text-xs font-medium rounded-full">Solved</span>
+                                    </div>
+                                    
+                                    <h3 class="text-xl font-semibold mb-2 text-white hover:text-neon-green transition-colors">
+                                        <a href="#">Quadratic equation with complex roots</a>
+                                    </h3>
+                                    
+                                    <p class="text-gray-400 mb-4 line-clamp-2">
+                                        I was working on a problem that led to a quadratic equation with complex roots. I'm curious if there's a geometric interpretation of complex roots in the context of this problem.
+                                    </p>
+                                    
+                                    <div class="flex flex-wrap items-center justify-between">
+                                        <div class="flex items-center text-sm text-gray-400">
+                                            <span class="mr-4">By <a href="#" class="text-neon-green hover:underline">Lisa Park</a></span>
+                                            <span>3 days ago</span>
+                                        </div>
+                                        
+                                        <div class="flex items-center space-x-4 text-sm">
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neon-green mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                                                </svg>
+                                                <span>15 replies</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neon-pink mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                                <span>289 views</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Discussion Card 5 -->
+                        <div class="discussion-card dark-glass p-6 rounded-2xl border-l-4 category-statistics">
+                            <div class="flex items-start gap-4">
+                                <!-- User Avatar -->
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-neon-yellow to-neon-pink flex items-center justify-center text-white font-bold text-lg">
+                                        MJ
+                                    </div>
+                                </div>
+                                
+                                <!-- Content -->
+                                <div class="flex-grow">
+                                    <div class="flex flex-wrap gap-2 mb-2">
+                                        <span class="inline-block px-2 py-1 badge-statistics text-xs font-medium rounded-full">Statistics</span>
+                                        <span class="inline-block px-2 py-1 bg-dark-700 text-gray-300 text-xs font-medium rounded-full">Needs Help</span>
+                                    </div>
+                                    
+                                    <h3 class="text-xl font-semibold mb-2 text-white hover:text-neon-yellow transition-colors">
+                                        <a href="#">Understanding Bayesian probability in real-world scenarios</a>
+                                    </h3>
+                                    
+                                    <p class="text-gray-400 mb-4 line-clamp-2">
+                                        I'm trying to apply Bayesian probability to a real-world problem, but I'm having trouble setting up the prior and posterior probabilities correctly. Any statisticians here who can help?
+                                    </p>
+                                    
+                                    <div class="flex flex-wrap items-center justify-between">
+                                        <div class="flex items-center text-sm text-gray-400">
+                                            <span class="mr-4">By <a href="#" class="text-neon-yellow hover:underline">Mike Johnson</a></span>
+                                            <span>4 days ago</span>
+                                        </div>
+                                        
+                                        <div class="flex items-center space-x-4 text-sm">
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neon-green mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                                                </svg>
+                                                <span>6 replies</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neon-pink mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                                <span>178 views</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="mt-10 flex justify-center">
+                        <div class="dark-glass rounded-full p-1 flex">
+                            <button class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </button>
+                            <button class="w-10 h-10 rounded-full flex items-center justify-center bg-neon-purple text-white">1</button>
+                            <button class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-dark-700">2</button>
+                            <button class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-dark-700">3</button>
+                            <button class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-dark-700">4</button>
+                            <button class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-dark-700">5</button>
+                            <button class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Sidebar - Active Users & Stats -->
+                <div class="lg:w-1/4">
+                    <div class="dark-glass p-6 rounded-2xl border border-neon-purple/30 sticky top-24">
+                        <h3 class="text-xl font-semibold mb-6 text-neon-purple">Active Members</h3>
+                        
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-neon-blue to-neon-green flex items-center justify-center text-white font-bold text-sm relative">
+                                    AM
+                                    <div class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full status-online border-2 border-dark-900"></div>
+                                </div>
+                                <div>
+                                    <p class="text-white font-medium">Alex Morgan</p>
+                                    <p class="text-xs text-gray-400">Calculus Expert</p>
+                                </div>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-neon-yellow to-neon-green flex items-center justify-center text-white font-bold text-sm relative">
+                                    RS
+                                    <div class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full status-away border-2 border-dark-900"></div>
+                                </div>
+                                <div>
+                                    <p class="text-white font-medium">Ryan Smith</p>
+                                    <p class="text-xs text-gray-400">Geometry Enthusiast</p>
+                                </div>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-neon-pink to-neon-purple flex items-center justify-center text-white font-bold text-sm relative">
+                                    JD
+                                    <div class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full status-offline border-2 border-dark-900"></div>
+                                </div>
+                                <div>
+                                    <p class="text-white font-medium">Jane Doe</p>
+                                    <p class="text-xs text-gray-400">Community Moderator</p>
+                                </div>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-neon-green to-neon-blue flex items-center justify-center text-white font-bold text-sm relative">
+                                    LP
+                                    <div class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full status-online border-2 border-dark-900"></div>
+                                </div>
+                                <div>
+                                    <p class="text-white font-medium">Lisa Park</p>
+                                    <p class="text-xs text-gray-400">Algebra Specialist</p>
+                                </div>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-neon-yellow to-neon-pink flex items-center justify-center text-white font-bold text-sm relative">
+                                    MJ
+                                    <div class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full status-away border-2 border-dark-900"></div>
+                                </div>
+                                <div>
+                                    <p class="text-white font-medium">Mike Johnson</p>
+                                    <p class="text-xs text-gray-400">Statistics Guru</p>
+                                </div>
+                            </li>
+                        </ul>
+                        
+                        <h3 class="text-xl font-semibold mb-4 text-neon-purple">Community Stats</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-gray-400 text-sm">Total Discussions</span>
+                                    <span class="text-neon-purple">152</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill bg-neon-purple" style="width: 75%;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-gray-400 text-sm">Active Members</span>
+                                    <span class="text-neon-blue">87</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill bg-neon-blue" style="width: 60%;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-gray-400 text-sm">Problems Solved</span>
+                                    <span class="text-neon-green">324</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill bg-neon-green" style="width: 85%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8">
+                            <h3 class="text-xl font-semibold mb-4 text-neon-purple">Upcoming Events</h3>
+                            <div class="space-y-4">
+                                <div class="p-3 bg-dark-800 rounded-lg">
+                                    <p class="text-neon-green font-medium">Weekly Problem Solving</p>
+                                    <p class="text-sm text-gray-400">Tomorrow, 7:00 PM</p>
+                                </div>
+                                <div class="p-3 bg-dark-800 rounded-lg">
+                                    <p class="text-neon-pink font-medium">Math Olympiad Prep</p>
+                                    <p class="text-sm text-gray-400">Saturday, 10:00 AM</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Thread View Modal (Hidden by default) -->
+    <div id="thread-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-dark-900/80 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="dark-glass w-full max-w-4xl max-h-[90vh] rounded-2xl border border-neon-purple/30 overflow-hidden">
+                <!-- Modal Header -->
+                <div class="p-6 border-b border-dark-700">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="flex flex-wrap gap-2 mb-2">
+                                <span class="inline-block px-2 py-1 badge-calculus text-xs font-medium rounded-full">Calculus</span>
+                                <span class="inline-block px-2 py-1 bg-dark-700 text-gray-300 text-xs font-medium rounded-full">Hot</span>
+                            </div>
+                            <h2 class="text-2xl font-bold text-white">Struggling with this complex integration problem</h2>
+                        </div>
+                        <button id="close-modal" class="text-gray-400 hover:text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Thread Content -->
+                <div class="thread-content overflow-y-auto p-6 max-h-[calc(90vh-200px)]">
+                    <!-- Original Post -->
+                    <div class="mb-8 pb-8 border-b border-dark-700">
+                        <div class="flex items-start gap-4">
+                            <!-- User Avatar -->
+                            <div class="flex-shrink-0">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-neon-blue to-neon-green flex items-center justify-center text-white font-bold text-lg relative">
+                                    AM
+                                    <div class="absolute bottom-0 right-0 w-3 h-3 rounded-full status-online border-2 border-dark-900"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Content -->
+                            <div class="flex-grow">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div>
+                                        <span class="font-medium text-neon-blue">Alex Morgan</span>
+                                        <span class="text-gray-400 text-sm ml-2">5 hours ago</span>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="tooltip p-1 hover:bg-dark-700 rounded">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                            </svg>
+                                            <span class="tooltip-text">Bookmark</span>
+                                        </button>
+                                        <button class="tooltip p-1 hover:bg-dark-700 rounded">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                            </svg>
+                                            <span class="tooltip-text">Share</span>
+                                        </button>
+                                        <button class="tooltip p-1 hover:bg-dark-700 rounded">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                            </svg>
+                                            <span class="tooltip-text">More</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-gray-300 mb-6">
+                                    <p class="mb-4">
+                                        I've been trying to solve this integration by parts but keep getting stuck. Can someone help me understand where I'm going wrong? The problem is to integrate x²e^x with respect to x.
+                                    </p>
+                                    <p class="mb-4">
+                                        Here's my attempt:
+                                    </p>
+                                    <div class="math-formula">
+                                        ∫ x²e^x dx
+                                    </div>
+                                    <p class="mb-4">
+                                        Using integration by parts with u = x² and dv = e^x dx:
+                                    </p>
+                                    <div class="math-formula">
+                                        ∫ u dv = uv - ∫ v du<br>
+                                        u = x²<br>
+                                        dv = e^x dx<br>
+                                        du = 2x dx<br>
+                                        v = e^x
+                                    </div>
+                                    <p class="mb-4">
+                                        So I get:
+                                    </p>
+                                    <div class="math-formula">
+                                        ∫ x²e^x dx = x²e^x - ∫ 2xe^x dx
+                                    </div>
+                                    <p>
+                                        But now I'm stuck with another integral that still has x in it. I tried integration by parts again but I'm getting confused with the recursive nature of the solution.
+                                    </p>
+                                </div>
+                                
+                                <div class="flex items-center space-x-6">
+                                    <button class="reaction-button flex items-center space-x-1 text-gray-400 hover:text-neon-green">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                                        </svg>
+                                        <span>18</span>
+                                    </button>
+                                    <button class="reaction-button flex items-center space-x-1 text-gray-400 hover:text-neon-pink">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2" />
+                                        </svg>
+                                        <span>2</span>
+                                    </button>
+                                    <button class="reaction-button flex items-center space-x-1 text-gray-400 hover:text-neon-blue">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                        </svg>
+                                        <span>Reply</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Replies -->
+                    <div class="space-y-8">
+                        <!-- Reply 1 -->
+                        <div class="flex items-start gap-4">
+                            <!-- User Avatar -->
+                            <div class="flex-shrink-0">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-neon-green to-neon-blue flex items-center justify-center text-white font-bold text-lg relative">
+                                    LP
+                                    <div class="absolute bottom-0 right-0 w-3 h-3 rounded-full status-online border-2 border-dark-900"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Content -->
+                            <div class="flex-grow">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div>
+                                        <span class="font-medium text-neon-green">Lisa Park</span>
+                                        <span class="text-gray-400 text-sm ml-2">4 hours ago</span>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="tooltip p-1 hover:bg-dark-700 rounded">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                            </svg>
+                                            <span class="tooltip-text">More</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-gray-300 mb-6">
+                                    <p class="mb-4">
+                                        You're on the right track with integration by parts! For these types of problems, you often need to apply integration by parts multiple times.
+                                    </p>
+                                    <p class="mb-4">
+                                        Let's continue from where you left off:
+                                    </p>
+                                    <div class="math-formula">
+                                        ∫ x²e^x dx = x²e^x - ∫ 2xe^x dx
+                                    </div>
+                                    <p class="mb-4">
+                                        Now we need to evaluate ∫ 2xe^x dx. Let's use integration by parts again:
+                                    </p>
+                                    <div class="math-formula">
+                                        u = 2x<br>
+                                        dv = e^x dx<br>
+                                        du = 2 dx<br>
+                                        v = e^x
+                                    </div>
+                                    <p class="mb-4">
+                                        This gives us:
+                                    </p>
+                                    <div class="math-formula">
+                                        ∫ 2xe^x dx = 2xe^x - ∫ 2e^x dx = 2xe^x - 2e^x + C
+                                    </div>
+                                    <p class="mb-4">
+                                        Substituting back:
+                                    </p>
+                                    <div class="math-formula">
+                                        ∫ x²e^x dx = x²e^x - (2xe^x - 2e^x) + C<br>
+                                        = x²e^x - 2xe^x + 2e^x + C<br>
+                                        = e^x(x² - 2x + 2) + C
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center space-x-6">
+                                    <button class="reaction-button flex items-center space-x-1 text-neon-green">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                                        </svg>
+                                        <span>24</span>
+                                    </button>
+                                    <button class="reaction-button flex items-center space-x-1 text-gray-400 hover:text-neon-pink">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2" />
+                                        </svg>
+                                        <span>0</span>
+                                    </button>
+                                    <button class="reaction-button flex items-center space-x-1 text-gray-400 hover:text-neon-blue">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                        </svg>
+                                        <span>Reply</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Reply 2 -->
+                        <div class="flex items-start gap-4 pl-12">
+                            <!-- User Avatar -->
+                            <div class="flex-shrink-0">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-neon-blue to-neon-green flex items-center justify-center text-white font-bold text-lg relative">
+                                    AM
+                                    <div class="absolute bottom-0 right-0 w-3 h-3 rounded-full status-online border-2 border-dark-900"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Content -->
+                            <div class="flex-grow">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div>
+                                        <span class="font-medium text-neon-blue">Alex Morgan</span>
+                                        <span class="text-gray-400 text-sm ml-2">3 hours ago</span>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="tooltip p-1 hover:bg-dark-700 rounded">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                            </svg>
+                                            <span class="tooltip-text">More</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-gray-300 mb-6">
+                                    <p class="mb-4">
+                                        Thank you so much, Lisa! That makes perfect sense now. I was getting confused with the recursive nature of the integration by parts, but I see how you need to apply it twice and then substitute back.
+                                    </p>
+                                    <p>
+                                        I'll try to apply this technique to similar problems. Really appreciate the clear explanation!
+                                    </p>
+                                </div>
+                                
+                                <div class="flex items-center space-x-6">
+                                    <button class="reaction-button flex items-center space-x-1 text-gray-400 hover:text-neon-green">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                                        </svg>
+                                        <span>8</span>
+                                    </button>
+                                    <button class="reaction-button flex items-center space-x-1 text-gray-400 hover:text-neon-pink">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2" />
+                                        </svg>
+                                        <span>0</span>
+                                    </button>
+                                    <button class="reaction-button flex items-center space-x-1 text-gray-400 hover:text-neon-blue">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                        </svg>
+                                        <span>Reply</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Reply 3 -->
+                        <div class="flex items-start gap-4">
+                            <!-- User Avatar -->
+                            <div class="flex-shrink-0">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-neon-yellow to-neon-green flex items-center justify-center text-white font-bold text-lg relative">
+                                    RS
+                                    <div class="absolute bottom-0 right-0 w-3 h-3 rounded-full status-away border-2 border-dark-900"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Content -->
+                            <div class="flex-grow">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div>
+                                        <span class="font-medium text-neon-yellow">Ryan Smith</span>
+                                        <span class="text-gray-400 text-sm ml-2">2 hours ago</span>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="tooltip p-1 hover:bg-dark-700 rounded">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                            </svg>
+                                            <span class="tooltip-text">More</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-gray-300 mb-6">
+                                    <p class="mb-4">
+                                        Just to add a little insight - there's actually a pattern here that's worth recognizing for future problems. When you're integrating x^n * e^x, you'll always get a result of the form:
+                                    </p>
+                                    <div class="math-formula">
+                                        ∫ x^n e^x dx = e^x (x^n - nx^(n-1) + n(n-1)x^(n-2) - ... + (-1)^n n!)
+                                    </div>
+                                    <p class="mb-4">
+                                        This pattern comes from the repeated application of integration by parts. Once you recognize it, you can directly write the answer for these types of integrals without having to go through all the steps each time.
+                                    </p>
+                                    <p>
+                                        For your specific problem with n=2, the formula gives us e^x(x² - 2x + 2), which matches Lisa's solution.
+                                    </p>
+                                </div>
+                                
+                                <div class="flex items-center space-x-6">
+                                    <button class="reaction-button flex items-center space-x-1 text-gray-400 hover:text-neon-green">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                                        </svg>
+                                        <span>12</span>
+                                    </button>
+                                    <button class="reaction-button flex items-center space-x-1 text-gray-400 hover:text-neon-pink">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2" />
+                                        </svg>
+                                        <span>0</span>
+                                    </button>
+                                    <button class="reaction-button flex items-center space-x-1 text-gray-400 hover:text-neon-blue">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                        </svg>
+                                        <span>Reply</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reply Form -->
+                <div class="p-6 border-t border-dark-700">
+                    <h3 class="text-lg font-semibold mb-4 text-white">Add Your Reply</h3>
+                    
+                    <!-- Markdown Toolbar -->
+                    <div class="flex flex-wrap gap-2 mb-4 markdown-toolbar">
+                        <button class="p-2 rounded hover:bg-dark-700 text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                            </svg>
+                        </button>
+                        <button class="p-2 rounded hover:bg-dark-700 text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </button>
+                        <button class="p-2 rounded hover:bg-dark-700 text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                            </svg>
+                        </button>
+                        <button class="p-2 rounded hover:bg-dark-700 text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </button>
+                        <button class="p-2 rounded hover:bg-dark-700 text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                            </svg>
+                        </button>
+                        <button class="p-2 rounded hover:bg-dark-700 text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <textarea class="w-full p-4 rounded-lg form-input min-h-[120px] mb-4" placeholder="Write your reply here... You can use Markdown for formatting."></textarea>
+                    
+                    <div class="flex justify-end">
+                        <button class="px-6 py-3 bg-neon-purple text-white font-bold rounded-lg glow-purple hover:bg-white hover:text-neon-purple transition-all duration-300">
+                            Post Reply
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Discussion Modal (Hidden by default) -->
+    <div id="new-discussion-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-dark-900/80 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="dark-glass w-full max-w-3xl max-h-[90vh] rounded-2xl border border-neon-purple/30 overflow-hidden">
+                <!-- Modal Header -->
+                <div class="p-6 border-b border-dark-700">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold text-neon-purple">Start New Discussion</h2>
+                        <button id="close-new-discussion-modal" class="text-gray-400 hover:text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Form Content -->
+                <div class="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
+                    <form class="space-y-6">
+                        <div>
+                            <label for="discussion-title" class="block text-white mb-2">Title</label>
+                            <input type="text" id="discussion-title" class="w-full px-4 py-3 rounded-lg form-input" placeholder="Enter a descriptive title for your discussion">
+                        </div>
+                        
+                        <div>
+                            <label for="discussion-category" class="block text-white mb-2">Category</label>
+                            <select id="discussion-category" class="w-full px-4 py-3 rounded-lg form-input">
+                                <option value="">Select a category</option>
+                                <option value="algebra">Algebra</option>
+                                <option value="geometry">Geometry</option>
+                                <option value="calculus">Calculus</option>
+                                <option value="statistics">Statistics</option>
+                                <option value="number-theory">Number Theory</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="discussion-tags" class="block text-white mb-2">Tags (comma separated)</label>
+                            <input type="text" id="discussion-tags" class="w-full px-4 py-3 rounded-lg form-input" placeholder="E.g., quadratic, equations, polynomials">
+                        </div>
+                        
+                        <div>
+                            <label for="discussion-content" class="block text-white mb-2">Content</label>
+                            
+                            <!-- Markdown Toolbar -->
+                            <div class="flex flex-wrap gap-2 mb-4 markdown-toolbar">
+                                <button type="button" class="p-2 rounded hover:bg-dark-700 text-gray-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                                    </svg>
+                                </button>
+                                <button type="button" class="p-2 rounded hover:bg-dark-700 text-gray-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                </button>
+                                <button type="button" class="p-2 rounded hover:bg-dark-700 text-gray-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                                    </svg>
+                                </button>
+                                <button type="button" class="p-2 rounded hover:bg-dark-700 text-gray-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </button>
+                                <button type="button" class="p-2 rounded hover:bg-dark-700 text-gray-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                                    </svg>
+                                </button>
+                                <button type="button" class="p-2 rounded hover:bg-dark-700 text-gray-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            <textarea id="discussion-content" class="w-full p-4 rounded-lg form-input min-h-[200px]" placeholder="Describe your question or topic in detail. You can use Markdown for formatting."></textarea>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="checkbox" id="notify-replies" class="mr-2">
+                            <label for="notify-replies" class="text-gray-300">Notify me when someone replies</label>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Form Actions -->
+                <div class="p-6 border-t border-dark-700 flex justify-end space-x-4">
+                    <button id="cancel-discussion" class="px-6 py-3 bg-dark-700 text-gray-300 rounded-lg hover:bg-dark-800 transition-colors">
+                        Cancel
+                    </button>
+                    <button id="post-discussion" class="px-6 py-3 bg-neon-purple text-white font-bold rounded-lg glow-purple hover:bg-white hover:text-neon-purple transition-all duration-300">
+                        Post Discussion
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="relative py-16 overflow-hidden">
+        <div class="absolute inset-0 bg-dark-900 z-0"></div>
+        <div class="absolute bottom-0 w-full h-1 bg-gradient-to-r from-neon-green via-neon-blue to-neon-pink"></div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-8 md:mb-0">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="relative w-12 h-12 flex items-center justify-center bg-neon-green rounded-lg glow transform rotate-12">
+                            <span class="text-dark-900 text-2xl font-bold font-mono transform -rotate-12">M</span>
+                        </div>
+                        <div class="text-2xl font-bold">
+                            <span class="text-neon-green">Math</span>
+                            <span class="text-white">Challenges</span>
+                            <span class="text-neon-pink">Squad</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-400">Making math fun and rewarding for everyone.</p>
+                </div>
+                
+                <div class="text-center md:text-right">
+                    <p class="text-gray-400">© 2024 Math Challenges Squad. All rights reserved.</p>
+                    <p class="text-gray-400 mt-2">Babu Banarasi Das University, Lucknow</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Menu Toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Close mobile menu when clicking on a link
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+            
+            // Thread Modal Toggle
+            const discussionCards = document.querySelectorAll('.discussion-card');
+            const threadModal = document.getElementById('thread-modal');
+            const closeModal = document.getElementById('close-modal');
+            
+            discussionCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Only open modal if clicking on the card itself or its children, not on buttons
+                    if (!e.target.closest('button')) {
+                        threadModal.classList.remove('hidden');
+                        document.body.style.overflow = 'hidden';
+                    }
+                });
+            });
+            
+            if (closeModal) {
+                closeModal.addEventListener('click', function() {
+                    threadModal.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+            
+            // New Discussion Modal Toggle
+            const newDiscussionButton = document.querySelector('button:contains("Start New Discussion")');
+            const newDiscussionModal = document.getElementById('new-discussion-modal');
+            const closeNewDiscussionModal = document.getElementById('close-new-discussion-modal');
+            const cancelDiscussion = document.getElementById('cancel-discussion');
+            
+            if (newDiscussionButton) {
+                newDiscussionButton.addEventListener('click', function() {
+                    newDiscussionModal.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+            
+            if (closeNewDiscussionModal) {
+                closeNewDiscussionModal.addEventListener('click', function() {
+                    newDiscussionModal.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+            
+            if (cancelDiscussion) {
+                cancelDiscussion.addEventListener('click', function() {
+                    newDiscussionModal.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+            
+            // Helper function for querySelector with :contains
+            if (!Element.prototype.matches) {
+                Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+            }
+            
+            if (!Element.prototype.closest) {
+                Element.prototype.closest = function(s) {
+                    var el = this;
+                    do {
+                        if (el.matches(s)) return el;
+                        el = el.parentElement || el.parentNode;
+                    } while (el !== null && el.nodeType === 1);
+                    return null;
+                };
+            }
+            
+            // Polyfill for :contains selector
+            document.querySelectorAll = document.querySelectorAll || function(selector) {
+                if (selector.includes(':contains')) {
+                    const [elementSelector, textSelector] = selector.split(':contains');
+                    const text = textSelector.replace(/['"()]/g, '');
+                    const elements = Array.from(document.querySelectorAll(elementSelector));
+                    return elements.filter(el => el.textContent.includes(text));
+                }
+                return document.querySelectorAll(selector);
+            };
+            
+            // Animated Math Symbols
+            function createMathSymbols() {
+                const container = document.querySelector('.community-bg');
+                const symbols = ['∑', 'π', '∞', '√', '∫', 'Δ', '±', '÷', '×'];
+                const colors = ['text-neon-green', 'text-neon-blue', 'text-neon-pink', 'text-neon-yellow', 'text-neon-purple'];
+                
+                for (let i = 0; i < 15; i++) {
+                    const symbol = document.createElement('div');
+                    symbol.classList.add('math-symbol-animated');
+                    symbol.classList.add(colors[Math.floor(Math.random() * colors.length)]);
+                    symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                    
+                    // Random position
+                    symbol.style.left = `${Math.random() * 100}%`;
+                    symbol.style.top = `${Math.random() * 100}%`;
+                    
+                    // Random delay
+                    symbol.style.animationDelay = `${Math.random() * 5}s`;
+                    
+                    container.appendChild(symbol);
+                }
+            }
+            
+            if (document.querySelector('.community-bg')) {
+                createMathSymbols();
+            }
+        });
+    </script>
+</body>
+</html>
+{% endblock content %}

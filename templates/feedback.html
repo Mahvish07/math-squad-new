@@ -1,0 +1,698 @@
+{% extends 'layout.html' %}
+
+
+{% block title %}
+<title>Math Challenges Squad</title>
+{% endblock title %}
+
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instant Feedback - Math Challenges Squad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neon: {
+                            pink: '#FF2D95',
+                            blue: '#4D61FC',
+                            green: '#00F5A0',
+                            yellow: '#FFC700',
+                            purple: '#9C27B0',
+                        },
+                        dark: {
+                            900: '#0F172A',
+                            800: '#1E293B',
+                            700: '#334155',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        mono: ['Space Mono', 'monospace'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-slow': 'float 8s ease-in-out infinite',
+                        'float-fast': 'float 4s ease-in-out infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.2);
+            }
+            .text-shadow-glow {
+                text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .clip-path-slant {
+                clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            }
+            .clip-path-wave {
+                clip-path: polygon(0 0, 100% 0, 100% 95%, 50% 100%, 0 95%);
+            }
+            .math-bg {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M50 0v20h20V0H50zm0 20v20h20V20H50zm0-20H30v20h20V0zm0 40v20h20V40H50zm0 20v20h20V60H50zm0-20H30v20h20V40zm0 40H30v20h20V80zm-20 0H10v20h20V80zm0-20H10v20h20V60zm0-20H10v20h20V40zm0-20H10v20h20V20zm0-20H10v20h20V0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            }
+            .math-symbol::before {
+                content: "∑";
+                position: absolute;
+                font-size: 20rem;
+                opacity: 0.03;
+                top: -5rem;
+                left: -5rem;
+                transform: rotate(-15deg);
+                font-family: serif;
+            }
+            .math-symbol-pi::before {
+                content: "π";
+            }
+            .math-symbol-infinity::before {
+                content: "∞";
+            }
+            .math-symbol-sqrt::before {
+                content: "√";
+            }
+            .math-symbol-delta::before {
+                content: "Δ";
+            }
+            .math-symbol-integral::before {
+                content: "∫";
+            }
+            .glow {
+                box-shadow: 0 0 15px rgba(0, 245, 160, 0.5), 0 0 30px rgba(0, 245, 160, 0.3);
+            }
+            .glow-pink {
+                box-shadow: 0 0 15px rgba(255, 45, 149, 0.5), 0 0 30px rgba(255, 45, 149, 0.3);
+            }
+            .glow-blue {
+                box-shadow: 0 0 15px rgba(77, 97, 252, 0.5), 0 0 30px rgba(77, 97, 252, 0.3);
+            }
+            .glow-yellow {
+                box-shadow: 0 0 15px rgba(255, 199, 0, 0.5), 0 0 30px rgba(255, 199, 0, 0.3);
+            }
+            .glow-purple {
+                box-shadow: 0 0 15px rgba(156, 39, 176, 0.5), 0 0 30px rgba(156, 39, 176, 0.3);
+            }
+            .glass {
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            .dark-glass {
+                background: rgba(15, 23, 42, 0.966);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .timeline-line {
+                content: '';
+                position: absolute;
+                width: 6px;
+                background-color: theme('colors.neon.green');
+                top: 0;
+                bottom: 0;
+                left: 50%;
+                margin-left: -3px;
+                border-radius: 999px;
+            }
+            .grid-pattern {
+                background-size: 30px 30px;
+                background-image: 
+                    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            }
+            .form-input {
+                background: rgba(15, 23, 42, 0.5);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: white;
+                transition: all 0.3s ease;
+            }
+            .form-input:focus {
+                border-color: theme('colors.neon.green');
+                box-shadow: 0 0 0 2px rgba(0, 245, 160, 0.2);
+                outline: none;
+            }
+            .form-input::placeholder {
+                color: rgba(255, 255, 255, 0.4);
+            }
+            
+            /* Feedback Background Style */
+            .feedback-bg {
+                background-image: url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2070&auto=format&fit=crop');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                position: relative;
+            }
+            .feedback-bg::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(to bottom right, rgba(15, 23, 42, 0.9), rgba(0, 245, 160, 0.2));
+                z-index: 0;
+            }
+            
+            /* Correct and Incorrect Styles */
+            .correct-answer {
+                border-color: theme('colors.neon.green');
+                background-color: rgba(0, 245, 160, 0.1);
+            }
+            
+            .incorrect-answer {
+                border-color: theme('colors.neon.pink');
+                background-color: rgba(255, 45, 149, 0.1);
+            }
+            
+            .feedback-icon {
+                position: absolute;
+                right: 1rem;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            
+            .math-input {
+                font-family: 'Space Mono', monospace;
+            }
+            
+            .solution-step {
+                position: relative;
+                padding-left: 2.5rem;
+            }
+            
+            .solution-step::before {
+                content: '';
+                position: absolute;
+                left: 0.75rem;
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                background: linear-gradient(to bottom, theme('colors.neon.blue'), theme('colors.neon.green'));
+            }
+            
+            .solution-step::after {
+                content: '';
+                position: absolute;
+                left: 0.5rem;
+                top: 0.75rem;
+                width: 1rem;
+                height: 1rem;
+                border-radius: 50%;
+                background-color: theme('colors.neon.blue');
+            }
+            
+            .solution-step:last-child::before {
+                height: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans bg-dark-900 text-white overflow-x-hidden">
+    <!-- Floating Math Symbols (Decorative) -->
+    <div class="fixed w-full h-full pointer-events-none z-0 opacity-30 overflow-hidden">
+        <div class="absolute text-6xl text-neon-pink animate-float-slow" style="top: 15%; left: 10%;">∑</div>
+        <div class="absolute text-6xl text-neon-blue animate-float" style="top: 30%; left: 85%;">π</div>
+        <div class="absolute text-6xl text-neon-green animate-float-fast" style="top: 70%; left: 20%;">∞</div>
+        <div class="absolute text-6xl text-neon-yellow animate-float-slow" style="top: 60%; left: 80%;">√</div>
+        <div class="absolute text-6xl text-neon-purple animate-float" style="top: 85%; left: 40%;">∫</div>
+        <div class="absolute text-6xl text-neon-pink animate-float-fast" style="top: 10%; left: 60%;">Δ</div>
+        <div class="absolute text-6xl text-neon-blue animate-float-slow" style="top: 45%; left: 5%;">±</div>
+        <div class="absolute text-6xl text-neon-green animate-float" style="top: 25%; left: 30%;">÷</div>
+        <div class="absolute text-6xl text-neon-yellow animate-float-fast" style="top: 75%; left: 70%;">×</div>
+    </div>
+
+    <!-- Grid Background -->
+    <div class="fixed inset-0 grid-pattern opacity-30 z-0"></div>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 glass">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="relative w-12 h-12 flex items-center justify-center bg-neon-green rounded-lg glow transform rotate-12">
+                        <span class="text-dark-900 text-2xl font-bold font-mono transform -rotate-12">M</span>
+                    </div>
+                    <div class="text-2xl font-bold">
+                        <span class="text-neon-green">Math</span>
+                        <span class="text-white">Challenges</span>
+                        <span class="text-neon-pink">Squad</span>
+                    </div>
+                </div>
+                <nav class="hidden md:block">
+                    <ul class="flex space-x-8">
+                        <li><a href="index.html#home" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Home
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="index.html#about" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            About
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="index.html#features" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Features
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="index.html#modules" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Modules
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="instant-feedback.html" class="text-neon-green transition-colors duration-300 relative group">
+                            Instant Feedback
+                            <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-neon-green"></span>
+                        </a></li>
+                        <li><a href="index.html#contact" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Contact
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="index.html#login" class="hover:text-neon-pink transition-colors duration-300 relative group">
+                            Login
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-pink transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="index.html#signup" class="hover:text-neon-blue transition-colors duration-300 relative group">
+                            Sign Up
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-blue transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                    </ul>
+                </nav>
+                <div class="md:hidden">
+                    <button class="text-white focus:outline-none" id="mobile-menu-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div class="md:hidden hidden mt-4 p-4 dark-glass rounded-xl" id="mobile-menu">
+                <ul class="space-y-4">
+                    <li><a href="index.html#home" class="block py-2 hover:text-neon-green transition-colors duration-300">Home</a></li>
+                    <li><a href="index.html#about" class="block py-2 hover:text-neon-green transition-colors duration-300">About</a></li>
+                    <li><a href="index.html#features" class="block py-2 hover:text-neon-green transition-colors duration-300">Features</a></li>
+                    <li><a href="index.html#modules" class="block py-2 hover:text-neon-green transition-colors duration-300">Modules</a></li>
+                    <li><a href="instant-feedback.html" class="block py-2 text-neon-green transition-colors duration-300">Instant Feedback</a></li>
+                    <li><a href="index.html#contact" class="block py-2 hover:text-neon-green transition-colors duration-300">Contact</a></li>
+                    <li><a href="index.html#login" class="block py-2 hover:text-neon-pink transition-colors duration-300">Login</a></li>
+                    <li><a href="index.html#signup" class="block py-2 hover:text-neon-blue transition-colors duration-300">Sign Up</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Instant Feedback Hero Section -->
+    <section class="relative py-20 overflow-hidden feedback-bg">
+        <div class="absolute inset-0 z-0 math-symbol math-symbol-infinity"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-5xl md:text-6xl font-bold mb-6">
+                    <span class="text-gradient bg-gradient-to-r from-neon-green to-neon-blue">Instant Feedback</span>
+                </h1>
+                <p class="text-xl text-gray-300 mb-8">Get immediate insights on your math solutions and learn from your mistakes in real-time.</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="#practice" class="px-8 py-4 bg-neon-green text-dark-900 font-bold rounded-full glow transition-all duration-300 hover:bg-white hover:text-dark-900">
+                        Start Practicing
+                    </a>
+                    <a href="#how-it-works" class="px-8 py-4 bg-transparent border-2 border-neon-blue text-neon-blue font-bold rounded-full hover:bg-neon-blue hover:text-dark-900 hover:glow-blue transition-all duration-300">
+                        How It Works
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="relative py-20 overflow-hidden">
+        <div class="absolute inset-0 z-0 math-symbol math-symbol-delta"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <h2 class="text-4xl font-bold mb-16 text-center">
+                <span class="relative inline-block">
+                    <span class="text-gradient bg-gradient-to-r from-neon-blue to-neon-pink">How It Works</span>
+                    <span class="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-neon-blue to-neon-pink rounded-full"></span>
+                </span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Step 1 -->
+                <div class="group relative dark-glass p-8 rounded-2xl border border-neon-blue/30 hover:border-neon-blue transition-all duration-300 overflow-hidden">
+                    <div class="absolute -right-16 -top-16 w-32 h-32 bg-neon-blue/10 rounded-full group-hover:bg-neon-blue/20 transition-all duration-300"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 rounded-xl bg-neon-blue/20 flex items-center justify-center text-neon-blue mb-6 group-hover:bg-neon-blue group-hover:text-dark-900 transition-all duration-300">
+                            <span class="text-3xl font-bold">1</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3 text-white group-hover:text-neon-blue transition-colors duration-300">Solve Problems</h3>
+                        <p class="text-gray-400">Choose from various math topics and difficulty levels, then solve the problems at your own pace.</p>
+                    </div>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="group relative dark-glass p-8 rounded-2xl border border-neon-green/30 hover:border-neon-green transition-all duration-300 overflow-hidden">
+                    <div class="absolute -right-16 -top-16 w-32 h-32 bg-neon-green/10 rounded-full group-hover:bg-neon-green/20 transition-all duration-300"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 rounded-xl bg-neon-green/20 flex items-center justify-center text-neon-green mb-6 group-hover:bg-neon-green group-hover:text-dark-900 transition-all duration-300">
+                            <span class="text-3xl font-bold">2</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3 text-white group-hover:text-neon-green transition-colors duration-300">Get Instant Feedback</h3>
+                        <p class="text-gray-400">Receive immediate feedback on your answers, highlighting what you got right and where you made mistakes.</p>
+                    </div>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="group relative dark-glass p-8 rounded-2xl border border-neon-pink/30 hover:border-neon-pink transition-all duration-300 overflow-hidden">
+                    <div class="absolute -right-16 -top-16 w-32 h-32 bg-neon-pink/10 rounded-full group-hover:bg-neon-pink/20 transition-all duration-300"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 rounded-xl bg-neon-pink/20 flex items-center justify-center text-neon-pink mb-6 group-hover:bg-neon-pink group-hover:text-dark-900 transition-all duration-300">
+                            <span class="text-3xl font-bold">3</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3 text-white group-hover:text-neon-pink transition-colors duration-300">Learn & Improve</h3>
+                        <p class="text-gray-400">Study the detailed step-by-step solutions and explanations to understand concepts better and avoid similar mistakes.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Practice Section -->
+    <section id="practice" class="relative py-20 overflow-hidden">
+        <div class="absolute inset-0 z-0 math-symbol math-symbol-sqrt"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <h2 class="text-4xl font-bold mb-16 text-center">
+                <span class="relative inline-block">
+                    <span class="text-gradient bg-gradient-to-r from-neon-green to-neon-yellow">Practice Now</span>
+                    <span class="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-neon-green to-neon-yellow rounded-full"></span>
+                </span>
+            </h2>
+            
+            <div class="max-w-4xl mx-auto">
+                <!-- Topic Selection -->
+                <div class="dark-glass p-8 rounded-2xl border border-neon-blue/30 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6 text-neon-blue">Choose a Topic</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        <button class="topic-btn p-4 rounded-xl border border-neon-green/50 bg-neon-green/10 text-neon-green hover:bg-neon-green hover:text-dark-900 transition-all duration-300 active">Algebra</button>
+                        <button class="topic-btn p-4 rounded-xl border border-neon-blue/50 bg-neon-blue/10 text-neon-blue hover:bg-neon-blue hover:text-dark-900 transition-all duration-300">Geometry</button>
+                        <button class="topic-btn p-4 rounded-xl border border-neon-pink/50 bg-neon-pink/10 text-neon-pink hover:bg-neon-pink hover:text-dark-900 transition-all duration-300">Calculus</button>
+                        <button class="topic-btn p-4 rounded-xl border border-neon-yellow/50 bg-neon-yellow/10 text-neon-yellow hover:bg-neon-yellow hover:text-dark-900 transition-all duration-300">Trigonometry</button>
+                        <button class="topic-btn p-4 rounded-xl border border-neon-purple/50 bg-neon-purple/10 text-neon-purple hover:bg-neon-purple hover:text-dark-900 transition-all duration-300">Statistics</button>
+                        <button class="topic-btn p-4 rounded-xl border border-neon-green/50 bg-neon-green/10 text-neon-green hover:bg-neon-green hover:text-dark-900 transition-all duration-300">Number Theory</button>
+                    </div>
+                </div>
+                
+                <!-- Difficulty Selection -->
+                <div class="dark-glass p-8 rounded-2xl border border-neon-yellow/30 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6 text-neon-yellow">Select Difficulty</h3>
+                    
+                    <div class="flex flex-wrap gap-4">
+                        <button class="difficulty-btn px-6 py-3 rounded-full border border-neon-green/50 bg-neon-green/10 text-neon-green hover:bg-neon-green hover:text-dark-900 transition-all duration-300 active">Beginner</button>
+                        <button class="difficulty-btn px-6 py-3 rounded-full border border-neon-yellow/50 bg-neon-yellow/10 text-neon-yellow hover:bg-neon-yellow hover:text-dark-900 transition-all duration-300">Intermediate</button>
+                        <button class="difficulty-btn px-6 py-3 rounded-full border border-neon-pink/50 bg-neon-pink/10 text-neon-pink hover:bg-neon-pink hover:text-dark-900 transition-all duration-300">Advanced</button>
+                        <button class="difficulty-btn px-6 py-3 rounded-full border border-neon-purple/50 bg-neon-purple/10 text-neon-purple hover:bg-neon-purple hover:text-dark-900 transition-all duration-300">Expert</button>
+                    </div>
+                </div>
+                
+                <!-- Problem Card -->
+                <div class="dark-glass p-8 rounded-2xl border border-neon-green/30 mb-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl font-semibold text-neon-green">Problem #1</h3>
+                        <div class="px-4 py-2 rounded-full bg-neon-green/20 text-neon-green text-sm">Algebra - Beginner</div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <p class="text-xl text-white mb-4">Solve for x: 2x + 5 = 13</p>
+                        <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                            <input type="text" id="answer-input" class="math-input px-4 py-3 rounded-lg form-input w-full sm:w-auto" placeholder="Enter your answer">
+                            <button id="check-answer" class="px-6 py-3 bg-neon-blue text-white font-bold rounded-lg glow-blue hover:bg-white hover:text-neon-blue transition-all duration-300">
+                                Check Answer
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Feedback Area (Initially Hidden) -->
+                    <div id="feedback-area" class="mt-8 hidden">
+                        <!-- Correct Answer Feedback -->
+                        <div id="correct-feedback" class="p-6 rounded-xl border-2 correct-answer relative mb-6 hidden">
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 rounded-full bg-neon-green/20 flex items-center justify-center text-neon-green mr-4 flex-shrink-0">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-semibold text-neon-green mb-2">Correct!</h4>
+                                    <p class="text-gray-300">Great job! Your answer x = 4 is correct.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Incorrect Answer Feedback -->
+                        <div id="incorrect-feedback" class="p-6 rounded-xl border-2 incorrect-answer relative mb-6">
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 rounded-full bg-neon-pink/20 flex items-center justify-center text-neon-pink mr-4 flex-shrink-0">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-semibold text-neon-pink mb-2">Not quite right</h4>
+                                    <p class="text-gray-300">Your answer "3" is incorrect. Let's see how to solve this problem.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Step by Step Solution -->
+                        <div class="p-6 rounded-xl border border-neon-blue/30 bg-dark-800/50">
+                            <h4 class="text-xl font-semibold text-neon-blue mb-4">Step-by-Step Solution</h4>
+                            
+                            <div class="space-y-6">
+                                <div class="solution-step pl-8 pb-6">
+                                    <h5 class="text-lg font-medium text-white mb-2">Step 1: Understand the equation</h5>
+                                    <p class="text-gray-300">We have the equation: 2x + 5 = 13</p>
+                                </div>
+                                
+                                <div class="solution-step pl-8 pb-6">
+                                    <h5 class="text-lg font-medium text-white mb-2">Step 2: Isolate the variable term</h5>
+                                    <p class="text-gray-300">Subtract 5 from both sides:</p>
+                                    <p class="text-gray-300">2x + 5 - 5 = 13 - 5</p>
+                                    <p class="text-gray-300">2x = 8</p>
+                                </div>
+                                
+                                <div class="solution-step pl-8 pb-6">
+                                    <h5 class="text-lg font-medium text-white mb-2">Step 3: Solve for x</h5>
+                                    <p class="text-gray-300">Divide both sides by 2:</p>
+                                    <p class="text-gray-300">2x ÷ 2 = 8 ÷ 2</p>
+                                    <p class="text-gray-300">x = 4</p>
+                                </div>
+                                
+                                <div class="solution-step pl-8">
+                                    <h5 class="text-lg font-medium text-white mb-2">Step 4: Verify your answer</h5>
+                                    <p class="text-gray-300">Substitute x = 4 back into the original equation:</p>
+                                    <p class="text-gray-300">2(4) + 5 = 8 + 5 = 13 ✓</p>
+                                    <p class="text-neon-green font-medium mt-2">Therefore, x = 4 is the correct answer.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Navigation Buttons -->
+                <div class="flex justify-between">
+                    <button class="px-6 py-3 bg-transparent border-2 border-neon-blue text-neon-blue font-bold rounded-lg hover:bg-neon-blue hover:text-dark-900 hover:glow-blue transition-all duration-300 opacity-50 cursor-not-allowed">
+                        Previous Problem
+                    </button>
+                    <button class="px-6 py-3 bg-neon-green text-dark-900 font-bold rounded-lg glow hover:bg-white hover:text-dark-900 transition-all duration-300">
+                        Next Problem
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="relative py-20 overflow-hidden">
+        <div class="absolute inset-0 z-0 math-symbol math-symbol-integral"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <h2 class="text-4xl font-bold mb-16 text-center">
+                <span class="relative inline-block">
+                    <span class="text-gradient bg-gradient-to-r from-neon-pink to-neon-purple">Benefits of Instant Feedback</span>
+                    <span class="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-neon-pink to-neon-purple rounded-full"></span>
+                </span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Benefit 1 -->
+                <div class="group relative dark-glass p-8 rounded-2xl border border-neon-green/30 hover:border-neon-green transition-all duration-300 overflow-hidden">
+                    <div class="absolute -right-16 -top-16 w-32 h-32 bg-neon-green/10 rounded-full group-hover:bg-neon-green/20 transition-all duration-300"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 rounded-xl bg-neon-green/20 flex items-center justify-center text-neon-green mb-6 group-hover:bg-neon-green group-hover:text-dark-900 transition-all duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3 text-white group-hover:text-neon-green transition-colors duration-300">Accelerated Learning</h3>
+                        <p class="text-gray-400">Immediate feedback helps you learn faster by addressing misconceptions right away, rather than reinforcing incorrect methods.</p>
+                    </div>
+                </div>
+                
+                <!-- Benefit 2 -->
+                <div class="group relative dark-glass p-8 rounded-2xl border border-neon-blue/30 hover:border-neon-blue transition-all duration-300 overflow-hidden">
+                    <div class="absolute -right-16 -top-16 w-32 h-32 bg-neon-blue/10 rounded-full group-hover:bg-neon-blue/20 transition-all duration-300"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 rounded-xl bg-neon-blue/20 flex items-center justify-center text-neon-blue mb-6 group-hover:bg-neon-blue group-hover:text-dark-900 transition-all duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3 text-white group-hover:text-neon-blue transition-colors duration-300">Builds Confidence</h3>
+                        <p class="text-gray-400">Seeing your progress and understanding where you went wrong builds confidence in your mathematical abilities.</p>
+                    </div>
+                </div>
+                
+                <!-- Benefit 3 -->
+                <div class="group relative dark-glass p-8 rounded-2xl border border-neon-pink/30 hover:border-neon-pink transition-all duration-300 overflow-hidden">
+                    <div class="absolute -right-16 -top-16 w-32 h-32 bg-neon-pink/10 rounded-full group-hover:bg-neon-pink/20 transition-all duration-300"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 rounded-xl bg-neon-pink/20 flex items-center justify-center text-neon-pink mb-6 group-hover:bg-neon-pink group-hover:text-dark-900 transition-all duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3 text-white group-hover:text-neon-pink transition-colors duration-300">Personalized Learning</h3>
+                        <p class="text-gray-400">Detailed explanations tailored to your specific mistakes help you understand concepts in a way that makes sense to you.</p>
+                    </div>
+                </div>
+                
+                <!-- Benefit 4 -->
+                <div class="group relative dark-glass p-8 rounded-2xl border border-neon-yellow/30 hover:border-neon-yellow transition-all duration-300 overflow-hidden">
+                    <div class="absolute -right-16 -top-16 w-32 h-32 bg-neon-yellow/10 rounded-full group-hover:bg-neon-yellow/20 transition-all duration-300"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 rounded-xl bg-neon-yellow/20 flex items-center justify-center text-neon-yellow mb-6 group-hover:bg-neon-yellow group-hover:text-dark-900 transition-all duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3 text-white group-hover:text-neon-yellow transition-colors duration-300">Track Your Progress</h3>
+                        <p class="text-gray-400">Monitor your improvement over time with detailed statistics on your performance across different topics and difficulty levels.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative py-16 overflow-hidden">
+        <div class="absolute inset-0 bg-dark-900 z-0"></div>
+        <div class="absolute bottom-0 w-full h-1 bg-gradient-to-r from-neon-green via-neon-blue to-neon-pink"></div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-8 md:mb-0">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="relative w-12 h-12 flex items-center justify-center bg-neon-green rounded-lg glow transform rotate-12">
+                            <span class="text-dark-900 text-2xl font-bold font-mono transform -rotate-12">M</span>
+                        </div>
+                        <div class="text-2xl font-bold">
+                            <span class="text-neon-green">Math</span>
+                            <span class="text-white">Challenges</span>
+                            <span class="text-neon-pink">Squad</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-400">Making math fun and rewarding for everyone.</p>
+                </div>
+                
+                <div class="text-center md:text-right">
+                    <p class="text-gray-400">© 2024 Math Challenges Squad. All rights reserved.</p>
+                    <p class="text-gray-400 mt-2">Babu Banarasi Das University, Lucknow</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Mobile Menu Toggle and Instant Feedback -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Menu Toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Close mobile menu when clicking on a link
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+            
+            // Topic Selection
+            const topicButtons = document.querySelectorAll('.topic-btn');
+            topicButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    topicButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Difficulty Selection
+            const difficultyButtons = document.querySelectorAll('.difficulty-btn');
+            difficultyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    difficultyButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Check Answer
+            const checkAnswerButton = document.getElementById('check-answer');
+            const answerInput = document.getElementById('answer-input');
+            const feedbackArea = document.getElementById('feedback-area');
+            const correctFeedback = document.getElementById('correct-feedback');
+            const incorrectFeedback = document.getElementById('incorrect-feedback');
+            
+            checkAnswerButton.addEventListener('click', function() {
+                const userAnswer = answerInput.value.trim();
+                feedbackArea.classList.remove('hidden');
+                
+                if (userAnswer === '4') {
+                    correctFeedback.classList.remove('hidden');
+                    incorrectFeedback.classList.add('hidden');
+                } else {
+                    correctFeedback.classList.add('hidden');
+                    incorrectFeedback.classList.remove('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+<<<<<<< HEAD:templates/instant_feadback.html
+{% endblock content %}
+=======
+{% endblock title %}
+>>>>>>> 8500dd2621c954bafdd6805e555f94156f6392de:templates/instant feadback.html

@@ -1,0 +1,1096 @@
+{% extends 'layout.html' %}
+
+
+{% block title %}
+<title>Math Challenges Squad</title>
+{% endblock title %}
+    
+    
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Management - Math Challenges Squad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neon: {
+                            pink: '#FF2D95',
+                            blue: '#4D61FC',
+                            green: '#00F5A0',
+                            yellow: '#FFC700',
+                            purple: '#9C27B0',
+                        },
+                        dark: {
+                            900: '#0F172A',
+                            800: '#1E293B',
+                            700: '#334155',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        mono: ['Space Mono', 'monospace'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-slow': 'float 8s ease-in-out infinite',
+                        'float-fast': 'float 4s ease-in-out infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.2);
+            }
+            .text-shadow-glow {
+                text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .clip-path-slant {
+                clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            }
+            .clip-path-wave {
+                clip-path: polygon(0 0, 100% 0, 100% 95%, 50% 100%, 0 95%);
+            }
+            .math-bg {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M50 0v20h20V0H50zm0 20v20h20V20H50zm0-20H30v20h20V0zm0 40v20h20V40H50zm0 20v20h20V60H50zm0-20H30v20h20V40zm0 40H30v20h20V80zm-20 0H10v20h20V80zm0-20H10v20h20V60zm0-20H10v20h20V40zm0-20H10v20h20V20zm0-20H10v20h20V0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            }
+            .math-symbol::before {
+                content: "∑";
+                position: absolute;
+                font-size: 20rem;
+                opacity: 0.03;
+                top: -5rem;
+                left: -5rem;
+                transform: rotate(-15deg);
+                font-family: serif;
+            }
+            .math-symbol-pi::before {
+                content: "π";
+            }
+            .math-symbol-infinity::before {
+                content: "∞";
+            }
+            .math-symbol-sqrt::before {
+                content: "√";
+            }
+            .math-symbol-delta::before {
+                content: "Δ";
+            }
+            .math-symbol-integral::before {
+                content: "∫";
+            }
+            .glow {
+                box-shadow: 0 0 15px rgba(0, 245, 160, 0.5), 0 0 30px rgba(0, 245, 160, 0.3);
+            }
+            .glow-pink {
+                box-shadow: 0 0 15px rgba(255, 45, 149, 0.5), 0 0 30px rgba(255, 45, 149, 0.3);
+            }
+            .glow-blue {
+                box-shadow: 0 0 15px rgba(77, 97, 252, 0.5), 0 0 30px rgba(77, 97, 252, 0.3);
+            }
+            .glow-yellow {
+                box-shadow: 0 0 15px rgba(255, 199, 0, 0.5), 0 0 30px rgba(255, 199, 0, 0.3);
+            }
+            .glow-purple {
+                box-shadow: 0 0 15px rgba(156, 39, 176, 0.5), 0 0 30px rgba(156, 39, 176, 0.3);
+            }
+            .glass {
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            .dark-glass {
+                background: rgba(15, 23, 42, 0.966);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .grid-pattern {
+                background-size: 30px 30px;
+                background-image: 
+                    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            }
+            .form-input {
+                background: rgba(15, 23, 42, 0.5);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: white;
+                transition: all 0.3s ease;
+            }
+            .form-input:focus {
+                border-color: theme('colors.neon.green');
+                box-shadow: 0 0 0 2px rgba(0, 245, 160, 0.2);
+                outline: none;
+            }
+            .form-input::placeholder {
+                color: rgba(255, 255, 255, 0.4);
+            }
+            
+            /* Profile Background Style */
+            .profile-bg {
+                background-image: url('https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2070&auto=format&fit=crop');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                position: relative;
+            }
+            .profile-bg::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(to bottom right, 
+                    rgba(15, 23, 42, 0.9), 
+                    rgba(77, 97, 252, 0.3));
+                z-index: 0;
+            }
+            
+            /* Progress bar styles */
+            .progress-bar {
+                height: 8px;
+                border-radius: 999px;
+                overflow: hidden;
+                background: rgba(255, 255, 255, 0.1);
+            }
+            
+            .progress-fill {
+                height: 100%;
+                border-radius: 999px;
+                transition: width 0.5s ease;
+            }
+            
+            /* Badge styles */
+            .badge {
+                position: relative;
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                transition: all 0.3s ease;
+            }
+            
+            .badge::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: conic-gradient(
+                    theme('colors.neon.pink'),
+                    theme('colors.neon.blue'),
+                    theme('colors.neon.green'),
+                    theme('colors.neon.yellow'),
+                    theme('colors.neon.pink')
+                );
+                border-radius: 50%;
+                animation: spin 4s linear infinite;
+            }
+            
+            .badge::after {
+                content: '';
+                position: absolute;
+                inset: 3px;
+                background: theme('colors.dark.800');
+                border-radius: 50%;
+                z-index: 1;
+            }
+            
+            .badge-content {
+                position: relative;
+                z-index: 2;
+                font-size: 2rem;
+                font-weight: bold;
+            }
+            
+            /* Tab styles */
+            .tab {
+                position: relative;
+                cursor: pointer;
+                padding: 0.75rem 1.5rem;
+                transition: all 0.3s ease;
+            }
+            
+            .tab.active {
+                color: theme('colors.neon.green');
+            }
+            
+            .tab::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: theme('colors.neon.green');
+                transition: width 0.3s ease;
+            }
+            
+            .tab.active::after {
+                width: 100%;
+            }
+            
+            /* Custom file input */
+            .file-input-wrapper {
+                position: relative;
+                overflow: hidden;
+                display: inline-block;
+            }
+            
+            .file-input-wrapper input[type=file] {
+                position: absolute;
+                left: 0;
+                top: 0;
+                opacity: 0;
+                width: 100%;
+                height: 100%;
+                cursor: pointer;
+            }
+            
+            /* Achievement card */
+            .achievement-card {
+                position: relative;
+                overflow: hidden;
+                transition: all 0.3s ease;
+            }
+            
+            .achievement-card::before {
+                content: '';
+                position: absolute;
+                top: -2px;
+                left: -2px;
+                right: -2px;
+                bottom: -2px;
+                background: linear-gradient(45deg, 
+                    theme('colors.neon.green'), 
+                    theme('colors.neon.blue'), 
+                    theme('colors.neon.pink'), 
+                    theme('colors.neon.yellow'));
+                z-index: -1;
+                border-radius: 1rem;
+                animation: border-animation 3s linear infinite;
+            }
+            
+            @keyframes border-animation {
+                0% {
+                    background-position: 0% 50%;
+                }
+                50% {
+                    background-position: 100% 50%;
+                }
+                100% {
+                    background-position: 0% 50%;
+                }
+            }
+        }
+    </style>
+</head>
+<body class="font-sans bg-dark-900 text-white overflow-x-hidden">
+    <!-- Floating Math Symbols (Decorative) -->
+    <div class="fixed w-full h-full pointer-events-none z-0 opacity-30 overflow-hidden">
+        <div class="absolute text-6xl text-neon-pink animate-float-slow" style="top: 15%; left: 10%;">∑</div>
+        <div class="absolute text-6xl text-neon-blue animate-float" style="top: 30%; left: 85%;">π</div>
+        <div class="absolute text-6xl text-neon-green animate-float-fast" style="top: 70%; left: 20%;">∞</div>
+        <div class="absolute text-6xl text-neon-yellow animate-float-slow" style="top: 60%; left: 80%;">√</div>
+        <div class="absolute text-6xl text-neon-purple animate-float" style="top: 85%; left: 40%;">∫</div>
+        <div class="absolute text-6xl text-neon-pink animate-float-fast" style="top: 10%; left: 60%;">Δ</div>
+        <div class="absolute text-6xl text-neon-blue animate-float-slow" style="top: 45%; left: 5%;">±</div>
+        <div class="absolute text-6xl text-neon-green animate-float" style="top: 25%; left: 30%;">÷</div>
+        <div class="absolute text-6xl text-neon-yellow animate-float-fast" style="top: 75%; left: 70%;">×</div>
+    </div>
+
+    <!-- Grid Background -->
+    <div class="fixed inset-0 grid-pattern opacity-30 z-0"></div>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 glass">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="relative w-12 h-12 flex items-center justify-center bg-neon-green rounded-lg glow transform rotate-12">
+                        <span class="text-dark-900 text-2xl font-bold font-mono transform -rotate-12">M</span>
+                    </div>
+                    <div class="text-2xl font-bold">
+                        <span class="text-neon-green">Math</span>
+                        <span class="text-white">Challenges</span>
+                        <span class="text-neon-pink">Squad</span>
+                    </div>
+                </div>
+                <nav class="hidden md:block">
+                    <ul class="flex space-x-8">
+                        <li><a href="#" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Home
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            About
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Features
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Modules
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Contact
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#" class="text-neon-pink transition-colors duration-300 relative group">
+                            Profile
+                            <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-neon-pink"></span>
+                        </a></li>
+                        <li><a href="#" class="hover:text-neon-blue transition-colors duration-300 relative group">
+                            Logout
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-blue transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                    </ul>
+                </nav>
+                <div class="md:hidden">
+                    <button class="text-white focus:outline-none" id="mobile-menu-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div class="md:hidden hidden mt-4 p-4 dark-glass rounded-xl" id="mobile-menu">
+                <ul class="space-y-4">
+                    <li><a href="#" class="block py-2 hover:text-neon-green transition-colors duration-300">Home</a></li>
+                    <li><a href="#" class="block py-2 hover:text-neon-green transition-colors duration-300">About</a></li>
+                    <li><a href="#" class="block py-2 hover:text-neon-green transition-colors duration-300">Features</a></li>
+                    <li><a href="#" class="block py-2 hover:text-neon-green transition-colors duration-300">Modules</a></li>
+                    <li><a href="#" class="block py-2 hover:text-neon-green transition-colors duration-300">Contact</a></li>
+                    <li><a href="#" class="block py-2 text-neon-pink transition-colors duration-300">Profile</a></li>
+                    <li><a href="#" class="block py-2 hover:text-neon-blue transition-colors duration-300">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Profile Header Section -->
+    <section class="relative py-16 overflow-hidden profile-bg">
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
+                <!-- Profile Avatar and Stats -->
+                <div class="w-full md:w-1/3">
+                    <div class="dark-glass p-8 rounded-2xl border border-neon-blue/30">
+                        <div class="flex flex-col items-center">
+                            <!-- Avatar with Edit Button -->
+                            <div class="relative mb-6 group">
+                                <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-neon-blue glow-blue">
+                                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1887&auto=format&fit=crop" alt="Profile Avatar" class="w-full h-full object-cover">
+                                </div>
+                                <div class="absolute inset-0 bg-dark-900/60 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-300">
+                                    <div class="file-input-wrapper">
+                                        <button class="text-white bg-neon-blue/80 hover:bg-neon-blue px-3 py-1 rounded-full text-sm transition-all duration-300">
+                                            Change
+                                        </button>
+                                        <input type="file" accept="image/*">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- User Name and Level -->
+                            <h1 class="text-2xl font-bold mb-1">Alex Johnson</h1>
+                            <div class="flex items-center space-x-2 mb-4">
+                                <span class="text-neon-green">Level 42</span>
+                                <span class="text-gray-400">|</span>
+                                <span class="text-neon-yellow">Math Wizard</span>
+                            </div>
+                            
+                            <!-- User Bio -->
+                            <p class="text-gray-300 text-center mb-6">Math enthusiast and problem solver. I love challenging myself with complex equations and helping others understand the beauty of mathematics.</p>
+                            
+                            <!-- Stats Cards -->
+                            <div class="grid grid-cols-2 gap-4 w-full">
+                                <div class="dark-glass p-4 rounded-xl border border-neon-green/30 text-center">
+                                    <div class="text-3xl font-bold text-neon-green mb-1">1,248</div>
+                                    <div class="text-sm text-gray-400">Points</div>
+                                </div>
+                                <div class="dark-glass p-4 rounded-xl border border-neon-pink/30 text-center">
+                                    <div class="text-3xl font-bold text-neon-pink mb-1">87</div>
+                                    <div class="text-sm text-gray-400">Challenges</div>
+                                </div>
+                                <div class="dark-glass p-4 rounded-xl border border-neon-yellow/30 text-center">
+                                    <div class="text-3xl font-bold text-neon-yellow mb-1">24</div>
+                                    <div class="text-sm text-gray-400">Badges</div>
+                                </div>
+                                <div class="dark-glass p-4 rounded-xl border border-neon-blue/30 text-center">
+                                    <div class="text-3xl font-bold text-neon-blue mb-1">#8</div>
+                                    <div class="text-sm text-gray-400">Ranking</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Progress Section -->
+                    <div class="dark-glass p-8 rounded-2xl border border-neon-green/30 mt-8">
+                        <h2 class="text-xl font-semibold mb-6 text-neon-green">Your Progress</h2>
+                        
+                        <!-- Level Progress -->
+                        <div class="mb-6">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-300">Level 42</span>
+                                <span class="text-neon-green">78%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-gradient-to-r from-neon-green to-neon-blue" style="width: 78%"></div>
+                            </div>
+                            <div class="text-right text-xs text-gray-400 mt-1">652 XP to Level 43</div>
+                        </div>
+                        
+                        <!-- Algebra Progress -->
+                        <div class="mb-6">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-300">Algebra</span>
+                                <span class="text-neon-pink">92%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-gradient-to-r from-neon-pink to-neon-purple" style="width: 92%"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Geometry Progress -->
+                        <div class="mb-6">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-300">Geometry</span>
+                                <span class="text-neon-blue">65%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-gradient-to-r from-neon-blue to-neon-green" style="width: 65%"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Calculus Progress -->
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-300">Calculus</span>
+                                <span class="text-neon-yellow">45%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-gradient-to-r from-neon-yellow to-neon-pink" style="width: 45%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profile Content Area -->
+                <div class="w-full md:w-2/3">
+                    <!-- Tabs Navigation -->
+                    <div class="dark-glass p-4 rounded-2xl border border-neon-green/30 mb-8">
+                        <div class="flex overflow-x-auto">
+                            <div class="tab active" data-tab="profile">Profile Settings</div>
+                            <div class="tab" data-tab="achievements">Achievements</div>
+                            <div class="tab" data-tab="history">Challenge History</div>
+                            <div class="tab" data-tab="friends">Friends</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab Content: Profile Settings -->
+                    <div class="tab-content" id="profile-tab">
+                        <div class="dark-glass p-8 rounded-2xl border border-neon-green/30 mb-8">
+                            <h2 class="text-2xl font-semibold mb-6 text-neon-green">Personal Information</h2>
+                            
+                            <form class="space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label for="first-name" class="block text-white mb-2">First Name</label>
+                                        <input type="text" id="first-name" value="Alex" class="w-full px-4 py-3 rounded-lg form-input">
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="last-name" class="block text-white mb-2">Last Name</label>
+                                        <input type="text" id="last-name" value="Johnson" class="w-full px-4 py-3 rounded-lg form-input">
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label for="email" class="block text-white mb-2">Email Address</label>
+                                    <input type="email" id="email" value="alex.johnson@example.com" class="w-full px-4 py-3 rounded-lg form-input">
+                                </div>
+                                
+                                <div>
+                                    <label for="username" class="block text-white mb-2">Username</label>
+                                    <input type="text" id="username" value="mathwizard42" class="w-full px-4 py-3 rounded-lg form-input">
+                                </div>
+                                
+                                <div>
+                                    <label for="bio" class="block text-white mb-2">Bio</label>
+                                    <textarea id="bio" rows="4" class="w-full px-4 py-3 rounded-lg form-input">Math enthusiast and problem solver. I love challenging myself with complex equations and helping others understand the beauty of mathematics.</textarea>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-white mb-2">Math Interests</label>
+                                    <div class="flex flex-wrap gap-2">
+                                        <div class="bg-neon-green/20 text-neon-green px-3 py-1 rounded-full text-sm flex items-center">
+                                            Algebra
+                                            <button class="ml-2 text-white hover:text-neon-green">×</button>
+                                        </div>
+                                        <div class="bg-neon-blue/20 text-neon-blue px-3 py-1 rounded-full text-sm flex items-center">
+                                            Geometry
+                                            <button class="ml-2 text-white hover:text-neon-blue">×</button>
+                                        </div>
+                                        <div class="bg-neon-pink/20 text-neon-pink px-3 py-1 rounded-full text-sm flex items-center">
+                                            Calculus
+                                            <button class="ml-2 text-white hover:text-neon-pink">×</button>
+                                        </div>
+                                        <div class="bg-neon-yellow/20 text-neon-yellow px-3 py-1 rounded-full text-sm flex items-center">
+                                            Statistics
+                                            <button class="ml-2 text-white hover:text-neon-yellow">×</button>
+                                        </div>
+                                        <button class="bg-dark-700 hover:bg-dark-800 text-white px-3 py-1 rounded-full text-sm transition-colors duration-300">
+                                            + Add
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="pt-4">
+                                    <button type="submit" class="px-8 py-4 bg-neon-green text-dark-900 font-bold rounded-lg glow hover:bg-white hover:text-dark-900 transition-all duration-300">
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <div class="dark-glass p-8 rounded-2xl border border-neon-pink/30 mb-8">
+                            <h2 class="text-2xl font-semibold mb-6 text-neon-pink">Account Settings</h2>
+                            
+                            <form class="space-y-6">
+                                <div>
+                                    <label for="current-password" class="block text-white mb-2">Current Password</label>
+                                    <input type="password" id="current-password" placeholder="Enter your current password" class="w-full px-4 py-3 rounded-lg form-input">
+                                </div>
+                                
+                                <div>
+                                    <label for="new-password" class="block text-white mb-2">New Password</label>
+                                    <input type="password" id="new-password" placeholder="Enter new password" class="w-full px-4 py-3 rounded-lg form-input">
+                                </div>
+                                
+                                <div>
+                                    <label for="confirm-password" class="block text-white mb-2">Confirm New Password</label>
+                                    <input type="password" id="confirm-password" placeholder="Confirm new password" class="w-full px-4 py-3 rounded-lg form-input">
+                                </div>
+                                
+                                <div class="pt-4">
+                                    <button type="submit" class="px-8 py-4 bg-neon-pink text-white font-bold rounded-lg glow-pink hover:bg-white hover:text-neon-pink transition-all duration-300">
+                                        Update Password
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <div class="dark-glass p-8 rounded-2xl border border-neon-blue/30">
+                            <h2 class="text-2xl font-semibold mb-6 text-neon-blue">Notification Preferences</h2>
+                            
+                            <form class="space-y-6">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-white font-medium">Email Notifications</h3>
+                                        <p class="text-gray-400 text-sm">Receive emails about your activity</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" checked class="sr-only peer">
+                                        <div class="w-11 h-6 bg-dark-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neon-blue"></div>
+                                    </label>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-white font-medium">Challenge Reminders</h3>
+                                        <p class="text-gray-400 text-sm">Get notified about new challenges</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" checked class="sr-only peer">
+                                        <div class="w-11 h-6 bg-dark-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neon-blue"></div>
+                                    </label>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-white font-medium">Friend Requests</h3>
+                                        <p class="text-gray-400 text-sm">Get notified about friend requests</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" checked class="sr-only peer">
+                                        <div class="w-11 h-6 bg-dark-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neon-blue"></div>
+                                    </label>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-white font-medium">Achievement Alerts</h3>
+                                        <p class="text-gray-400 text-sm">Get notified when you earn badges</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" checked class="sr-only peer">
+                                        <div class="w-11 h-6 bg-dark-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neon-blue"></div>
+                                    </label>
+                                </div>
+                                
+                                <div class="pt-4">
+                                    <button type="submit" class="px-8 py-4 bg-neon-blue text-white font-bold rounded-lg glow-blue hover:bg-white hover:text-neon-blue transition-all duration-300">
+                                        Save Preferences
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab Content: Achievements (Hidden by default) -->
+                    <div class="tab-content hidden" id="achievements-tab">
+                        <div class="dark-glass p-8 rounded-2xl border border-neon-yellow/30 mb-8">
+                            <h2 class="text-2xl font-semibold mb-6 text-neon-yellow">Your Badges</h2>
+                            
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+                                <!-- Badge 1 -->
+                                <div class="flex flex-col items-center">
+                                    <div class="badge mb-2">
+                                        <div class="badge-content text-neon-green">π</div>
+                                    </div>
+                                    <span class="text-sm text-center">Pi Master</span>
+                                </div>
+                                
+                                <!-- Badge 2 -->
+                                <div class="flex flex-col items-center">
+                                    <div class="badge mb-2">
+                                        <div class="badge-content text-neon-pink">∑</div>
+                                    </div>
+                                    <span class="text-sm text-center">Series Solver</span>
+                                </div>
+                                
+                                <!-- Badge 3 -->
+                                <div class="flex flex-col items-center">
+                                    <div class="badge mb-2">
+                                        <div class="badge-content text-neon-blue">∞</div>
+                                    </div>
+                                    <span class="text-sm text-center">Infinity Explorer</span>
+                                </div>
+                                
+                                <!-- Badge 4 -->
+                                <div class="flex flex-col items-center">
+                                    <div class="badge mb-2">
+                                        <div class="badge-content text-neon-yellow">√</div>
+                                    </div>
+                                    <span class="text-sm text-center">Root Finder</span>
+                                </div>
+                                
+                                <!-- Badge 5 -->
+                                <div class="flex flex-col items-center opacity-40">
+                                    <div class="badge mb-2 grayscale">
+                                        <div class="badge-content">∫</div>
+                                    </div>
+                                    <span class="text-sm text-center">Integral Master</span>
+                                </div>
+                                
+                                <!-- Badge 6 -->
+                                <div class="flex flex-col items-center opacity-40">
+                                    <div class="badge mb-2 grayscale">
+                                        <div class="badge-content">Δ</div>
+                                    </div>
+                                    <span class="text-sm text-center">Change Maker</span>
+                                </div>
+                                
+                                <!-- More badges... -->
+                            </div>
+                        </div>
+                        
+                        <div class="dark-glass p-8 rounded-2xl border border-neon-green/30">
+                            <h2 class="text-2xl font-semibold mb-6 text-neon-green">Recent Achievements</h2>
+                            
+                            <div class="space-y-6">
+                                <!-- Achievement 1 -->
+                                <div class="achievement-card dark-glass p-4 rounded-xl">
+                                    <div class="flex items-start">
+                                        <div class="w-12 h-12 rounded-xl bg-neon-green/20 flex items-center justify-center text-neon-green mr-4 flex-shrink-0">
+                                            <span class="text-2xl">π</span>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-medium text-white">Pi Master</h3>
+                                            <p class="text-gray-400 text-sm mb-2">Memorized 100 digits of Pi</p>
+                                            <div class="text-xs text-neon-green">Earned 3 days ago</div>
+                                        </div>
+                                        <div class="ml-auto text-2xl text-neon-yellow">+150 XP</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Achievement 2 -->
+                                <div class="achievement-card dark-glass p-4 rounded-xl">
+                                    <div class="flex items-start">
+                                        <div class="w-12 h-12 rounded-xl bg-neon-blue/20 flex items-center justify-center text-neon-blue mr-4 flex-shrink-0">
+                                            <span class="text-2xl">∞</span>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-medium text-white">Infinity Explorer</h3>
+                                            <p class="text-gray-400 text-sm mb-2">Solved 50 limit problems</p>
+                                            <div class="text-xs text-neon-blue">Earned 1 week ago</div>
+                                        </div>
+                                        <div class="ml-auto text-2xl text-neon-yellow">+200 XP</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Achievement 3 -->
+                                <div class="achievement-card dark-glass p-4 rounded-xl">
+                                    <div class="flex items-start">
+                                        <div class="w-12 h-12 rounded-xl bg-neon-pink/20 flex items-center justify-center text-neon-pink mr-4 flex-shrink-0">
+                                            <span class="text-2xl">∑</span>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-medium text-white">Series Solver</h3>
+                                            <p class="text-gray-400 text-sm mb-2">Mastered infinite series</p>
+                                            <div class="text-xs text-neon-pink">Earned 2 weeks ago</div>
+                                        </div>
+                                        <div class="ml-auto text-2xl text-neon-yellow">+175 XP</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab Content: Challenge History (Hidden by default) -->
+                    <div class="tab-content hidden" id="history-tab">
+                        <div class="dark-glass p-8 rounded-2xl border border-neon-blue/30">
+                            <h2 class="text-2xl font-semibold mb-6 text-neon-blue">Challenge History</h2>
+                            
+                            <div class="space-y-6">
+                                <!-- Challenge 1 -->
+                                <div class="dark-glass p-4 rounded-xl border border-neon-green/30 hover:border-neon-green transition-all duration-300">
+                                    <div class="flex flex-col md:flex-row md:items-center justify-between">
+                                        <div class="mb-4 md:mb-0">
+                                            <h3 class="text-lg font-medium text-neon-green">Advanced Calculus Challenge</h3>
+                                            <p class="text-gray-400 text-sm">Completed yesterday</p>
+                                        </div>
+                                        <div class="flex items-center space-x-4">
+                                            <div class="px-3 py-1 bg-neon-green/20 text-neon-green rounded-full text-sm">
+                                                Score: 95/100
+                                            </div>
+                                            <div class="px-3 py-1 bg-neon-yellow/20 text-neon-yellow rounded-full text-sm">
+                                                +120 XP
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Challenge 2 -->
+                                <div class="dark-glass p-4 rounded-xl border border-neon-blue/30 hover:border-neon-blue transition-all duration-300">
+                                    <div class="flex flex-col md:flex-row md:items-center justify-between">
+                                        <div class="mb-4 md:mb-0">
+                                            <h3 class="text-lg font-medium text-neon-blue">Linear Algebra Marathon</h3>
+                                            <p class="text-gray-400 text-sm">Completed 3 days ago</p>
+                                        </div>
+                                        <div class="flex items-center space-x-4">
+                                            <div class="px-3 py-1 bg-neon-blue/20 text-neon-blue rounded-full text-sm">
+                                                Score: 88/100
+                                            </div>
+                                            <div class="px-3 py-1 bg-neon-yellow/20 text-neon-yellow rounded-full text-sm">
+                                                +95 XP
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Challenge 3 -->
+                                <div class="dark-glass p-4 rounded-xl border border-neon-pink/30 hover:border-neon-pink transition-all duration-300">
+                                    <div class="flex flex-col md:flex-row md:items-center justify-between">
+                                        <div class="mb-4 md:mb-0">
+                                            <h3 class="text-lg font-medium text-neon-pink">Probability Theory Contest</h3>
+                                            <p class="text-gray-400 text-sm">Completed 1 week ago</p>
+                                        </div>
+                                        <div class="flex items-center space-x-4">
+                                            <div class="px-3 py-1 bg-neon-pink/20 text-neon-pink rounded-full text-sm">
+                                                Score: 100/100
+                                            </div>
+                                            <div class="px-3 py-1 bg-neon-yellow/20 text-neon-yellow rounded-full text-sm">
+                                                +150 XP
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Challenge 4 -->
+                                <div class="dark-glass p-4 rounded-xl border border-neon-yellow/30 hover:border-neon-yellow transition-all duration-300">
+                                    <div class="flex flex-col md:flex-row md:items-center justify-between">
+                                        <div class="mb-4 md:mb-0">
+                                            <h3 class="text-lg font-medium text-neon-yellow">Geometry Puzzle Challenge</h3>
+                                            <p class="text-gray-400 text-sm">Completed 2 weeks ago</p>
+                                        </div>
+                                        <div class="flex items-center space-x-4">
+                                            <div class="px-3 py-1 bg-neon-yellow/20 text-neon-yellow rounded-full text-sm">
+                                                Score: 92/100
+                                            </div>
+                                            <div class="px-3 py-1 bg-neon-yellow/20 text-neon-yellow rounded-full text-sm">
+                                                +110 XP
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- View More Button -->
+                                <div class="text-center pt-4">
+                                    <button class="px-6 py-3 bg-dark-700 hover:bg-dark-800 text-white rounded-lg transition-colors duration-300">
+                                        View More History
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab Content: Friends (Hidden by default) -->
+                    <div class="tab-content hidden" id="friends-tab">
+                        <div class="dark-glass p-8 rounded-2xl border border-neon-purple/30 mb-8">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-2xl font-semibold text-neon-purple">Your Friends</h2>
+                                <div class="relative">
+                                    <input type="text" placeholder="Search friends..." class="px-4 py-2 rounded-lg form-input pr-10">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <!-- Friend 1 -->
+                                <div class="dark-glass p-4 rounded-xl hover:border-neon-purple/50 border border-transparent transition-all duration-300">
+                                    <div class="flex items-center">
+                                        <div class="w-12 h-12 rounded-full overflow-hidden mr-4">
+                                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=1780&auto=format&fit=crop" alt="Friend Avatar" class="w-full h-full object-cover">
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-medium text-white">Michael Chen</h3>
+                                            <div class="flex items-center">
+                                                <span class="text-neon-green text-sm">Level 38</span>
+                                                <span class="mx-2 text-gray-500">•</span>
+                                                <span class="text-neon-blue text-sm">Online</span>
+                                            </div>
+                                        </div>
+                                        <div class="ml-auto flex space-x-2">
+                                            <button class="p-2 rounded-full bg-neon-green/20 text-neon-green hover:bg-neon-green hover:text-white transition-all duration-300">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                                </svg>
+                                            </button>
+                                            <button class="p-2 rounded-full bg-neon-blue/20 text-neon-blue hover:bg-neon-blue hover:text-white transition-all duration-300">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Friend 2 -->
+                                <div class="dark-glass p-4 rounded-xl hover:border-neon-purple/50 border border-transparent transition-all duration-300">
+                                    <div class="flex items-center">
+                                        <div class="w-12 h-12 rounded-full overflow-hidden mr-4">
+                                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop" alt="Friend Avatar" class="w-full h-full object-cover">
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-medium text-white">Sarah Williams</h3>
+                                            <div class="flex items-center">
+                                                <span class="text-neon-green text-sm">Level 45</span>
+                                                <span class="mx-2 text-gray-500">•</span>
+                                                <span class="text-gray-400 text-sm">Last seen 2h ago</span>
+                                            </div>
+                                        </div>
+                                        <div class="ml-auto flex space-x-2">
+                                            <button class="p-2 rounded-full bg-neon-green/20 text-neon-green hover:bg-neon-green hover:text-white transition-all duration-300">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                                </svg>
+                                            </button>
+                                            <button class="p-2 rounded-full bg-neon-blue/20 text-neon-blue hover:bg-neon-blue hover:text-white transition-all duration-300">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Friend 3 -->
+                                <div class="dark-glass p-4 rounded-xl hover:border-neon-purple/50 border border-transparent transition-all duration-300">
+                                    <div class="flex items-center">
+                                        <div class="w-12 h-12 rounded-full overflow-hidden mr-4">
+                                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop" alt="Friend Avatar" class="w-full h-full object-cover">
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-medium text-white">David Rodriguez</h3>
+                                            <div class="flex items-center">
+                                                <span class="text-neon-green text-sm">Level 51</span>
+                                                <span class="mx-2 text-gray-500">•</span>
+                                                <span class="text-neon-blue text-sm">Online</span>
+                                            </div>
+                                        </div>
+                                        <div class="ml-auto flex space-x-2">
+                                            <button class="p-2 rounded-full bg-neon-green/20 text-neon-green hover:bg-neon-green hover:text-white transition-all duration-300">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                                </svg>
+                                            </button>
+                                            <button class="p-2 rounded-full bg-neon-blue/20 text-neon-blue hover:bg-neon-blue hover:text-white transition-all duration-300">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- View All Friends Button -->
+                            <div class="text-center mt-8">
+                                <button class="px-6 py-3 bg-neon-purple/20 text-neon-purple hover:bg-neon-purple hover:text-white rounded-lg transition-all duration-300">
+                                    View All Friends
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="dark-glass p-8 rounded-2xl border border-neon-green/30">
+                            <h2 class="text-2xl font-semibold mb-6 text-neon-green">Friend Requests</h2>
+                            
+                            <div class="space-y-4">
+                                <!-- Request 1 -->
+                                <div class="dark-glass p-4 rounded-xl hover:border-neon-green/50 border border-transparent transition-all duration-300">
+                                    <div class="flex items-center">
+                                        <div class="w-12 h-12 rounded-full overflow-hidden mr-4">
+                                            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1887&auto=format&fit=crop" alt="Friend Request Avatar" class="w-full h-full object-cover">
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-medium text-white">Emily Johnson</h3>
+                                            <p class="text-gray-400 text-sm">Level 29 • Algebra Enthusiast</p>
+                                        </div>
+                                        <div class="ml-auto flex space-x-2">
+                                            <button class="px-4 py-2 bg-neon-green text-dark-900 rounded-lg hover:bg-white transition-all duration-300">
+                                                Accept
+                                            </button>
+                                            <button class="px-4 py-2 bg-dark-700 text-white rounded-lg hover:bg-dark-800 transition-all duration-300">
+                                                Decline
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Request 2 -->
+                                <div class="dark-glass p-4 rounded-xl hover:border-neon-green/50 border border-transparent transition-all duration-300">
+                                    <div class="flex items-center">
+                                        <div class="w-12 h-12 rounded-full overflow-hidden mr-4">
+                                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1887&auto=format&fit=crop" alt="Friend Request Avatar" class="w-full h-full object-cover">
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-medium text-white">Jason Kim</h3>
+                                            <p class="text-gray-400 text-sm">Level 35 • Geometry Expert</p>
+                                        </div>
+                                        <div class="ml-auto flex space-x-2">
+                                            <button class="px-4 py-2 bg-neon-green text-dark-900 rounded-lg hover:bg-white transition-all duration-300">
+                                                Accept
+                                            </button>
+                                            <button class="px-4 py-2 bg-dark-700 text-white rounded-lg hover:bg-dark-800 transition-all duration-300">
+                                                Decline
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative py-16 overflow-hidden">
+        <div class="absolute inset-0 bg-dark-900 z-0"></div>
+        <div class="absolute bottom-0 w-full h-1 bg-gradient-to-r from-neon-green via-neon-blue to-neon-pink"></div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-8 md:mb-0">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="relative w-12 h-12 flex items-center justify-center bg-neon-green rounded-lg glow transform rotate-12">
+                            <span class="text-dark-900 text-2xl font-bold font-mono transform -rotate-12">M</span>
+                        </div>
+                        <div class="text-2xl font-bold">
+                            <span class="text-neon-green">Math</span>
+                            <span class="text-white">Challenges</span>
+                            <span class="text-neon-pink">Squad</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-400">Making math fun and rewarding for everyone.</p>
+                </div>
+                
+                <div class="text-center md:text-right">
+                    <p class="text-gray-400">© 2024 Math Challenges Squad. All rights reserved.</p>
+                    <p class="text-gray-400 mt-2">Babu Banarasi Das University, Lucknow</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Tab Switching -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Menu Toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Tab Switching
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Hide all tab contents
+                    tabContents.forEach(content => content.classList.add('hidden'));
+                    
+                    // Show the corresponding tab content
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId + '-tab').classList.remove('hidden');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock content %}

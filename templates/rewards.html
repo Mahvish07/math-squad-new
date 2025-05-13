@@ -1,0 +1,1153 @@
+{% extends 'layout.html' %}
+
+
+{% block title %}
+<title>Math Challenges Squad</title>
+{% endblock title %}
+    
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rewards & Achievements - Math Challenges Squad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neon: {
+                            pink: '#FF2D95',
+                            blue: '#4D61FC',
+                            green: '#00F5A0',
+                            yellow: '#FFC700',
+                            purple: '#9C27B0',
+                        },
+                        dark: {
+                            900: '#0F172A',
+                            800: '#1E293B',
+                            700: '#334155',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        mono: ['Space Mono', 'monospace'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-slow': 'float 8s ease-in-out infinite',
+                        'float-fast': 'float 4s ease-in-out infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 3s infinite',
+                        'ping-slow': 'ping 3s cubic-bezier(0, 0, 0.2, 1) infinite',
+                        'sparkle': 'sparkle 1.5s linear infinite',
+                        'progress': 'progress 2s ease-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        sparkle: {
+                            '0%, 100%': { opacity: 0, transform: 'scale(0)' },
+                            '50%': { opacity: 1, transform: 'scale(1)' },
+                        },
+                        progress: {
+                            '0%': { width: '0%' },
+                            '100%': { width: 'var(--progress-width)' }
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.2);
+            }
+            .text-shadow-glow {
+                text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .clip-path-slant {
+                clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            }
+            .clip-path-wave {
+                clip-path: polygon(0 0, 100% 0, 100% 95%, 50% 100%, 0 95%);
+            }
+            .math-bg {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M50 0v20h20V0H50zm0 20v20h20V20H50zm0-20H30v20h20V0zm0 40v20h20V40H50zm0 20v20h20V60H50zm0-20H30v20h20V40zm0 40H30v20h20V80zm-20 0H10v20h20V80zm0-20H10v20h20V60zm0-20H10v20h20V40zm0-20H10v20h20V20zm0-20H10v20h20V0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            }
+            .math-symbol::before {
+                content: "∑";
+                position: absolute;
+                font-size: 20rem;
+                opacity: 0.03;
+                top: -5rem;
+                left: -5rem;
+                transform: rotate(-15deg);
+                font-family: serif;
+            }
+            .math-symbol-pi::before {
+                content: "π";
+            }
+            .math-symbol-infinity::before {
+                content: "∞";
+            }
+            .math-symbol-sqrt::before {
+                content: "√";
+            }
+            .math-symbol-delta::before {
+                content: "Δ";
+            }
+            .math-symbol-integral::before {
+                content: "∫";
+            }
+            .math-symbol-trophy::before {
+                content: "🏆";
+                font-size: 15rem;
+                opacity: 0.05;
+            }
+            .math-symbol-medal::before {
+                content: "🥇";
+                font-size: 15rem;
+                opacity: 0.05;
+            }
+            .math-symbol-star::before {
+                content: "⭐";
+                font-size: 15rem;
+                opacity: 0.05;
+            }
+            .glow {
+                box-shadow: 0 0 15px rgba(0, 245, 160, 0.5), 0 0 30px rgba(0, 245, 160, 0.3);
+            }
+            .glow-pink {
+                box-shadow: 0 0 15px rgba(255, 45, 149, 0.5), 0 0 30px rgba(255, 45, 149, 0.3);
+            }
+            .glow-blue {
+                box-shadow: 0 0 15px rgba(77, 97, 252, 0.5), 0 0 30px rgba(77, 97, 252, 0.3);
+            }
+            .glow-yellow {
+                box-shadow: 0 0 15px rgba(255, 199, 0, 0.5), 0 0 30px rgba(255, 199, 0, 0.3);
+            }
+            .glow-purple {
+                box-shadow: 0 0 15px rgba(156, 39, 176, 0.5), 0 0 30px rgba(156, 39, 176, 0.3);
+            }
+            .glass {
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            .dark-glass {
+                background: rgba(15, 23, 42, 0.966);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .grid-pattern {
+                background-size: 30px 30px;
+                background-image: 
+                    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            }
+            
+            /* Rewards Background Style */
+            .rewards-bg {
+                background-image: url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2070&auto=format&fit=crop');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                position: relative;
+            }
+            .rewards-bg::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(to bottom right, rgba(15, 23, 42, 0.9), rgba(156, 39, 176, 0.2));
+                z-index: 0;
+            }
+            
+            /* Achievement Background Style */
+            .achievements-bg {
+                background-image: url('https://images.unsplash.com/photo-1518133910546-b6c2fb7d79e3?q=80&w=2070&auto=format&fit=crop');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                position: relative;
+            }
+            .achievements-bg::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(to bottom right, rgba(15, 23, 42, 0.9), rgba(0, 245, 160, 0.2));
+                z-index: 0;
+            }
+            
+            /* Leaderboard Background Style */
+            .leaderboard-bg {
+                background-image: url('https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?q=80&w=2070&auto=format&fit=crop');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                position: relative;
+            }
+            .leaderboard-bg::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(to bottom right, rgba(15, 23, 42, 0.9), rgba(255, 45, 149, 0.2));
+                z-index: 0;
+            }
+            
+            /* Badge styles */
+            .badge-container {
+                position: relative;
+                width: 120px;
+                height: 120px;
+                margin: 0 auto;
+            }
+            
+            .badge-outer {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .badge-inner {
+                width: 80%;
+                height: 80%;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(15, 23, 42, 0.8);
+                z-index: 1;
+            }
+            
+            .badge-shine {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                background: linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.8) 45%, transparent 50%);
+                animation: spin 4s linear infinite;
+            }
+            
+            .sparkle {
+                position: absolute;
+                width: 15px;
+                height: 15px;
+                background: white;
+                border-radius: 50%;
+                filter: blur(2px);
+                opacity: 0;
+                animation: sparkle 2s linear infinite;
+            }
+            
+            .sparkle:nth-child(1) {
+                top: 10%;
+                left: 20%;
+                animation-delay: 0s;
+            }
+            
+            .sparkle:nth-child(2) {
+                top: 20%;
+                right: 20%;
+                animation-delay: 0.4s;
+            }
+            
+            .sparkle:nth-child(3) {
+                bottom: 20%;
+                left: 15%;
+                animation-delay: 0.8s;
+            }
+            
+            .sparkle:nth-child(4) {
+                bottom: 10%;
+                right: 15%;
+                animation-delay: 1.2s;
+            }
+            
+            /* Progress bar styles */
+            .progress-container {
+                width: 100%;
+                height: 12px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 6px;
+                overflow: hidden;
+                position: relative;
+            }
+            
+            .progress-bar {
+                height: 100%;
+                border-radius: 6px;
+                animation: progress 2s ease-out forwards;
+            }
+            
+            /* Trophy card styles */
+            .trophy-card {
+                position: relative;
+                overflow: hidden;
+                transition: all 0.3s ease;
+            }
+            
+            .trophy-card:hover {
+                transform: translateY(-5px);
+            }
+            
+            .trophy-card::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            
+            .trophy-card:hover::before {
+                opacity: 1;
+            }
+            
+            /* Ribbon styles */
+            .ribbon {
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 150px;
+                height: 150px;
+                overflow: hidden;
+                z-index: 1;
+            }
+            
+            .ribbon-content {
+                position: absolute;
+                display: block;
+                width: 225px;
+                padding: 8px 0;
+                background-color: var(--ribbon-color, theme('colors.neon.green'));
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+                color: #fff;
+                font-size: 0.8rem;
+                text-align: center;
+                transform: rotate(45deg);
+                right: -25%;
+                top: 20%;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans bg-dark-900 text-white overflow-x-hidden">
+    <!-- Floating Math Symbols (Decorative) -->
+    <div class="fixed w-full h-full pointer-events-none z-0 opacity-30 overflow-hidden">
+        <div class="absolute text-6xl text-neon-pink animate-float-slow" style="top: 15%; left: 10%;">∑</div>
+        <div class="absolute text-6xl text-neon-blue animate-float" style="top: 30%; left: 85%;">π</div>
+        <div class="absolute text-6xl text-neon-green animate-float-fast" style="top: 70%; left: 20%;">∞</div>
+        <div class="absolute text-6xl text-neon-yellow animate-float-slow" style="top: 60%; left: 80%;">√</div>
+        <div class="absolute text-6xl text-neon-purple animate-float" style="top: 85%; left: 40%;">∫</div>
+        <div class="absolute text-6xl text-neon-pink animate-float-fast" style="top: 10%; left: 60%;">Δ</div>
+        <div class="absolute text-6xl text-neon-blue animate-float-slow" style="top: 45%; left: 5%;">±</div>
+        <div class="absolute text-6xl text-neon-green animate-float" style="top: 25%; left: 30%;">÷</div>
+        <div class="absolute text-6xl text-neon-yellow animate-float-fast" style="top: 75%; left: 70%;">×</div>
+    </div>
+
+    <!-- Grid Background -->
+    <div class="fixed inset-0 grid-pattern opacity-30 z-0"></div>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 glass">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="relative w-12 h-12 flex items-center justify-center bg-neon-green rounded-lg glow transform rotate-12">
+                        <span class="text-dark-900 text-2xl font-bold font-mono transform -rotate-12">M</span>
+                    </div>
+                    <div class="text-2xl font-bold">
+                        <span class="text-neon-green">Math</span>
+                        <span class="text-white">Challenges</span>
+                        <span class="text-neon-pink">Squad</span>
+                    </div>
+                </div>
+                <nav class="hidden md:block">
+                    <ul class="flex space-x-8">
+                        <li><a href="index.html#home" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Home
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="index.html#about" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            About
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="index.html#features" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Features
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="index.html#modules" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Modules
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#" class="text-neon-purple transition-colors duration-300 relative group">
+                            Rewards
+                            <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-neon-purple"></span>
+                        </a></li>
+                        <li><a href="index.html#contact" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Contact
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="index.html#login" class="hover:text-neon-pink transition-colors duration-300 relative group">
+                            Login
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-pink transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                    </ul>
+                </nav>
+                <div class="md:hidden">
+                    <button class="text-white focus:outline-none" id="mobile-menu-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div class="md:hidden hidden mt-4 p-4 dark-glass rounded-xl" id="mobile-menu">
+                <ul class="space-y-4">
+                    <li><a href="index.html#home" class="block py-2 hover:text-neon-green transition-colors duration-300">Home</a></li>
+                    <li><a href="index.html#about" class="block py-2 hover:text-neon-green transition-colors duration-300">About</a></li>
+                    <li><a href="index.html#features" class="block py-2 hover:text-neon-green transition-colors duration-300">Features</a></li>
+                    <li><a href="index.html#modules" class="block py-2 hover:text-neon-green transition-colors duration-300">Modules</a></li>
+                    <li><a href="#" class="block py-2 text-neon-purple">Rewards</a></li>
+                    <li><a href="index.html#contact" class="block py-2 hover:text-neon-green transition-colors duration-300">Contact</a></li>
+                    <li><a href="index.html#login" class="block py-2 hover:text-neon-pink transition-colors duration-300">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative py-20 overflow-hidden rewards-bg">
+        <div class="absolute inset-0 z-0 math-symbol math-symbol-trophy"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                    <span class="text-gradient bg-gradient-to-r from-neon-purple to-neon-pink">Rewards &</span>
+                    <span class="block text-gradient bg-gradient-to-r from-neon-pink to-neon-yellow">Achievements</span>
+                </h1>
+                <p class="text-xl mb-8 text-gray-300">Track your progress, earn badges, and climb the leaderboard as you master mathematical challenges and unlock exclusive rewards.</p>
+                
+                <!-- User Stats Card -->
+                <div class="dark-glass p-8 rounded-2xl border border-neon-purple/30 max-w-3xl mx-auto mt-12">
+                    <div class="flex flex-col md:flex-row items-center justify-between">
+                        <div class="flex items-center mb-6 md:mb-0">
+                            <div class="w-20 h-20 rounded-full bg-neon-purple/20 border-2 border-neon-purple flex items-center justify-center mr-6">
+                                <span class="text-3xl">👨‍🎓</span>
+                            </div>
+                            <div class="text-left">
+                                <h3 class="text-2xl font-bold text-white">John Doe</h3>
+                                <p class="text-neon-purple">Math Explorer</p>
+                                <div class="flex items-center mt-2">
+                                    <div class="text-neon-yellow mr-4">
+                                        <span class="text-lg font-bold">1,250</span>
+                                        <span class="text-sm block">Points</span>
+                                    </div>
+                                    <div class="text-neon-green mr-4">
+                                        <span class="text-lg font-bold">15</span>
+                                        <span class="text-sm block">Badges</span>
+                                    </div>
+                                    <div class="text-neon-pink">
+                                        <span class="text-lg font-bold">#8</span>
+                                        <span class="text-sm block">Rank</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="text-center mb-2">
+                                <span class="text-sm text-gray-400">Current Level</span>
+                                <h4 class="text-2xl font-bold text-neon-purple">Level 12</h4>
+                            </div>
+                            <div class="w-full max-w-[200px]">
+                                <div class="progress-container">
+                                    <div class="progress-bar bg-gradient-to-r from-neon-purple to-neon-pink" style="--progress-width: 65%"></div>
+                                </div>
+                                <div class="flex justify-between mt-1 text-xs text-gray-400">
+                                    <span>1,250 XP</span>
+                                    <span>2,000 XP</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Badges Section -->
+    <section class="relative py-20 overflow-hidden">
+        <div class="absolute inset-0 z-0 math-symbol math-symbol-medal"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <h2 class="text-4xl font-bold mb-16 text-center">
+                <span class="relative inline-block">
+                    <span class="text-gradient bg-gradient-to-r from-neon-yellow to-neon-green">Your Badges</span>
+                    <span class="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-neon-yellow to-neon-green rounded-full"></span>
+                </span>
+            </h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                <!-- Badge 1 - Unlocked -->
+                <div class="dark-glass p-6 rounded-2xl border border-neon-green/30 text-center group hover:border-neon-green transition-all duration-300">
+                    <div class="badge-container mb-6">
+                        <div class="badge-outer bg-gradient-to-br from-neon-green to-neon-blue glow">
+                            <div class="badge-shine"></div>
+                            <div class="badge-inner">
+                                <span class="text-4xl">🔢</span>
+                            </div>
+                            <div class="sparkle"></div>
+                            <div class="sparkle"></div>
+                            <div class="sparkle"></div>
+                            <div class="sparkle"></div>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-neon-green">Number Ninja</h3>
+                    <p class="text-gray-400 text-sm mb-4">Complete 10 arithmetic challenges with 100% accuracy</p>
+                    <div class="text-xs text-neon-green font-semibold">UNLOCKED</div>
+                </div>
+                
+                <!-- Badge 2 - Unlocked -->
+                <div class="dark-glass p-6 rounded-2xl border border-neon-blue/30 text-center group hover:border-neon-blue transition-all duration-300">
+                    <div class="badge-container mb-6">
+                        <div class="badge-outer bg-gradient-to-br from-neon-blue to-neon-purple glow-blue">
+                            <div class="badge-shine"></div>
+                            <div class="badge-inner">
+                                <span class="text-4xl">📐</span>
+                            </div>
+                            <div class="sparkle"></div>
+                            <div class="sparkle"></div>
+                            <div class="sparkle"></div>
+                            <div class="sparkle"></div>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-neon-blue">Geometry Genius</h3>
+                    <p class="text-gray-400 text-sm mb-4">Solve 15 geometry problems correctly</p>
+                    <div class="text-xs text-neon-blue font-semibold">UNLOCKED</div>
+                </div>
+                
+                <!-- Badge 3 - Unlocked -->
+                <div class="dark-glass p-6 rounded-2xl border border-neon-pink/30 text-center group hover:border-neon-pink transition-all duration-300">
+                    <div class="badge-container mb-6">
+                        <div class="badge-outer bg-gradient-to-br from-neon-pink to-neon-purple glow-pink">
+                            <div class="badge-shine"></div>
+                            <div class="badge-inner">
+                                <span class="text-4xl">🧮</span>
+                            </div>
+                            <div class="sparkle"></div>
+                            <div class="sparkle"></div>
+                            <div class="sparkle"></div>
+                            <div class="sparkle"></div>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-neon-pink">Algebra Ace</h3>
+                    <p class="text-gray-400 text-sm mb-4">Master 5 advanced algebraic equations</p>
+                    <div class="text-xs text-neon-pink font-semibold">UNLOCKED</div>
+                </div>
+                
+                <!-- Badge 4 - Unlocked -->
+                <div class="dark-glass p-6 rounded-2xl border border-neon-yellow/30 text-center group hover:border-neon-yellow transition-all duration-300">
+                    <div class="badge-container mb-6">
+                        <div class="badge-outer bg-gradient-to-br from-neon-yellow to-neon-green glow-yellow">
+                            <div class="badge-shine"></div>
+                            <div class="badge-inner">
+                                <span class="text-4xl">📊</span>
+                            </div>
+                            <div class="sparkle"></div>
+                            <div class="sparkle"></div>
+                            <div class="sparkle"></div>
+                            <div class="sparkle"></div>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-neon-yellow">Statistics Star</h3>
+                    <p class="text-gray-400 text-sm mb-4">Complete 8 statistics and probability challenges</p>
+                    <div class="text-xs text-neon-yellow font-semibold">UNLOCKED</div>
+                </div>
+                
+                <!-- Badge 5 - Locked -->
+                <div class="dark-glass p-6 rounded-2xl border border-gray-700/30 text-center group hover:border-gray-600 transition-all duration-300 opacity-70">
+                    <div class="badge-container mb-6">
+                        <div class="badge-outer bg-gradient-to-br from-gray-700 to-gray-500">
+                            <div class="badge-inner">
+                                <span class="text-4xl">🔍</span>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-gray-400">Logic Master</h3>
+                    <p class="text-gray-500 text-sm mb-4">Solve 20 logic puzzles with at least 90% accuracy</p>
+                    <div class="text-xs text-gray-400 font-semibold">LOCKED</div>
+                    <div class="mt-2 text-xs text-gray-500">Progress: 12/20</div>
+                </div>
+                
+                <!-- Badge 6 - Locked -->
+                <div class="dark-glass p-6 rounded-2xl border border-gray-700/30 text-center group hover:border-gray-600 transition-all duration-300 opacity-70">
+                    <div class="badge-container mb-6">
+                        <div class="badge-outer bg-gradient-to-br from-gray-700 to-gray-500">
+                            <div class="badge-inner">
+                                <span class="text-4xl">📈</span>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-gray-400">Calculus Champion</h3>
+                    <p class="text-gray-500 text-sm mb-4">Master 10 calculus problems</p>
+                    <div class="text-xs text-gray-400 font-semibold">LOCKED</div>
+                    <div class="mt-2 text-xs text-gray-500">Progress: 3/10</div>
+                </div>
+                
+                <!-- Badge 7 - Locked -->
+                <div class="dark-glass p-6 rounded-2xl border border-gray-700/30 text-center group hover:border-gray-600 transition-all duration-300 opacity-70">
+                    <div class="badge-container mb-6">
+                        <div class="badge-outer bg-gradient-to-br from-gray-700 to-gray-500">
+                            <div class="badge-inner">
+                                <span class="text-4xl">🏆</span>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-gray-400">Contest Winner</h3>
+                    <p class="text-gray-500 text-sm mb-4">Win 1st place in any math contest</p>
+                    <div class="text-xs text-gray-400 font-semibold">LOCKED</div>
+                </div>
+                
+                <!-- Badge 8 - Locked -->
+                <div class="dark-glass p-6 rounded-2xl border border-gray-700/30 text-center group hover:border-gray-600 transition-all duration-300 opacity-70">
+                    <div class="badge-container mb-6">
+                        <div class="badge-outer bg-gradient-to-br from-gray-700 to-gray-500">
+                            <div class="badge-inner">
+                                <span class="text-4xl">⏱️</span>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-gray-400">Speed Demon</h3>
+                    <p class="text-gray-500 text-sm mb-4">Complete 5 challenges in under 2 minutes each</p>
+                    <div class="text-xs text-gray-400 font-semibold">LOCKED</div>
+                    <div class="mt-2 text-xs text-gray-500">Progress: 2/5</div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <a href="#" class="inline-block px-8 py-4 bg-neon-purple text-white font-bold rounded-full glow-purple hover:bg-white hover:text-neon-purple transition-all duration-300">
+                    View All Badges
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Achievements Section -->
+    <section class="relative py-20 overflow-hidden achievements-bg">
+        <div class="absolute inset-0 z-0 math-symbol math-symbol-star"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <h2 class="text-4xl font-bold mb-16 text-center">
+                <span class="relative inline-block">
+                    <span class="text-gradient bg-gradient-to-r from-neon-green to-neon-blue">Recent Achievements</span>
+                    <span class="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-neon-green to-neon-blue rounded-full"></span>
+                </span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Achievement 1 -->
+                <div class="trophy-card dark-glass p-6 rounded-2xl border border-neon-green/30 relative overflow-hidden">
+                    <div class="ribbon">
+                        <div class="ribbon-content" style="--ribbon-color: #00F5A0;">NEW</div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="w-16 h-16 rounded-xl bg-neon-green/20 flex items-center justify-center text-neon-green mr-6 flex-shrink-0">
+                            <span class="text-4xl">🏅</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2 text-neon-green">Perfect Score!</h3>
+                            <p class="text-gray-300 mb-3">You scored 100% on the Advanced Algebra Quiz</p>
+                            <div class="flex items-center text-sm text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>2 days ago</span>
+                            </div>
+                            <div class="mt-4">
+                                <span class="inline-block px-3 py-1 bg-neon-green/20 text-neon-green text-xs rounded-full">+150 XP</span>
+                                <span class="inline-block px-3 py-1 bg-neon-blue/20 text-neon-blue text-xs rounded-full ml-2">Algebra Ace Badge</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Achievement 2 -->
+                <div class="trophy-card dark-glass p-6 rounded-2xl border border-neon-blue/30 relative overflow-hidden">
+                    <div class="flex items-start">
+                        <div class="w-16 h-16 rounded-xl bg-neon-blue/20 flex items-center justify-center text-neon-blue mr-6 flex-shrink-0">
+                            <span class="text-4xl">🔍</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2 text-neon-blue">Problem Solver</h3>
+                            <p class="text-gray-300 mb-3">You solved 5 challenging geometry problems in a row</p>
+                            <div class="flex items-center text-sm text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>1 week ago</span>
+                            </div>
+                            <div class="mt-4">
+                                <span class="inline-block px-3 py-1 bg-neon-blue/20 text-neon-blue text-xs rounded-full">+100 XP</span>
+                                <span class="inline-block px-3 py-1 bg-neon-green/20 text-neon-green text-xs rounded-full ml-2">Geometry Genius Badge</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Achievement 3 -->
+                <div class="trophy-card dark-glass p-6 rounded-2xl border border-neon-pink/30 relative overflow-hidden">
+                    <div class="flex items-start">
+                        <div class="w-16 h-16 rounded-xl bg-neon-pink/20 flex items-center justify-center text-neon-pink mr-6 flex-shrink-0">
+                            <span class="text-4xl">⚡</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2 text-neon-pink">Quick Thinker</h3>
+                            <p class="text-gray-300 mb-3">You completed the Number Challenge in record time</p>
+                            <div class="flex items-center text-sm text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>2 weeks ago</span>
+                            </div>
+                            <div class="mt-4">
+                                <span class="inline-block px-3 py-1 bg-neon-pink/20 text-neon-pink text-xs rounded-full">+75 XP</span>
+                                <span class="inline-block px-3 py-1 bg-neon-yellow/20 text-neon-yellow text-xs rounded-full ml-2">Speed Bonus</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Achievement 4 -->
+                <div class="trophy-card dark-glass p-6 rounded-2xl border border-neon-yellow/30 relative overflow-hidden">
+                    <div class="flex items-start">
+                        <div class="w-16 h-16 rounded-xl bg-neon-yellow/20 flex items-center justify-center text-neon-yellow mr-6 flex-shrink-0">
+                            <span class="text-4xl">📊</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2 text-neon-yellow">Data Master</h3>
+                            <p class="text-gray-300 mb-3">You completed all statistics challenges with over 90% accuracy</p>
+                            <div class="flex items-center text-sm text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>3 weeks ago</span>
+                            </div>
+                            <div class="mt-4">
+                                <span class="inline-block px-3 py-1 bg-neon-yellow/20 text-neon-yellow text-xs rounded-full">+125 XP</span>
+                                <span class="inline-block px-3 py-1 bg-neon-yellow/20 text-neon-yellow text-xs rounded-full ml-2">Statistics Star Badge</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <a href="#" class="inline-block px-8 py-4 bg-neon-green text-dark-900 font-bold rounded-full glow hover:bg-white hover:text-dark-900 transition-all duration-300">
+                    View Achievement History
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leaderboard Section -->
+    <section class="relative py-20 overflow-hidden leaderboard-bg">
+        <div class="absolute inset-0 z-0 math-symbol math-symbol-infinity"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <h2 class="text-4xl font-bold mb-16 text-center">
+                <span class="relative inline-block">
+                    <span class="text-gradient bg-gradient-to-r from-neon-pink to-neon-yellow">Leaderboard</span>
+                    <span class="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-neon-pink to-neon-yellow rounded-full"></span>
+                </span>
+            </h2>
+            
+            <div class="dark-glass p-8 rounded-2xl border border-neon-pink/30 max-w-4xl mx-auto">
+                <div class="flex justify-between items-center mb-8">
+                    <h3 class="text-2xl font-semibold text-neon-pink">Top Performers</h3>
+                    <div class="flex space-x-2">
+                        <button class="px-4 py-2 bg-neon-pink text-white rounded-lg text-sm">Weekly</button>
+                        <button class="px-4 py-2 bg-dark-700 text-gray-300 rounded-lg text-sm hover:bg-dark-800 transition-colors duration-300">Monthly</button>
+                        <button class="px-4 py-2 bg-dark-700 text-gray-300 rounded-lg text-sm hover:bg-dark-800 transition-colors duration-300">All Time</button>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <!-- Top 3 Podium -->
+                    <div class="flex flex-col md:flex-row justify-center items-end mb-12 space-y-6 md:space-y-0">
+                        <!-- 2nd Place -->
+                        <div class="flex flex-col items-center md:order-1 md:pb-8">
+                            <div class="w-16 h-16 rounded-full bg-neon-blue/20 border-2 border-neon-blue flex items-center justify-center mb-2">
+                                <span class="text-2xl">👩‍🎓</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-neon-blue font-bold">Sarah L.</div>
+                                <div class="text-gray-400 text-sm">2,850 pts</div>
+                            </div>
+                            <div class="w-full h-32 bg-neon-blue/20 rounded-t-lg mt-4 relative flex items-end justify-center">
+                                <div class="absolute top-2 left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full bg-neon-blue flex items-center justify-center text-dark-900 font-bold">2</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 1st Place -->
+                        <div class="flex flex-col items-center md:order-2 md:mx-6">
+                            <div class="w-20 h-20 rounded-full bg-neon-yellow/20 border-2 border-neon-yellow flex items-center justify-center mb-2 relative">
+                                <span class="text-3xl">🧑‍🎓</span>
+                                <div class="absolute -top-4 -right-4 w-8 h-8 rounded-full bg-neon-yellow flex items-center justify-center text-dark-900 font-bold">👑</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-neon-yellow font-bold">Alex M.</div>
+                                <div class="text-gray-400 text-sm">3,120 pts</div>
+                            </div>
+                            <div class="w-full h-40 bg-neon-yellow/20 rounded-t-lg mt-4 relative flex items-end justify-center">
+                                <div class="absolute top-2 left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full bg-neon-yellow flex items-center justify-center text-dark-900 font-bold">1</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 3rd Place -->
+                        <div class="flex flex-col items-center md:order-3 md:pb-16">
+                            <div class="w-16 h-16 rounded-full bg-neon-green/20 border-2 border-neon-green flex items-center justify-center mb-2">
+                                <span class="text-2xl">👨‍🎓</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-neon-green font-bold">Mike T.</div>
+                                <div class="text-gray-400 text-sm">2,540 pts</div>
+                            </div>
+                            <div class="w-full h-24 bg-neon-green/20 rounded-t-lg mt-4 relative flex items-end justify-center">
+                                <div class="absolute top-2 left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full bg-neon-green flex items-center justify-center text-dark-900 font-bold">3</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Leaderboard List -->
+                    <div class="space-y-4">
+                        <!-- 4th Place -->
+                        <div class="flex items-center p-4 bg-dark-800/50 rounded-xl hover:bg-dark-700/50 transition-colors duration-300">
+                            <div class="w-8 h-8 rounded-full bg-dark-700 flex items-center justify-center text-white font-bold mr-4">4</div>
+                            <div class="w-10 h-10 rounded-full bg-neon-purple/20 flex items-center justify-center mr-4">
+                                <span class="text-xl">👧</span>
+                            </div>
+                            <div class="flex-grow">
+                                <div class="font-medium">Emma R.</div>
+                                <div class="text-gray-400 text-sm">Algebra Master</div>
+                            </div>
+                            <div class="text-neon-purple font-bold">2,340 pts</div>
+                        </div>
+                        
+                        <!-- 5th Place -->
+                        <div class="flex items-center p-4 bg-dark-800/50 rounded-xl hover:bg-dark-700/50 transition-colors duration-300">
+                            <div class="w-8 h-8 rounded-full bg-dark-700 flex items-center justify-center text-white font-bold mr-4">5</div>
+                            <div class="w-10 h-10 rounded-full bg-neon-blue/20 flex items-center justify-center mr-4">
+                                <span class="text-xl">👦</span>
+                            </div>
+                            <div class="flex-grow">
+                                <div class="font-medium">David K.</div>
+                                <div class="text-gray-400 text-sm">Geometry Pro</div>
+                            </div>
+                            <div class="text-neon-blue font-bold">2,120 pts</div>
+                        </div>
+                        
+                        <!-- 6th Place -->
+                        <div class="flex items-center p-4 bg-dark-800/50 rounded-xl hover:bg-dark-700/50 transition-colors duration-300">
+                            <div class="w-8 h-8 rounded-full bg-dark-700 flex items-center justify-center text-white font-bold mr-4">6</div>
+                            <div class="w-10 h-10 rounded-full bg-neon-green/20 flex items-center justify-center mr-4">
+                                <span class="text-xl">👩</span>
+                            </div>
+                            <div class="flex-grow">
+                                <div class="font-medium">Lisa J.</div>
+                                <div class="text-gray-400 text-sm">Number Wizard</div>
+                            </div>
+                            <div class="text-neon-green font-bold">1,980 pts</div>
+                        </div>
+                        
+                        <!-- 7th Place -->
+                        <div class="flex items-center p-4 bg-dark-800/50 rounded-xl hover:bg-dark-700/50 transition-colors duration-300">
+                            <div class="w-8 h-8 rounded-full bg-dark-700 flex items-center justify-center text-white font-bold mr-4">7</div>
+                            <div class="w-10 h-10 rounded-full bg-neon-pink/20 flex items-center justify-center mr-4">
+                                <span class="text-xl">🧑</span>
+                            </div>
+                            <div class="flex-grow">
+                                <div class="font-medium">Taylor P.</div>
+                                <div class="text-gray-400 text-sm">Statistics Expert</div>
+                            </div>
+                            <div class="text-neon-pink font-bold">1,750 pts</div>
+                        </div>
+                        
+                        <!-- 8th Place (Current User) -->
+                        <div class="flex items-center p-4 bg-neon-purple/10 rounded-xl border border-neon-purple">
+                            <div class="w-8 h-8 rounded-full bg-neon-purple flex items-center justify-center text-white font-bold mr-4">8</div>
+                            <div class="w-10 h-10 rounded-full bg-neon-purple/20 flex items-center justify-center mr-4">
+                                <span class="text-xl">👨‍🎓</span>
+                            </div>
+                            <div class="flex-grow">
+                                <div class="font-medium">John Doe (You)</div>
+                                <div class="text-gray-400 text-sm">Math Explorer</div>
+                            </div>
+                            <div class="text-neon-purple font-bold">1,250 pts</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <a href="#" class="inline-block px-6 py-3 bg-neon-pink/20 text-neon-pink rounded-lg hover:bg-neon-pink/30 transition-colors duration-300">
+                        View Full Leaderboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rewards Shop Section -->
+    <section class="relative py-20 overflow-hidden">
+        <div class="absolute inset-0 z-0 math-symbol math-symbol-delta"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <h2 class="text-4xl font-bold mb-16 text-center">
+                <span class="relative inline-block">
+                    <span class="text-gradient bg-gradient-to-r from-neon-blue to-neon-purple">Rewards Shop</span>
+                    <span class="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-neon-blue to-neon-purple rounded-full"></span>
+                </span>
+            </h2>
+            
+            <div class="mb-8 text-center">
+                <div class="inline-block dark-glass px-6 py-3 rounded-full">
+                    <span class="text-neon-yellow font-bold text-xl mr-2">1,250</span>
+                    <span class="text-gray-300">Available Points</span>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Reward Item 1 -->
+                <div class="trophy-card dark-glass p-6 rounded-2xl border border-neon-green/30 hover:border-neon-green transition-all duration-300">
+                    <div class="mb-4 h-48 bg-dark-800 rounded-xl overflow-hidden relative">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-6xl">📚</span>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-neon-green/80 text-dark-900 font-bold text-center py-2">
+                            AVAILABLE
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-neon-green">Math E-Book Bundle</h3>
+                    <p class="text-gray-400 text-sm mb-4">A collection of premium math e-books to help you master any topic</p>
+                    <div class="flex justify-between items-center">
+                        <div class="text-neon-yellow font-bold">500 points</div>
+                        <button class="px-4 py-2 bg-neon-green text-dark-900 rounded-lg font-medium hover:bg-white transition-colors duration-300">Redeem</button>
+                    </div>
+                </div>
+                
+                <!-- Reward Item 2 -->
+                <div class="trophy-card dark-glass p-6 rounded-2xl border border-neon-blue/30 hover:border-neon-blue transition-all duration-300">
+                    <div class="mb-4 h-48 bg-dark-800 rounded-xl overflow-hidden relative">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-6xl">🎮</span>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-neon-blue/80 text-dark-900 font-bold text-center py-2">
+                            AVAILABLE
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-neon-blue">Premium Game Access</h3>
+                    <p class="text-gray-400 text-sm mb-4">Unlock premium math games with advanced challenges and features</p>
+                    <div class="flex justify-between items-center">
+                        <div class="text-neon-yellow font-bold">750 points</div>
+                        <button class="px-4 py-2 bg-neon-blue text-dark-900 rounded-lg font-medium hover:bg-white transition-colors duration-300">Redeem</button>
+                    </div>
+                </div>
+                
+                <!-- Reward Item 3 -->
+                <div class="trophy-card dark-glass p-6 rounded-2xl border border-neon-pink/30 hover:border-neon-pink transition-all duration-300">
+                    <div class="mb-4 h-48 bg-dark-800 rounded-xl overflow-hidden relative">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-6xl">👨‍🏫</span>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-neon-pink/80 text-dark-900 font-bold text-center py-2">
+                            AVAILABLE
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-neon-pink">1-on-1 Tutoring Session</h3>
+                    <p class="text-gray-400 text-sm mb-4">30-minute private tutoring session with a math expert</p>
+                    <div class="flex justify-between items-center">
+                        <div class="text-neon-yellow font-bold">1,000 points</div>
+                        <button class="px-4 py-2 bg-neon-pink text-dark-900 rounded-lg font-medium hover:bg-white transition-colors duration-300">Redeem</button>
+                    </div>
+                </div>
+                
+                <!-- Reward Item 4 -->
+                <div class="trophy-card dark-glass p-6 rounded-2xl border border-neon-yellow/30 hover:border-neon-yellow transition-all duration-300">
+                    <div class="mb-4 h-48 bg-dark-800 rounded-xl overflow-hidden relative">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-6xl">🏆</span>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-neon-yellow/80 text-dark-900 font-bold text-center py-2">
+                            PREMIUM
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-neon-yellow">Custom Profile Theme</h3>
+                    <p class="text-gray-400 text-sm mb-4">Unlock exclusive profile themes and customization options</p>
+                    <div class="flex justify-between items-center">
+                        <div class="text-neon-yellow font-bold">1,500 points</div>
+                        <button class="px-4 py-2 bg-dark-700 text-gray-400 rounded-lg font-medium cursor-not-allowed">Need 250 more</button>
+                    </div>
+                </div>
+                
+                <!-- Reward Item 5 -->
+                <div class="trophy-card dark-glass p-6 rounded-2xl border border-neon-purple/30 hover:border-neon-purple transition-all duration-300">
+                    <div class="mb-4 h-48 bg-dark-800 rounded-xl overflow-hidden relative">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-6xl">🎓</span>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-neon-purple/80 text-dark-900 font-bold text-center py-2">
+                            PREMIUM
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-neon-purple">Certificate of Excellence</h3>
+                    <p class="text-gray-400 text-sm mb-4">Receive a personalized certificate of mathematical excellence</p>
+                    <div class="flex justify-between items-center">
+                        <div class="text-neon-yellow font-bold">2,000 points</div>
+                        <button class="px-4 py-2 bg-dark-700 text-gray-400 rounded-lg font-medium cursor-not-allowed">Need 750 more</button>
+                    </div>
+                </div>
+                
+                <!-- Reward Item 6 -->
+                <div class="trophy-card dark-glass p-6 rounded-2xl border border-neon-green/30 hover:border-neon-green transition-all duration-300">
+                    <div class="mb-4 h-48 bg-dark-800 rounded-xl overflow-hidden relative">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-6xl">🎁</span>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-neon-green/80 text-dark-900 font-bold text-center py-2">
+                            PREMIUM
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-neon-green">Mystery Box</h3>
+                    <p class="text-gray-400 text-sm mb-4">A surprise package with math-themed merchandise and goodies</p>
+                    <div class="flex justify-between items-center">
+                        <div class="text-neon-yellow font-bold">3,000 points</div>
+                        <button class="px-4 py-2 bg-dark-700 text-gray-400 rounded-lg font-medium cursor-not-allowed">Need 1,750 more</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <a href="#" class="inline-block px-8 py-4 bg-neon-purple text-white font-bold rounded-full glow-purple hover:bg-white hover:text-neon-purple transition-all duration-300">
+                    View All Rewards
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Coming Soon Section -->
+    <section class="relative py-20 overflow-hidden">
+        <div class="absolute inset-0 z-0 math-symbol math-symbol-integral"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <h2 class="text-4xl font-bold mb-16 text-center">
+                <span class="relative inline-block">
+                    <span class="text-gradient bg-gradient-to-r from-neon-yellow to-neon-pink">Coming Soon</span>
+                    <span class="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-neon-yellow to-neon-pink rounded-full"></span>
+                </span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Coming Soon Feature 1 -->
+                <div class="dark-glass p-8 rounded-2xl border border-neon-blue/30">
+                    <div class="w-16 h-16 rounded-xl bg-neon-blue/20 flex items-center justify-center text-neon-blue mb-6">
+                        <span class="text-4xl">🏫</span>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4 text-neon-blue">School Competitions</h3>
+                    <p class="text-gray-300 mb-6">Compete against other schools in regional and national math tournaments. Represent your institution and win collective rewards.</p>
+                    <div class="inline-block px-4 py-2 bg-neon-blue/20 text-neon-blue text-sm rounded-full">
+                        Coming Fall 2024
+                    </div>
+                </div>
+                
+                <!-- Coming Soon Feature 2 -->
+                <div class="dark-glass p-8 rounded-2xl border border-neon-pink/30">
+                    <div class="w-16 h-16 rounded-xl bg-neon-pink/20 flex items-center justify-center text-neon-pink mb-6">
+                        <span class="text-4xl">🌟</span>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4 text-neon-pink">Premium Membership</h3>
+                    <p class="text-gray-300 mb-6">Unlock exclusive challenges, personalized learning paths, and premium rewards with our upcoming membership program.</p>
+                    <div class="inline-block px-4 py-2 bg-neon-pink/20 text-neon-pink text-sm rounded-full">
+                        Coming Winter 2024
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative py-16 overflow-hidden">
+        <div class="absolute inset-0 bg-dark-900 z-0"></div>
+        <div class="absolute bottom-0 w-full h-1 bg-gradient-to-r from-neon-green via-neon-blue to-neon-pink"></div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-8 md:mb-0">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="relative w-12 h-12 flex items-center justify-center bg-neon-green rounded-lg glow transform rotate-12">
+                            <span class="text-dark-900 text-2xl font-bold font-mono transform -rotate-12">M</span>
+                        </div>
+                        <div class="text-2xl font-bold">
+                            <span class="text-neon-green">Math</span>
+                            <span class="text-white">Challenges</span>
+                            <span class="text-neon-pink">Squad</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-400">Making math fun and rewarding for everyone.</p>
+                </div>
+                
+                <div class="text-center md:text-right">
+                    <p class="text-gray-400">© 2024 Math Challenges Squad. All rights reserved.</p>
+                    <p class="text-gray-400 mt-2">Babu Banarasi Das University, Lucknow</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Mobile Menu Toggle -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Close mobile menu when clicking on a link
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock content %}
+    

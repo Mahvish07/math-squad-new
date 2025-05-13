@@ -1,0 +1,1209 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+<title>Math Challenges Squad</title>
+{% endblock title %}
+    
+    
+{% block content %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications & Reminders | Math Challenges Squad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neon: {
+                            pink: '#FF2D95',
+                            blue: '#4D61FC',
+                            green: '#00F5A0',
+                            yellow: '#FFC700',
+                            purple: '#9C27B0',
+                        },
+                        dark: {
+                            900: '#0F172A',
+                            800: '#1E293B',
+                            700: '#334155',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        mono: ['Space Mono', 'monospace'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-slow': 'float 8s ease-in-out infinite',
+                        'float-fast': 'float 4s ease-in-out infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'ping-slow': 'ping 3s cubic-bezier(0, 0, 0.2, 1) infinite',
+                        'bounce-slow': 'bounce 3s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.2);
+            }
+            .text-shadow-glow {
+                text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .clip-path-slant {
+                clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            }
+            .clip-path-wave {
+                clip-path: polygon(0 0, 100% 0, 100% 95%, 50% 100%, 0 95%);
+            }
+            .math-bg {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M50 0v20h20V0H50zm0 20v20h20V20H50zm0-20H30v20h20V0zm0 40v20h20V40H50zm0 20v20h20V60H50zm0-20H30v20h20V40zm0 40H30v20h20V80zm-20 0H10v20h20V80zm0-20H10v20h20V60zm0-20H10v20h20V40zm0-20H10v20h20V20zm0-20H10v20h20V0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            }
+            .math-symbol::before {
+                content: "∑";
+                position: absolute;
+                font-size: 20rem;
+                opacity: 0.03;
+                top: -5rem;
+                left: -5rem;
+                transform: rotate(-15deg);
+                font-family: serif;
+            }
+            .math-symbol-pi::before {
+                content: "π";
+            }
+            .math-symbol-infinity::before {
+                content: "∞";
+            }
+            .math-symbol-sqrt::before {
+                content: "√";
+            }
+            .math-symbol-delta::before {
+                content: "Δ";
+            }
+            .math-symbol-integral::before {
+                content: "∫";
+            }
+            .glow {
+                box-shadow: 0 0 15px rgba(0, 245, 160, 0.5), 0 0 30px rgba(0, 245, 160, 0.3);
+            }
+            .glow-pink {
+                box-shadow: 0 0 15px rgba(255, 45, 149, 0.5), 0 0 30px rgba(255, 45, 149, 0.3);
+            }
+            .glow-blue {
+                box-shadow: 0 0 15px rgba(77, 97, 252, 0.5), 0 0 30px rgba(77, 97, 252, 0.3);
+            }
+            .glow-yellow {
+                box-shadow: 0 0 15px rgba(255, 199, 0, 0.5), 0 0 30px rgba(255, 199, 0, 0.3);
+            }
+            .glow-purple {
+                box-shadow: 0 0 15px rgba(156, 39, 176, 0.5), 0 0 30px rgba(156, 39, 176, 0.3);
+            }
+            .glass {
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            .dark-glass {
+                background: rgba(15, 23, 42, 0.966);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .timeline-line {
+                content: '';
+                position: absolute;
+                width: 6px;
+                background-color: theme('colors.neon.green');
+                top: 0;
+                bottom: 0;
+                left: 50%;
+                margin-left: -3px;
+                border-radius: 999px;
+            }
+            .grid-pattern {
+                background-size: 30px 30px;
+                background-image: 
+                    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            }
+            .form-input {
+                background: rgba(15, 23, 42, 0.5);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: white;
+                transition: all 0.3s ease;
+            }
+            .form-input:focus {
+                border-color: theme('colors.neon.green');
+                box-shadow: 0 0 0 2px rgba(0, 245, 160, 0.2);
+                outline: none;
+            }
+            .form-input::placeholder {
+                color: rgba(255, 255, 255, 0.4);
+            }
+            
+            /* Notification Background Style */
+            .notification-bg {
+                background-image: url('https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2070&auto=format&fit=crop');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                position: relative;
+            }
+            .notification-bg::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(to bottom right, 
+                    rgba(15, 23, 42, 0.9), 
+                    rgba(156, 39, 176, 0.3));
+                z-index: 0;
+            }
+            
+            /* Notification Badge */
+            .notification-badge {
+                position: absolute;
+                top: -5px;
+                right: -5px;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                background-color: theme('colors.neon.pink');
+                color: white;
+                font-size: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+            }
+            
+            /* Notification Dot */
+            .notification-dot {
+                position: relative;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                margin-right: 8px;
+            }
+            
+            /* Notification Dot Colors */
+            .dot-high {
+                background-color: theme('colors.neon.pink');
+                box-shadow: 0 0 10px theme('colors.neon.pink');
+            }
+            .dot-medium {
+                background-color: theme('colors.neon.yellow');
+                box-shadow: 0 0 10px theme('colors.neon.yellow');
+            }
+            .dot-low {
+                background-color: theme('colors.neon.green');
+                box-shadow: 0 0 10px theme('colors.neon.green');
+            }
+            
+            /* Notification Pulse Animation */
+            .pulse-dot::before {
+                content: '';
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+                opacity: 0.7;
+            }
+            
+            .dot-high::before {
+                background-color: theme('colors.neon.pink');
+            }
+            .dot-medium::before {
+                background-color: theme('colors.neon.yellow');
+            }
+            .dot-low::before {
+                background-color: theme('colors.neon.green');
+            }
+            
+            /* Custom Switch */
+            .switch {
+                position: relative;
+                display: inline-block;
+                width: 50px;
+                height: 24px;
+            }
+            
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+            
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(255, 255, 255, 0.2);
+                transition: .4s;
+                border-radius: 24px;
+            }
+            
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 18px;
+                width: 18px;
+                left: 3px;
+                bottom: 3px;
+                background-color: white;
+                transition: .4s;
+                border-radius: 50%;
+            }
+            
+            input:checked + .slider {
+                background-color: theme('colors.neon.purple');
+                box-shadow: 0 0 10px theme('colors.neon.purple');
+            }
+            
+            input:checked + .slider:before {
+                transform: translateX(26px);
+            }
+            
+            /* Notification Card Hover Effects */
+            .notification-card {
+                transition: all 0.3s ease;
+                transform: translateY(0);
+            }
+            
+            .notification-card:hover {
+                transform: translateY(-5px);
+            }
+            
+            /* Reminder Card */
+            .reminder-card {
+                position: relative;
+                overflow: hidden;
+                transition: all 0.3s ease;
+            }
+            
+            .reminder-card::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 4px;
+                background: linear-gradient(to right, theme('colors.neon.blue'), theme('colors.neon.purple'));
+            }
+            
+            .reminder-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            }
+            
+            /* Time Picker */
+            .time-picker {
+                background: rgba(15, 23, 42, 0.5);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: white;
+                border-radius: 0.5rem;
+                padding: 0.5rem;
+                appearance: none;
+                outline: none;
+            }
+            
+            .time-picker:focus {
+                border-color: theme('colors.neon.green');
+                box-shadow: 0 0 0 2px rgba(0, 245, 160, 0.2);
+            }
+            
+            /* Date Picker */
+            .date-picker {
+                background: rgba(15, 23, 42, 0.5);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: white;
+                border-radius: 0.5rem;
+                padding: 0.5rem;
+                appearance: none;
+                outline: none;
+            }
+            
+            .date-picker:focus {
+                border-color: theme('colors.neon.green');
+                box-shadow: 0 0 0 2px rgba(0, 245, 160, 0.2);
+            }
+            
+            /* Custom Scrollbar */
+            .custom-scrollbar::-webkit-scrollbar {
+                width: 8px;
+            }
+            
+            .custom-scrollbar::-webkit-scrollbar-track {
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 10px;
+            }
+            
+            .custom-scrollbar::-webkit-scrollbar-thumb {
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 10px;
+            }
+            
+            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                background: rgba(255, 255, 255, 0.3);
+            }
+        }
+    </style>
+</head>
+<body class="font-sans bg-dark-900 text-white overflow-x-hidden">
+    <!-- Floating Math Symbols (Decorative) -->
+    <div class="fixed w-full h-full pointer-events-none z-0 opacity-30 overflow-hidden">
+        <div class="absolute text-6xl text-neon-pink animate-float-slow" style="top: 15%; left: 10%;">∑</div>
+        <div class="absolute text-6xl text-neon-blue animate-float" style="top: 30%; left: 85%;">π</div>
+        <div class="absolute text-6xl text-neon-green animate-float-fast" style="top: 70%; left: 20%;">∞</div>
+        <div class="absolute text-6xl text-neon-yellow animate-float-slow" style="top: 60%; left: 80%;">√</div>
+        <div class="absolute text-6xl text-neon-purple animate-float" style="top: 85%; left: 40%;">∫</div>
+        <div class="absolute text-6xl text-neon-pink animate-float-fast" style="top: 10%; left: 60%;">Δ</div>
+        <div class="absolute text-6xl text-neon-blue animate-float-slow" style="top: 45%; left: 5%;">±</div>
+        <div class="absolute text-6xl text-neon-green animate-float" style="top: 25%; left: 30%;">÷</div>
+        <div class="absolute text-6xl text-neon-yellow animate-float-fast" style="top: 75%; left: 70%;">×</div>
+    </div>
+
+    <!-- Grid Background -->
+    <div class="fixed inset-0 grid-pattern opacity-30 z-0"></div>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 glass">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="relative w-12 h-12 flex items-center justify-center bg-neon-green rounded-lg glow transform rotate-12">
+                        <span class="text-dark-900 text-2xl font-bold font-mono transform -rotate-12">M</span>
+                    </div>
+                    <div class="text-2xl font-bold">
+                        <span class="text-neon-green">Math</span>
+                        <span class="text-white">Challenges</span>
+                        <span class="text-neon-pink">Squad</span>
+                    </div>
+                </div>
+                <nav class="hidden md:block">
+                    <ul class="flex space-x-8">
+                        <li><a href="#" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Home
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            About
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Features
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Modules
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#" class="text-neon-purple transition-colors duration-300 relative group">
+                            Notifications
+                            <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-neon-purple"></span>
+                        </a></li>
+                        <li><a href="#" class="hover:text-neon-green transition-colors duration-300 relative group">
+                            Contact
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                        <li><a href="#" class="hover:text-neon-pink transition-colors duration-300 relative group">
+                            Login
+                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-pink transition-all duration-300 group-hover:w-full"></span>
+                        </a></li>
+                    </ul>
+                </nav>
+                <div class="md:hidden">
+                    <button class="text-white focus:outline-none" id="mobile-menu-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div class="md:hidden hidden mt-4 p-4 dark-glass rounded-xl" id="mobile-menu">
+                <ul class="space-y-4">
+                    <li><a href="#" class="block py-2 hover:text-neon-green transition-colors duration-300">Home</a></li>
+                    <li><a href="#" class="block py-2 hover:text-neon-green transition-colors duration-300">About</a></li>
+                    <li><a href="#" class="block py-2 hover:text-neon-green transition-colors duration-300">Features</a></li>
+                    <li><a href="#" class="block py-2 hover:text-neon-green transition-colors duration-300">Modules</a></li>
+                    <li><a href="#" class="block py-2 text-neon-purple">Notifications</a></li>
+                    <li><a href="#" class="block py-2 hover:text-neon-green transition-colors duration-300">Contact</a></li>
+                    <li><a href="#" class="block py-2 hover:text-neon-pink transition-colors duration-300">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Notification & Reminder Hero Section -->
+    <section class="relative py-20 overflow-hidden notification-bg">
+        <div class="absolute inset-0 z-0 math-symbol math-symbol-delta"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-12 md:mb-0">
+                    <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                        <span class="block text-gradient bg-gradient-to-r from-neon-purple to-neon-pink">Notifications</span>
+                        <span class="block text-gradient bg-gradient-to-r from-neon-pink to-neon-blue">&</span>
+                        <span class="block text-gradient bg-gradient-to-r from-neon-blue to-neon-purple">Reminders</span>
+                    </h1>
+                    <p class="text-xl mb-8 text-gray-300">Stay on top of your math challenges with personalized notifications and reminders. Never miss a contest, deadline, or important update.</p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <a href="#notifications" class="relative overflow-hidden group px-8 py-4 bg-neon-purple text-white font-bold rounded-full glow-purple transition-all duration-300 hover:bg-white hover:text-neon-purple text-center">
+                            <span class="relative z-10">View Notifications</span>
+                            <span class="absolute inset-0 w-0 bg-white transition-all duration-300 group-hover:w-full"></span>
+                        </a>
+                        <a href="#reminders" class="px-8 py-4 bg-transparent border-2 border-neon-pink text-neon-pink font-bold rounded-full hover:bg-neon-pink hover:text-dark-900 hover:glow-pink transition-all duration-300 text-center">
+                            Set Reminders
+                        </a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 relative">
+                    <!-- Notification Illustration -->
+                    <div class="relative w-full h-96">
+                        <!-- Main Circle -->
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full border-4 border-neon-purple opacity-70 animate-spin-slow"></div>
+                        
+                        <!-- Notification Icons -->
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 animate-spin-slow" style="animation-duration: 15s;">
+                            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-neon-pink rounded-lg glow-pink flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 animate-spin-slow" style="animation-duration: 10s; animation-direction: reverse;">
+                            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-neon-blue rounded-full glow-blue flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 animate-spin-slow" style="animation-duration: 20s;">
+                            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-neon-yellow rounded-lg glow-yellow flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <!-- Center Element -->
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-dark-800 rounded-full border-4 border-neon-purple glow-purple flex items-center justify-center animate-pulse-slow">
+                            <span class="relative">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-neon-purple" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                                <span class="absolute -top-1 -right-1 w-4 h-4 bg-neon-pink rounded-full animate-ping-slow"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Notifications Section -->
+    <section id="notifications" class="relative py-16 overflow-hidden">
+        <div class="absolute inset-0 z-0 math-symbol math-symbol-infinity"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <h2 class="text-4xl font-bold mb-12 text-center">
+                <span class="relative inline-block">
+                    <span class="text-gradient bg-gradient-to-r from-neon-purple to-neon-pink">Your Notifications</span>
+                    <span class="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-neon-purple to-neon-pink rounded-full"></span>
+                </span>
+            </h2>
+            
+            <!-- Notification Controls -->
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+                <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                    <button class="px-6 py-3 bg-neon-purple/20 text-neon-purple border border-neon-purple/30 rounded-lg hover:bg-neon-purple hover:text-white transition-all duration-300">
+                        All
+                    </button>
+                    <button class="px-6 py-3 bg-dark-800/50 text-white border border-white/10 rounded-lg hover:bg-neon-pink/20 hover:text-neon-pink hover:border-neon-pink/30 transition-all duration-300">
+                        Unread
+                    </button>
+                    <button class="px-6 py-3 bg-dark-800/50 text-white border border-white/10 rounded-lg hover:bg-neon-blue/20 hover:text-neon-blue hover:border-neon-blue/30 transition-all duration-300">
+                        Important
+                    </button>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="flex items-center space-x-2 px-4 py-2 bg-dark-800/50 text-white border border-white/10 rounded-lg hover:bg-neon-green/20 hover:text-neon-green hover:border-neon-green/30 transition-all duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                        </svg>
+                        <span>More</span>
+                    </button>
+                    <button class="flex items-center space-x-2 px-4 py-2 bg-neon-pink/20 text-neon-pink border border-neon-pink/30 rounded-lg hover:bg-neon-pink hover:text-white transition-all duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        <span>Clear All</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Notifications List -->
+            <div class="max-h-[600px] overflow-y-auto custom-scrollbar pr-2">
+                <div class="space-y-4">
+                    <!-- High Priority Notification -->
+                    <div class="notification-card dark-glass p-6 rounded-xl border border-neon-pink/30 hover:border-neon-pink/60 transition-all duration-300">
+                        <div class="flex items-start">
+                            <div class="notification-dot dot-high pulse-dot mt-1.5"></div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="text-xl font-semibold text-neon-pink">Math Contest Reminder</h3>
+                                    <span class="text-sm text-gray-400">10 minutes ago</span>
+                                </div>
+                                <p class="text-gray-300 mb-3">The "Advanced Algebra Challenge" starts in 30 minutes! Make sure you're prepared and ready to compete.</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex space-x-2">
+                                        <button class="px-4 py-1.5 bg-neon-pink/20 text-neon-pink text-sm rounded-lg hover:bg-neon-pink hover:text-white transition-all duration-300">
+                                            Join Now
+                                        </button>
+                                        <button class="px-4 py-1.5 bg-dark-700/50 text-gray-300 text-sm rounded-lg hover:bg-dark-700 transition-all duration-300">
+                                            Dismiss
+                                        </button>
+                                    </div>
+                                    <div class="flex items-center text-gray-400 text-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span>High Priority</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Medium Priority Notification -->
+                    <div class="notification-card dark-glass p-6 rounded-xl border border-neon-yellow/30 hover:border-neon-yellow/60 transition-all duration-300">
+                        <div class="flex items-start">
+                            <div class="notification-dot dot-medium pulse-dot mt-1.5"></div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="text-xl font-semibold text-neon-yellow">New Achievement Unlocked</h3>
+                                    <span class="text-sm text-gray-400">2 hours ago</span>
+                                </div>
+                                <p class="text-gray-300 mb-3">Congratulations! You've earned the "Geometry Master" badge by completing 10 geometry challenges with a perfect score.</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex space-x-2">
+                                        <button class="px-4 py-1.5 bg-neon-yellow/20 text-neon-yellow text-sm rounded-lg hover:bg-neon-yellow hover:text-dark-900 transition-all duration-300">
+                                            View Badge
+                                        </button>
+                                        <button class="px-4 py-1.5 bg-dark-700/50 text-gray-300 text-sm rounded-lg hover:bg-dark-700 transition-all duration-300">
+                                            Dismiss
+                                        </button>
+                                    </div>
+                                    <div class="flex items-center text-gray-400 text-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span>Medium Priority</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Low Priority Notification -->
+                    <div class="notification-card dark-glass p-6 rounded-xl border border-neon-green/30 hover:border-neon-green/60 transition-all duration-300">
+                        <div class="flex items-start">
+                            <div class="notification-dot dot-low pulse-dot mt-1.5"></div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="text-xl font-semibold text-neon-green">New Practice Problems</h3>
+                                    <span class="text-sm text-gray-400">Yesterday</span>
+                                </div>
+                                <p class="text-gray-300 mb-3">We've added 20 new practice problems in the Calculus section. Challenge yourself and improve your skills!</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex space-x-2">
+                                        <button class="px-4 py-1.5 bg-neon-green/20 text-neon-green text-sm rounded-lg hover:bg-neon-green hover:text-dark-900 transition-all duration-300">
+                                            Start Practice
+                                        </button>
+                                        <button class="px-4 py-1.5 bg-dark-700/50 text-gray-300 text-sm rounded-lg hover:bg-dark-700 transition-all duration-300">
+                                            Dismiss
+                                        </button>
+                                    </div>
+                                    <div class="flex items-center text-gray-400 text-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span>Low Priority</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Friend Request Notification -->
+                    <div class="notification-card dark-glass p-6 rounded-xl border border-neon-blue/30 hover:border-neon-blue/60 transition-all duration-300">
+                        <div class="flex items-start">
+                            <div class="notification-dot dot-medium pulse-dot mt-1.5"></div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="text-xl font-semibold text-neon-blue">Friend Request</h3>
+                                    <span class="text-sm text-gray-400">2 days ago</span>
+                                </div>
+                                <div class="flex items-center mb-3">
+                                    <div class="w-12 h-12 rounded-full bg-dark-700 overflow-hidden mr-4">
+                                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User Avatar" class="w-full h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <p class="text-white font-medium">Sarah Johnson</p>
+                                        <p class="text-gray-400 text-sm">Rank: #42 • Algebra Specialist</p>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex space-x-2">
+                                        <button class="px-4 py-1.5 bg-neon-blue/20 text-neon-blue text-sm rounded-lg hover:bg-neon-blue hover:text-white transition-all duration-300">
+                                            Accept
+                                        </button>
+                                        <button class="px-4 py-1.5 bg-dark-700/50 text-gray-300 text-sm rounded-lg hover:bg-dark-700 transition-all duration-300">
+                                            Decline
+                                        </button>
+                                    </div>
+                                    <div class="flex items-center text-gray-400 text-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span>Medium Priority</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- System Update Notification -->
+                    <div class="notification-card dark-glass p-6 rounded-xl border border-neon-green/30 hover:border-neon-green/60 transition-all duration-300">
+                        <div class="flex items-start">
+                            <div class="notification-dot dot-low pulse-dot mt-1.5"></div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="text-xl font-semibold text-neon-green">System Update</h3>
+                                    <span class="text-sm text-gray-400">3 days ago</span>
+                                </div>
+                                <p class="text-gray-300 mb-3">We've updated our platform with new features including improved leaderboards, challenge sharing, and performance optimizations.</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex space-x-2">
+                                        <button class="px-4 py-1.5 bg-neon-green/20 text-neon-green text-sm rounded-lg hover:bg-neon-green hover:text-dark-900 transition-all duration-300">
+                                            See What's New
+                                        </button>
+                                        <button class="px-4 py-1.5 bg-dark-700/50 text-gray-300 text-sm rounded-lg hover:bg-dark-700 transition-all duration-300">
+                                            Dismiss
+                                        </button>
+                                    </div>
+                                    <div class="flex items-center text-gray-400 text-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span>Low Priority</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reminders Section -->
+    <section id="reminders" class="relative py-16 overflow-hidden">
+        <div class="absolute inset-0 z-0 math-symbol math-symbol-sqrt"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <h2 class="text-4xl font-bold mb-12 text-center">
+                <span class="relative inline-block">
+                    <span class="text-gradient bg-gradient-to-r from-neon-blue to-neon-green">Set Reminders</span>
+                    <span class="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-neon-blue to-neon-green rounded-full"></span>
+                </span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Create Reminder Card -->
+                <div class="md:col-span-1">
+                    <div class="dark-glass p-6 rounded-xl border border-neon-blue/30">
+                        <h3 class="text-2xl font-semibold mb-6 text-neon-blue">Create Reminder</h3>
+                        
+                        <form class="space-y-5">
+                            <div>
+                                <label for="reminder-title" class="block text-white mb-2">Title</label>
+                                <input type="text" id="reminder-title" class="w-full px-4 py-3 rounded-lg form-input" placeholder="Enter reminder title">
+                            </div>
+                            
+                            <div>
+                                <label for="reminder-description" class="block text-white mb-2">Description</label>
+                                <textarea id="reminder-description" rows="3" class="w-full px-4 py-3 rounded-lg form-input" placeholder="Enter reminder details"></textarea>
+                            </div>
+                            
+                            <div>
+                                <label for="reminder-date" class="block text-white mb-2">Date</label>
+                                <input type="date" id="reminder-date" class="w-full px-4 py-3 rounded-lg date-picker">
+                            </div>
+                            
+                            <div>
+                                <label for="reminder-time" class="block text-white mb-2">Time</label>
+                                <input type="time" id="reminder-time" class="w-full px-4 py-3 rounded-lg time-picker">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-white mb-2">Priority</label>
+                                <div class="flex space-x-4">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="priority" class="mr-2 accent-neon-pink">
+                                        <span class="text-neon-pink">High</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="priority" class="mr-2 accent-neon-yellow" checked>
+                                        <span class="text-neon-yellow">Medium</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="priority" class="mr-2 accent-neon-green">
+                                        <span class="text-neon-green">Low</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-white mb-2">Notification Method</label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2 accent-neon-blue" checked>
+                                        <span class="text-gray-300">In-app notification</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2 accent-neon-blue" checked>
+                                        <span class="text-gray-300">Email notification</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2 accent-neon-blue">
+                                        <span class="text-gray-300">SMS notification</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="w-full py-4 bg-neon-blue text-white font-bold rounded-lg glow-blue hover:bg-white hover:text-neon-blue transition-all duration-300">
+                                Set Reminder
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Active Reminders -->
+                <div class="md:col-span-2">
+                    <div class="dark-glass p-6 rounded-xl border border-neon-green/30 h-full">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-semibold text-neon-green">Your Active Reminders</h3>
+                            <div class="flex items-center space-x-2">
+                                <button class="p-2 bg-dark-700/50 text-gray-300 rounded-lg hover:bg-dark-700 transition-all duration-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                                    </svg>
+                                </button>
+                                <button class="p-2 bg-dark-700/50 text-gray-300 rounded-lg hover:bg-dark-700 transition-all duration-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4 max-h-[500px] overflow-y-auto custom-scrollbar pr-2">
+                            <!-- Reminder 1 -->
+                            <div class="reminder-card dark-glass p-5 rounded-xl border border-neon-pink/30">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div class="flex items-center">
+                                        <div class="notification-dot dot-high mr-3 mt-1"></div>
+                                        <h4 class="text-xl font-semibold text-neon-pink">Advanced Algebra Contest</h4>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button class="p-1.5 bg-dark-700/50 text-gray-300 rounded-lg hover:bg-dark-700 transition-all duration-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                            </svg>
+                                        </button>
+                                        <button class="p-1.5 bg-dark-700/50 text-gray-300 rounded-lg hover:bg-dark-700 transition-all duration-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-gray-300 mb-3">Prepare for the advanced algebra contest. Don't forget to review quadratic equations and logarithms!</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center text-gray-400 text-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <span>Today, 4:00 PM</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-sm text-neon-pink mr-2">High Priority</span>
+                                        <label class="switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Reminder 2 -->
+                            <div class="reminder-card dark-glass p-5 rounded-xl border border-neon-yellow/30">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div class="flex items-center">
+                                        <div class="notification-dot dot-medium mr-3 mt-1"></div>
+                                        <h4 class="text-xl font-semibold text-neon-yellow">Study Group Session</h4>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button class="p-1.5 bg-dark-700/50 text-gray-300 rounded-lg hover:bg-dark-700 transition-all duration-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                            </svg>
+                                        </button>
+                                        <button class="p-1.5 bg-dark-700/50 text-gray-300 rounded-lg hover:bg-dark-700 transition-all duration-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-gray-300 mb-3">Virtual study group session with Team Pythagoras. Topic: Trigonometric Functions and Applications.</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center text-gray-400 text-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <span>Tomorrow, 6:30 PM</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-sm text-neon-yellow mr-2">Medium Priority</span>
+                                        <label class="switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Reminder 3 -->
+                            <div class="reminder-card dark-glass p-5 rounded-xl border border-neon-green/30">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div class="flex items-center">
+                                        <div class="notification-dot dot-low mr-3 mt-1"></div>
+                                        <h4 class="text-xl font-semibold text-neon-green">Weekly Progress Review</h4>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button class="p-1.5 bg-dark-700/50 text-gray-300 rounded-lg hover:bg-dark-700 transition-all duration-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                            </svg>
+                                        </button>
+                                        <button class="p-1.5 bg-dark-700/50 text-gray-300 rounded-lg hover:bg-dark-700 transition-all duration-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-gray-300 mb-3">Review your weekly progress, update your study plan, and set goals for the upcoming week.</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center text-gray-400 text-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <span>Sunday, 10:00 AM</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-sm text-neon-green mr-2">Low Priority</span>
+                                        <label class="switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Reminder 4 -->
+                            <div class="reminder-card dark-glass p-5 rounded-xl border border-neon-blue/30">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div class="flex items-center">
+                                        <div class="notification-dot dot-medium mr-3 mt-1"></div>
+                                        <h4 class="text-xl font-semibold text-neon-blue">Practice Test Deadline</h4>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button class="p-1.5 bg-dark-700/50 text-gray-300 rounded-lg hover:bg-dark-700 transition-all duration-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                            </svg>
+                                        </button>
+                                        <button class="p-1.5 bg-dark-700/50 text-gray-300 rounded-lg hover:bg-dark-700 transition-all duration-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-gray-300 mb-3">Complete and submit your calculus practice test before the deadline. Remember to show all your work!</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center text-gray-400 text-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <span>Next Friday, 11:59 PM</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-sm text-neon-blue mr-2">Medium Priority</span>
+                                        <label class="switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Notification Settings Section -->
+    <section class="relative py-16 overflow-hidden">
+        <div class="absolute inset-0 z-0 math-symbol math-symbol-integral"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <h2 class="text-4xl font-bold mb-12 text-center">
+                <span class="relative inline-block">
+                    <span class="text-gradient bg-gradient-to-r from-neon-pink to-neon-yellow">Notification Settings</span>
+                    <span class="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-neon-pink to-neon-yellow rounded-full"></span>
+                </span>
+            </h2>
+            
+            <div class="max-w-3xl mx-auto">
+                <div class="dark-glass p-8 rounded-xl border border-neon-yellow/30">
+                    <h3 class="text-2xl font-semibold mb-6 text-neon-yellow">Customize Your Notifications</h3>
+                    
+                    <div class="space-y-6">
+                        <!-- Notification Type Settings -->
+                        <div>
+                            <h4 class="text-xl font-medium mb-4 text-white">Notification Types</h4>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center p-4 bg-dark-800/50 rounded-lg">
+                                    <div>
+                                        <h5 class="text-white font-medium">Contest Reminders</h5>
+                                        <p class="text-gray-400 text-sm">Get notified about upcoming math contests and challenges</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="flex justify-between items-center p-4 bg-dark-800/50 rounded-lg">
+                                    <div>
+                                        <h5 class="text-white font-medium">Achievement Notifications</h5>
+                                        <p class="text-gray-400 text-sm">Get notified when you earn badges or reach milestones</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="flex justify-between items-center p-4 bg-dark-800/50 rounded-lg">
+                                    <div>
+                                        <h5 class="text-white font-medium">Friend Activities</h5>
+                                        <p class="text-gray-400 text-sm">Get notified about your friends' achievements and activities</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="flex justify-between items-center p-4 bg-dark-800/50 rounded-lg">
+                                    <div>
+                                        <h5 class="text-white font-medium">System Updates</h5>
+                                        <p class="text-gray-400 text-sm">Get notified about platform updates and new features</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="flex justify-between items-center p-4 bg-dark-800/50 rounded-lg">
+                                    <div>
+                                        <h5 class="text-white font-medium">New Content Alerts</h5>
+                                        <p class="text-gray-400 text-sm">Get notified when new practice problems or learning materials are added</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Notification Method Settings -->
+                        <div>
+                            <h4 class="text-xl font-medium mb-4 text-white">Notification Methods</h4>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center p-4 bg-dark-800/50 rounded-lg">
+                                    <div>
+                                        <h5 class="text-white font-medium">In-App Notifications</h5>
+                                        <p class="text-gray-400 text-sm">Receive notifications within the Math Challenges Squad platform</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="flex justify-between items-center p-4 bg-dark-800/50 rounded-lg">
+                                    <div>
+                                        <h5 class="text-white font-medium">Email Notifications</h5>
+                                        <p class="text-gray-400 text-sm">Receive notifications via email</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="flex justify-between items-center p-4 bg-dark-800/50 rounded-lg">
+                                    <div>
+                                        <h5 class="text-white font-medium">SMS Notifications</h5>
+                                        <p class="text-gray-400 text-sm">Receive notifications via text message</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="flex justify-between items-center p-4 bg-dark-800/50 rounded-lg">
+                                    <div>
+                                        <h5 class="text-white font-medium">Browser Push Notifications</h5>
+                                        <p class="text-gray-400 text-sm">Receive notifications in your browser even when you're not on the site</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Frequency Settings -->
+                        <div>
+                            <h4 class="text-xl font-medium mb-4 text-white">Notification Frequency</h4>
+                            <div class="p-4 bg-dark-800/50 rounded-lg">
+                                <div class="mb-4">
+                                    <label for="frequency" class="block text-white mb-2">How often would you like to receive notifications?</label>
+                                    <select id="frequency" class="w-full px-4 py-3 rounded-lg form-input">
+                                        <option value="immediately">Immediately</option>
+                                        <option value="hourly">Hourly Digest</option>
+                                        <option value="daily">Daily Digest</option>
+                                        <option value="weekly">Weekly Digest</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label for="quiet-hours" class="block text-white mb-2">Quiet Hours</label>
+                                    <div class="flex space-x-4">
+                                        <input type="time" id="quiet-hours-start" value="22:00" class="w-full px-4 py-3 rounded-lg time-picker">
+                                        <span class="text-white self-center">to</span>
+                                        <input type="time" id="quiet-hours-end" value="07:00" class="w-full px-4 py-3 rounded-lg time-picker">
+                                    </div>
+                                    <p class="text-gray-400 text-sm mt-2">We won't send notifications during these hours unless they're high priority</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="w-full py-4 bg-neon-yellow text-dark-900 font-bold rounded-lg glow-yellow hover:bg-white hover:text-neon-yellow transition-all duration-300">
+                            Save Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative py-16 overflow-hidden">
+        <div class="absolute inset-0 bg-dark-900 z-0"></div>
+        <div class="absolute bottom-0 w-full h-1 bg-gradient-to-r from-neon-green via-neon-blue to-neon-pink"></div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-8 md:mb-0">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="relative w-12 h-12 flex items-center justify-center bg-neon-green rounded-lg glow transform rotate-12">
+                            <span class="text-dark-900 text-2xl font-bold font-mono transform -rotate-12">M</span>
+                        </div>
+                        <div class="text-2xl font-bold">
+                            <span class="text-neon-green">Math</span>
+                            <span class="text-white">Challenges</span>
+                            <span class="text-neon-pink">Squad</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-400">Making math fun and rewarding for everyone.</p>
+                </div>
+                
+                <div class="text-center md:text-right">
+                    <p class="text-gray-400">© 2024 Math Challenges Squad. All rights reserved.</p>
+                    <p class="text-gray-400 mt-2">Babu Banarasi Das University, Lucknow</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Mobile Menu Toggle -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Close mobile menu when clicking on a link
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock content %}
