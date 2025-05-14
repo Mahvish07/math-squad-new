@@ -17,12 +17,11 @@ def categoryPage(request):
     return render(request, "category-page.html")
 
 
-from django.shortcuts import rende
 def communityDiscussion(request):
 
     return render(request, "community_discussion.html")
 
-# Create your views here. 
+# Create your views here.
 
 @login_required
 def contest(request):
