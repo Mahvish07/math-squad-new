@@ -28,6 +28,5 @@ urlpatterns = [
     # path("contest/", TemplateView.as_view(template_name='contest.html'), name="contest"),
     # path("login/", TemplateView.as_view(template_name='login.html'), name="about"),
     # path("signup/", TemplateView.as_view(template_name='register.html'), name="register"),
-
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

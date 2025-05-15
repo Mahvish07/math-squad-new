@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.http import HttpResponseForbidden
 from .models import Contest, Question, Prizes, Registration
 from .forms import RegistrationForm
+from django.contrib import messages
 
 # Create your views here. 
     
@@ -119,13 +120,22 @@ def register_contest(request):
         "message": message
     })
 
+@login_required
 def my_registered_contests(request):
-    # Example context data
+    registrations = Registration.objects.filter(user=request.user).select_related('contest')
+    contests = [
+        {
+            'id': reg.contest.id,
+            'name': reg.contest.name,
+            'date': reg.contest.start_date.strftime('%Y-%m-%d'),
+            'description': reg.contest.description,
+            'category': reg.contest.category,
+            'image': reg.contest.image,
+        }
+        for reg in registrations
+    ]
     context = {
-        'contests': [
-            {'name': 'Algebra Contest', 'date': '2025-05-10'},
-            {'name': 'Geometry Contest', 'date': '2025-05-15'},
-        ]
+        'contests': contests
     }
     return render(request, 'my_registered_contests.html', context)
 
@@ -149,17 +159,25 @@ def attempt_contest(request, contest_id):
             "questions": [],
             "time_left": 0,
             "expired": True,
+            "submitted": False,
         })
 
     time_left = max(0, int(duration - elapsed))
+    submitted = False
 
     if request.method == 'POST':
-        # Handle answer submission logic here
-        pass
+        # Save answers logic here (you may want to create a model for answers)
+        for question in questions:
+            answer = request.POST.get(f'answer_{question.id}', '').strip()
+            # Save answer to DB if you have an Answer model
+            # Example: Answer.objects.create(user=request.user, question=question, answer_text=answer)
+        submitted = True
+        messages.success(request, "Your answers have been submitted!")
 
     return render(request, "attempt_contest.html", {
         "contest": contest,
-        "questions": questions,
+        "questions": questions if not submitted else [],
         "time_left": time_left,
         "expired": False,
+        "submitted": submitted,
     })
