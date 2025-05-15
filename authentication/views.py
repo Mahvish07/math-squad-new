@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
+from .forms import CustomLoginForm
 
 # Create your views here.
 
@@ -21,15 +22,15 @@ def register_view(request):
     else:
         form = UserCreationForm()
     
-    return render(request, 'authentication/register.html', {'form': form})
+    return render(request, 'register.html', {'form': form})
 
 @csrf_protect
 def login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
+        form = CustomLoginForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
@@ -40,9 +41,9 @@ def login_view(request):
         else:
             messages.error(request, "Invalid username or password.")
     else:
-        form = AuthenticationForm()
+        form = CustomLoginForm()
     
-    return render(request, 'authentication/login.html', {'form': form})
+    return render(request, 'login.html', {'form': form})
 
 def logout_view(request):
     logout(request)
@@ -51,4 +52,4 @@ def logout_view(request):
 
 @login_required
 def profile_view(request):
-    return render(request, 'authentication/profile.html')
+    return render(request, 'profile.html')
