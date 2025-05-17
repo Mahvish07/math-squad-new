@@ -64,14 +64,26 @@
                             Contact
                             <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-green transition-all duration-300 group-hover:w-full"></span>
                         </a></li>
-                        <li><a href="#login" class="hover:text-neon-pink transition-colors duration-300 relative group">
-                            Login
-                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-pink transition-all duration-300 group-hover:w-full"></span>
-                        </a></li>
-                        <li><a href="#signup" class="hover:text-neon-blue transition-colors duration-300 relative group">
-                            Sign Up
-                            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-blue transition-all duration-300 group-hover:w-full"></span>
-                        </a></li>
+                        {% if user.is_authenticated %}
+    <li>
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="hover:text-neon-pink transition-colors duration-300 relative group bg-transparent border-none p-0 m-0">
+                Logout
+                <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-pink transition-all duration-300 group-hover:w-full"></span>
+            </button>
+        </form>
+    </li>
+{% else %}
+    <li><a href="#login" class="hover:text-neon-pink transition-colors duration-300 relative group">
+        Login
+        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-pink transition-all duration-300 group-hover:w-full"></span>
+    </a></li>
+    <li><a href="#signup" class="hover:text-neon-blue transition-colors duration-300 relative group">
+        Sign Up
+        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-blue transition-all duration-300 group-hover:w-full"></span>
+    </a></li>
+{% endif %}
                     </ul>
                 </nav>
                 <div class="md:hidden">

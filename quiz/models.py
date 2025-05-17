@@ -77,9 +77,10 @@ class Community(models.Model):
         return self.name
 
 class Registration(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     contest = models.ForeignKey('Contest', on_delete=models.CASCADE, related_name='registrations')
     registered_at = models.DateTimeField(auto_now_add=True)
+    score = models.PositiveIntegerField(default=0)  # Add this field
 
     def __str__(self):
         return f"{self.user.username} - {self.contest.name}"
