@@ -24,7 +24,7 @@ from quiz import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", TemplateView.as_view(template_name='index.html'), name="home"),
-    path("quiz/", include("quiz.urls"), name="quiz"),
+    path("", include("quiz.urls"), name="quiz"),
     path('auth/', include('authentication.urls'), name='auth'),
     path('contest/<int:contest_id>/leaderboard/', views.contest_leaderboard, name='contest_leaderboard'),
     path('leaderboard/global/', views.global_leaderboard, name='global_leaderboard'),

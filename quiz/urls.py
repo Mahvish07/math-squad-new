@@ -8,7 +8,6 @@ urlpatterns = [
     path("contest/", contest, name="contest"),
     path("achievement/", rewardsachievement, name="achievement"),
     path("feedback/", contest, name="feedback"),
-    path("layout/", contest, name="layout"),
     path("notification/", contest, name="notification"),
     path("leaderboard/", contest, name="leaderboard"),
     path("profile/", contest, name="profile"),
