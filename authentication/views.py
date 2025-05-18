@@ -13,12 +13,13 @@ def register_view(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, "Registration successful!")
-            return redirect('profile')
+            user = form.save(commit=False)
+            user.email = request.POST.get('email')
+            user.save()
+            messages.success(request, "Registration successful! Please log in.")
+            return redirect('login')
         else:
-            messages.error(request, "Registration failed. Please correct the errors.")
+            messages.error(request, "Registration failed. Please correct the errors below.")
     else:
         form = UserCreationForm()
     
