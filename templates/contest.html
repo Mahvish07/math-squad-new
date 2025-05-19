@@ -186,13 +186,6 @@
                             </svg>
                             <span class="text-gray-300">Participants: {{contest.number_of_participants}}</span>
                         </div>
-                        
-                        <a href="#register" class="block w-full py-3 bg-neon-green text-dark-900 font-bold rounded-lg text-center hover:bg-white transition-all duration-300">
-                            Register Now
-                        </a>
-                        <a href="{% url 'register_contest' %}" class="mt-4 inline-block bg-neon-green text-dark-900 px-4 py-2 rounded-lg hover:bg-neon-yellow transition-all duration-300">
-                            Register Now
-                        </a>
                         <form method="POST" action="{% url 'contest' %}" class="mt-4">
                             {% csrf_token %}
                             {% if message and registered_contest_id == contest.id %}
@@ -203,6 +196,10 @@
                                 <button type="button" class="w-full bg-gray-500 text-white px-4 py-2 rounded-lg cursor-not-allowed" disabled>
                                     Already Registered
                                 </button>
+                                <a href="{% url 'contest_leaderboard' contest.id %}" 
+                                   class="block w-full mt-3 bg-neon-blue text-white px-4 py-2 rounded-lg text-center font-semibold hover:bg-white hover:text-neon-blue transition-all duration-300">
+                                    View Quiz Leaderboard
+                                </a>
                             {% else %}
                                 <button type="submit"
                                         class="w-full bg-neon-green text-dark-900 px-4 py-2 rounded-lg hover:bg-neon-yellow transition-all duration-300">

@@ -2,9 +2,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.http import HttpResponseForbidden
-from .models import Contest, Question, Prizes, Registration
+from .models import Contest, Question, Prizes, Registration, Choice, Answer
 from .forms import RegistrationForm
 from django.contrib import messages
+from django.db.models import Sum
+from django.contrib.auth.models import User
 
 # Create your views here. 
     
@@ -164,15 +166,27 @@ def attempt_contest(request, contest_id):
 
     time_left = max(0, int(duration - elapsed))
     submitted = False
+    score = 0
 
     if request.method == 'POST':
-        # Save answers logic here (you may want to create a model for answers)
+        # Evaluate answers and save them
         for question in questions:
-            answer = request.POST.get(f'answer_{question.id}', '').strip()
-            # Save answer to DB if you have an Answer model
-            # Example: Answer.objects.create(user=request.user, question=question, answer_text=answer)
+            choice_id = request.POST.get(f'answer_{question.id}')
+            if choice_id:
+                selected_choice = Choice.objects.filter(id=choice_id, question=question).first()
+                Answer.objects.update_or_create(
+                    user=request.user,
+                    question=question,
+                    defaults={'selected_choice': selected_choice}
+                )
+                if selected_choice and selected_choice.is_correct:
+                    score += question.score
+        # Save score in Registration
+        registration, _ = Registration.objects.get_or_create(user=request.user, contest=contest)
+        registration.score = score
+        registration.save()
         submitted = True
-        messages.success(request, "Your answers have been submitted!")
+        messages.success(request, f"Your answers have been submitted! Your score: {score}")
 
     return render(request, "attempt_contest.html", {
         "contest": contest,
@@ -180,4 +194,29 @@ def attempt_contest(request, contest_id):
         "time_left": time_left,
         "expired": False,
         "submitted": submitted,
+        "score": score if submitted else None,
     })
+
+@login_required
+def contest_leaderboard(request, contest_id):
+    # Get all registrations for this contest, ordered by score descending
+    leaderboard = (
+        Registration.objects.filter(contest_id=contest_id)
+        .select_related('user')
+        .order_by('-score')
+    )
+    contest = get_object_or_404(Contest, id=contest_id)
+    return render(request, "contest_leaderboard.html", {
+        "leaderboard": leaderboard,
+        "contest": contest,
+    })
+
+@login_required
+def global_leaderboard(request):
+    # Aggregate scores across all contests for each user
+    leaderboard = (
+        Registration.objects.values('user__username')
+        .annotate(total_score=Sum('score'))
+        .order_by('-total_score')[:20]
+    )
+    return render(request, "global_leaderboard.html", {"leaderboard": leaderboard})

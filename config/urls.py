@@ -19,14 +19,16 @@ from django.urls import path, include
 from django.views.generic import TemplateView 
 from django.conf import settings
 from django.conf.urls.static import static
+from quiz import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", TemplateView.as_view(template_name='index.html'), name="home"),
-    path("quiz/", include("quiz.urls"), name="quiz"),
+    path("", include("quiz.urls"), name="quiz"),
     path('auth/', include('authentication.urls'), name='auth'),
+    path('contest/<int:contest_id>/leaderboard/', views.contest_leaderboard, name='contest_leaderboard'),
+    path('leaderboard/global/', views.global_leaderboard, name='global_leaderboard'),
     # path("contest/", TemplateView.as_view(template_name='contest.html'), name="contest"),
     # path("login/", TemplateView.as_view(template_name='login.html'), name="about"),
     # path("signup/", TemplateView.as_view(template_name='register.html'), name="register"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
